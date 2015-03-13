@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name"> neurGAI</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="ajustarCoeficiente">Ajustar coeficiente</string>
+    <string name="euskaraz">Euskaraz</string>
+    <string name="local_language">Castellano</string>
+    <string name="calibracion">Kalibrazioa/Calibración</string>
+    <string name="medicion">Neurketak/Medidas</string>
+    <string name="tension">Tentsioa/Tensión</string>
+    <string name="precio">Prezioa/Precio</string>
+    <string name="ajustes">Doiketak/Ajustes</string>
+    <string name="bienvenidos">Bienvenido a neurGAI!</string>
+    <string name="ongietorri">Ongi etorri neurGAI-ra!</string>
+    <string name="creditos">	    neurGAI\nUPV/EHU\nProyecto de innovación para la sostenibilidad.\nVicerrectorado de Estudiantes Empleo y Responsabilidad Social.</string>
+    <string name="kreditu">	   "neurGAI\nUPV/EHU\nIraunkortasunaren arloko berrikuntzarako proiektua\nIkasleen, Enpleguaren eta Gizarte Erantzukizunaren arloko Errektoreordetza"	</string>
+    <string name="title_activity_calibrar">Calibrar</string>
+    <string name="textTension">Introduce la tensión de tu casa</string>
+    <string name="textPrecio">Precio por kWh</string>
+    <string name="textFrecuencia">Frecuencia:</string>
+    <string name="textRMS">RMS:</string>
+    <string name="ceroDefecto">0</string>
+    <string name="AvisoNoCalibracion">El dispositivo no esta calibrado.\n Calibra el dispositivo primero.</string>
+   	<string name="AvisoGuardadoFicheros">Los ficheros de prueba ha sido guardados.</string>
+    <string name="title_activity_medir">Medir</string>
+    <string name="textAmplitud">Introduce la amplitud para el calibrado del filtro</string>
+    <string name="inicioCalibrado">Pulsa el botón para iniciar la calibración</string>
+    <string name="introducirAmplitud">Introduce la amplitud de calibración del filtro y pulsa el botón</string>
+    <string name="calibrandoCAG">Calibrando el CAG del móvil...</string>
+    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil...</string>
+    <string name="ajustarConectoryVolumen">Conecta en la entrada de auriculares el conector de calibrado y sube el volumen al máximo</string>
+    <string name="resultadoCalibracionCAG">Calibración del CAG</string>
+    <string name="grabandoDatos">Grabando los datos de calibrado...</string>
+    <string name="cerrarCalibrado">Filtro calibrado, pulsa para continuar</string>
+    <string name="introducirAmplitudCorrectamente">Valor incorrecto</string>
+    <string name="pulsarParaEmpezarMedir">Pulsa para empezar a medir</string>
+    <string name="pulsarPararMedir">Pulsa para dejar de medir</string>
+    <string name="grabandoDatosMedida">Grabando datos medidos...</string>
+    <string name="grabarDatosMedida">Grabar medida (1 s)</string>
+    <string name="noGrabandoDatosMedida">No se pudieron guardar los datos; vuelve a intentarlo</string>
+    <string name="coeficienteSinCalibrar">Todavía hay que calibrar el coeficiente de proporcionalidad del medidor</string>
+    <string name="nulo">" "</string>
+    <string name="pulsaParaContinuar">Pulsa para continuar</string>
+    <string name="anularCalibrado">Pulsa para anular el calibrado</string>
+    <string name="leyendoCalibracion">Leyendo los datos de la calibración...</string>
+    <string name="introducirMedidaCorrectamente">Valor incorrecto</string>
+    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar... Pulsa para introducir la medida correcta</string>
+
+</resources>
