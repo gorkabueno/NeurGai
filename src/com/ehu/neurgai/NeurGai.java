@@ -19,6 +19,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jtransforms.fft.DoubleFFT_1D;
+import org.w3c.dom.Text;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -41,6 +42,7 @@ import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +54,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
@@ -372,10 +375,17 @@ public class NeurGai extends ActionBarActivity {
 		dbWrite.close();
 		bbdd.close();
 	}
-	public void volcadoTarifasLibreUsuario(double feu20A, double feu20DHA, double feu20DHS){
+	public void volcadoTarifasLibreUsuario(double feu20A,double feu20DHAP, double feu20DHAV ,double feu20DHSP,double feu20DHSV, double feu20DHSSV){
 		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
 		SQLiteDatabase dbWrite= bbdd.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(new Date());
+		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
+		int eqinocVera=2106;
+		int eqinocInv=2212;
+		int fechaSistemInt=Integer.parseInt(fechaSistema);
 		
 		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20A, null);
 		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, null);
@@ -385,12 +395,55 @@ public class NeurGai extends ActionBarActivity {
 		{
 			//db.execSQL("UPDATE Usuarios SET nombre='usunuevo' WHERE codigo=6 ");
 			//dbWrite.execSQL("UPDATE "+);
+			//Supuesto de que estamos en invierno
+
+			//plana
 			values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, feu20A);
-			values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHA);
-			values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHS);
+			
+			if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
+				
+				//Punta
+				if(i>=13&&i<23){
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAP);
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSP);
+					
+				}else{
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAV);
+					//Supervalle
+					if(i>=1&&i<7){
+						
+						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSSV);
+					}else{
+						//Valle DHS.
+						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSV);
+					}
+				}
+			}else{
+				//En caso contrario, estamos en verano.
+				//plana
+				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, feu20A);
+				
+				
+				//Punta
+				if(i>=12&&i<22){
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAP);
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSP);
+					
+				}else{
+					//Valle y supervalle.
+					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAV);
+					
+					if(i>=0&&i<6){
+						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSSV);
+					}else{
+						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSV);
+					}
+				}
+			}
+			
+			
 			dbWrite.update(ColumnasTarifas.TABLE_NAME, values, ColumnasTarifas.COLUMN_NAME_HORA+"="+Integer.toString(i), null);
 			//dbWrite.insert(ColumnasTarifas.TABLE_NAME, null, values);
-			
 		}
 		
 		bbdd.close();
@@ -1710,21 +1763,25 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.tarifas:{
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle("Introduce las tarifas de libre mercado");
-			
-			LinearLayout layout = new LinearLayout(this);
-			layout.setOrientation(LinearLayout.VERTICAL);
+			LayoutInflater factory = LayoutInflater.from(this);
+            View layout = factory.inflate(R.layout.row, null);
+            
+			final EditText feu20A =(EditText)layout.findViewById(R.id.editText1);
+			final EditText feu20DHAPunta =(EditText)layout.findViewById(R.id.editText2);
+			final EditText feu20DHAValle =(EditText)layout.findViewById(R.id.editText3);
 
-			final EditText feu20A = new EditText(this);
-			final EditText feu20DHA = new EditText(this);
-			final EditText feu20DHS = new EditText(this);
+			final EditText feu20DHSPunta =(EditText)layout.findViewById(R.id.editText4);
+			final EditText feu20DHSValle =(EditText)layout.findViewById(R.id.editText5);
+			final EditText feu20DHSSuperValle =(EditText)layout.findViewById(R.id.editText6);
 
-			feu20A.setHint("Tarifa 2.0A (€/kWh)");
-			feu20DHA.setHint("Tarifa 2.0DHA (€/kWh)");
-			feu20DHS.setHint("Tarifa 2.0DHS (€/kWh)");
-			
-			layout.addView(feu20A);
-			layout.addView(feu20DHA);
-			layout.addView(feu20DHS);
+			//feu20A.setHint("Tarifa 2.0A (€/kWh)");
+			//feu20DHA.setHint("Tarifa 2.0DHA (€/kWh)");
+			//feu20DHS.setHint("Tarifa 2.0DHS (€/kWh)");
+			//layout.addView(row1);
+			//layout.addView(row2);
+			//layout.addView(feu20A);
+			//layout.addView(feu20DHA);
+			//layout.addView(feu20DHS);
 
 
 			alert.setView(layout);
@@ -1733,8 +1790,11 @@ public class NeurGai extends ActionBarActivity {
 				
 				//Se vuelcan las tarifas definidas por el usuario a la BBDD.
 				 volcadoTarifasLibreUsuario(Double.parseDouble(feu20A.getText().toString()), 
-						 					Double.parseDouble(feu20DHA.getText().toString()),
-						 					Double.parseDouble(feu20DHS.getText().toString()));
+						 					Double.parseDouble(feu20DHAPunta.getText().toString()),
+						 					Double.parseDouble(feu20DHAValle.getText().toString()),
+						 					Double.parseDouble(feu20DHSPunta.getText().toString()),
+						 					Double.parseDouble(feu20DHSValle.getText().toString()),
+						 					Double.parseDouble(feu20DHSSuperValle.getText().toString()));
 				 
 			  }
 			});
