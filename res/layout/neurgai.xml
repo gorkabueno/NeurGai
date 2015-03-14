@@ -14,7 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button"
-        android:visibility="gone" />
+        
+            android:visibility="gone"
+         />
 
     <TextView
         android:id="@+id/texto1"
@@ -22,164 +24,171 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Potencia (W)"
+        android:textSize="30dp"
         android:visibility="gone" />
 
-    <LinearLayout
+    <TableRow
+        android:id="@+id/tableRow1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+		 >
+
+        <TextView
+            android:id="@+id/textVCeldaEmpty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" 
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/TextVPVPC"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="PVPC"
-			android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/TextV20APVPC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:text=" 2.0A " 
-            android:visibility="gone"/>
-        
-        <TextView
-        android:id="@+id/text20APVPC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:visibility="gone"
-             />
-
-        <TextView
-            android:id="@+id/textV20DHAPVPC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:text=" 2.0DHA "
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="PVPC (c€)"
+            android:textSize="20dp"
             android:visibility="gone" />
 
-        
         <TextView
-        android:id="@+id/text20DHAPVPC"
-            android:layout_width="wrap_content"
+            android:id="@+id/TextVLibre"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:visibility="gone" 
-            />
-        
-        <TextView
-            android:id="@+id/textV20DHSPVPC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:text=" 2.0DHS "
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Libre (c€)"
+            
+            android:textSize="20dp"
             android:visibility="gone" />
 
-         <TextView
-             android:id="@+id/text20DHSPVPC"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_weight="0.142857142857"
-             android:visibility="gone" 
-             />
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
+   <TableRow
+       android:id="@+id/tableRow2"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" >
+
+       <TextView
+           android:id="@+id/TextV20A"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_weight="1"
+           android:text=" 2.0A "
+            android:textSize="20dp"
+           android:visibility="gone" />
+
+       <TextView
+           android:id="@+id/text20APVPC"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_weight="1"
+            android:textSize="20dp"
+           android:visibility="gone" />
+
+       <TextView
+           android:id="@+id/text20A"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_weight="1"
+            android:textSize="20dp"
+           android:visibility="gone" />
+
+   </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/TextVLibre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             
-            android:text="Libre"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/TextV20A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:text=" 2.0A "
-            android:visibility="gone" />
-        
-        <TextView
-        android:id="@+id/text20A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:visibility="gone"
-             />
-
-        <TextView
             android:id="@+id/textV20DHA"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
+            android:layout_weight="1"
             android:text=" 2.0DHA "
-            android:visibility="gone" />
-
-        
-        <TextView
-        android:id="@+id/text20DHA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:visibility="gone" 
-            />
-        
-        
-        <TextView
-            android:id="@+id/textV20DHS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.142857142857"
-            android:text=" 2.0DHS "
+            android:textSize="20dp"
             android:visibility="gone"/>
 
-         <TextView
-             android:id="@+id/text20DHS"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_weight="0.142857142857"
-             android:visibility="gone" 
-             />
+        <TextView
+            android:id="@+id/text20DHAPVPC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text20DHA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:textSize="20dp"
+            android:visibility="gone"/>
+            </TableRow>
 
-    </LinearLayout>	
-    <TextView
-        android:id="@+id/texto4"
+    <TableRow
+        android:id="@+id/tableRow4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="texto 4"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textV20DHSPVPC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 2.0DHS " 
+            android:textSize="20dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text20DHSPVPC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            
+            android:textSize="20dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text20DHS"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:textSize="20dp"
+            
+        android:visibility="gone"/>
+        
+    </TableRow>
 
     <TextView
         android:id="@+id/texto5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="notas"
-        android:visibility="gone" />
+            android:textSize="20dp"
+        android:visibility="gone"
+         />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:visibility="gone"
+         />
 <!-- 
     <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="fill_parent" 
          android:id="@+id/grafica"
-        android:visibility="gone" >
+         >
 	</RelativeLayout> 
  -->
     	<com.jjoe64.graphview.GraphView
        android:layout_width="fill_parent"
        android:layout_height="fill_parent"
-
         android:id="@+id/grafica" /> 
 
-</LinearLayout>
+</LinearLayout>	

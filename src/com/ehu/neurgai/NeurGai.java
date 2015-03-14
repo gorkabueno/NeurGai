@@ -569,28 +569,28 @@ public class NeurGai extends ActionBarActivity {
 		
 		
 		
-		//Hilo para mostrar los resultados.
+		//Hilo para mostrar los resultados en los correspondientes TextView
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				
 				final TextView  text20APVPC= (TextView)findViewById(R.id.text20APVPC);
-				text20APVPC.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20A_PVPC()) + "c€");
-
+				text20APVPC.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20A_PVPC()) );	
+				
 				final TextView  text20DHAPVPC= (TextView)findViewById(R.id.text20DHAPVPC);
-				text20DHAPVPC.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20DHA_PVPC())+ "c€");
+				text20DHAPVPC.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20DHA_PVPC()));
 
 				final TextView  text20DHSPVPC= (TextView)findViewById(R.id.text20DHSPVPC);
-				text20DHSPVPC.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20DHS_PVPC()) + "c€");
+				text20DHSPVPC.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20DHS_PVPC()) );
 	
 				final TextView  text20A= (TextView)findViewById(R.id.text20A);
-				text20A.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20A()) + "c€");
+				text20A.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20A()) );
 				
 				final TextView  text20DHA= (TextView)findViewById(R.id.text20DHA);
-				text20DHA.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20DHA()) + "c€");
+				text20DHA.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20DHA()) );
 				
 				final TextView  text20DHS= (TextView)findViewById(R.id.text20DHS);
-				text20DHS.setText(String.format("%.0f", 100 * coste.getCosteAcumulado20DHS()) + "c€");
+				text20DHS.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20DHS()) );
 				
 			}
 		});
@@ -1829,19 +1829,16 @@ public class NeurGai extends ActionBarActivity {
 				
 				// habilita ventanas de texto para mostrar la medida
 				findViewById(R.id.texto1).setVisibility(View.VISIBLE);
-				
+				findViewById(R.id.textVCeldaEmpty).setVisibility(View.VISIBLE);
 				findViewById(R.id.TextVLibre).setVisibility(View.VISIBLE);
 				findViewById(R.id.TextV20A).setVisibility(View.VISIBLE);
 				findViewById(R.id.textV20DHA).setVisibility(View.VISIBLE);
-				findViewById(R.id.textV20DHS).setVisibility(View.VISIBLE);
 				
 				findViewById(R.id.text20A).setVisibility(View.VISIBLE);
 				findViewById(R.id.text20DHA).setVisibility(View.VISIBLE);
 				findViewById(R.id.text20DHS).setVisibility(View.VISIBLE);
 				
 				findViewById(R.id.TextVPVPC).setVisibility(View.VISIBLE);
-				findViewById(R.id.TextV20APVPC).setVisibility(View.VISIBLE);
-				findViewById(R.id.textV20DHAPVPC).setVisibility(View.VISIBLE);
 				findViewById(R.id.textV20DHSPVPC).setVisibility(View.VISIBLE);
 				
 				findViewById(R.id.text20APVPC).setVisibility(View.VISIBLE);
