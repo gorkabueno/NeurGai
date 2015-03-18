@@ -482,7 +482,7 @@ public class NeurGai extends ActionBarActivity {
 		return registroDouble;
 	}
 	
-	//Lee el útlimo registro en en cualquiera de las tablas de la BBDD.
+	//Lee el último registro en en cualquiera de las tablas de la BBDD.
 	private String leerRegistroString(String registro, String nombreTabla){
 		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
 		SQLiteDatabase dbRead=bbdd.getReadableDatabase();
@@ -746,6 +746,66 @@ public class NeurGai extends ActionBarActivity {
 				final int potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
 
 				double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
+				
+				if(empezar) {
+					runOnUiThread(new Runnable() {	
+		    			@Override
+		    			public void run() {
+		    				// añade una medida nula como primer dato de la serie
+		    				tiempoInicioMedida = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
+		    				serieMedidas = new LineGraphSeries<DataPoint>();
+		    				
+		    				// habilita ventanas de texto para mostrar la medida
+		    				findViewById(R.id.texto1).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.textVCeldaEmpty).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.TextVLibre).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.TextV20A).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.textV20DHA).setVisibility(View.VISIBLE);
+		    				
+		    				findViewById(R.id.text20A).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.text20DHA).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.text20DHS).setVisibility(View.VISIBLE);
+		    				
+		    				findViewById(R.id.TextVPVPC).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.textV20DHSPVPC).setVisibility(View.VISIBLE);
+		    				
+		    				findViewById(R.id.text20APVPC).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.text20DHAPVPC).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.text20DHSPVPC).setVisibility(View.VISIBLE);
+		    				
+		    				// crea el gráfico con los datos de las medidas
+		    				graficoMedidas = (GraphView) findViewById(R.id.grafica);
+		    				graficoMedidas.removeAllSeries();
+		    				graficoMedidas.clearAnimation();
+		    				
+		    				serieMedidas.setColor(Color.BLACK);
+		    				graficoMedidas.setTitleColor(Color.BLACK);
+		    				graficoMedidas.setTitle("Medidas de potencia (kW)");
+		    				
+		    				NumberFormat nf = NumberFormat.getInstance();
+		    				nf.setMinimumFractionDigits(0);
+		    				nf.setMinimumIntegerDigits(1);
+
+		    				graficoMedidas.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
+		    				//graficoMedidas.getGridLabelRenderer().setVerticalLabelsAlign(Align.LEFT);
+		    				graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
+		    				graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+		    				graficoMedidas.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+
+		    				serieMedidas.setDrawBackground(true);
+		    				serieMedidas.setBackgroundColor(Color.BLUE);
+		    				graficoMedidas.addSeries(serieMedidas);		// data
+		    				//RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
+		    				graficoMedidas.setVisibility(View.VISIBLE); 		//hace visible el gráfico
+		    				graficoMedidas.setVisibility(View.GONE);
+		    				graficoMedidas.setVisibility(View.VISIBLE);
+		    				//grafico.addView(graficoMedidas);
+		    				
+		    				menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// las medidas se tomarán cada 2 segundos
+		    			}
+		    		});
+					empezar = false;
+				};
 				
 				// se añade la medida a la serie
 				serieMedidas.appendData(
@@ -1795,7 +1855,6 @@ public class NeurGai extends ActionBarActivity {
 						 					Double.parseDouble(feu20DHSPunta.getText().toString()),
 						 					Double.parseDouble(feu20DHSValle.getText().toString()),
 						 					Double.parseDouble(feu20DHSSuperValle.getText().toString()));
-				 
 			  }
 			});
 			
@@ -1877,70 +1936,8 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.continuar:
 			midiendo = true;
 			menu.findItem(R.id.grabacion).setIcon(R.drawable.ic_continuar);
-			if(empezar) {
-				// añade una medida nula como primer dato de la serie
-				tiempoInicioMedida = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
-				serieMedidas = new LineGraphSeries<DataPoint>();
-				serieMedidas.appendData(
-						new DataPoint(0, 0),
-						true,
-						Constants.NUMERO_MAXIMO_MEDIDAS_EN_GRAFICO
-				);
-				
-				// habilita ventanas de texto para mostrar la medida
-				findViewById(R.id.texto1).setVisibility(View.VISIBLE);
-				findViewById(R.id.textVCeldaEmpty).setVisibility(View.VISIBLE);
-				findViewById(R.id.TextVLibre).setVisibility(View.VISIBLE);
-				findViewById(R.id.TextV20A).setVisibility(View.VISIBLE);
-				findViewById(R.id.textV20DHA).setVisibility(View.VISIBLE);
-				
-				findViewById(R.id.text20A).setVisibility(View.VISIBLE);
-				findViewById(R.id.text20DHA).setVisibility(View.VISIBLE);
-				findViewById(R.id.text20DHS).setVisibility(View.VISIBLE);
-				
-				findViewById(R.id.TextVPVPC).setVisibility(View.VISIBLE);
-				findViewById(R.id.textV20DHSPVPC).setVisibility(View.VISIBLE);
-				
-				findViewById(R.id.text20APVPC).setVisibility(View.VISIBLE);
-				findViewById(R.id.text20DHAPVPC).setVisibility(View.VISIBLE);
-				findViewById(R.id.text20DHSPVPC).setVisibility(View.VISIBLE);
-				
-				
-				
-				
-				//findViewById(R.id.texto3).setVisibility(View.VISIBLE);
-				
-				// crea el gráfico con los datos de las medidas
-				//graficoMedidas = new GraphView(getBaseContext());
-				graficoMedidas = (GraphView) findViewById(R.id.grafica);
-				serieMedidas.setColor(Color.BLACK);
-				graficoMedidas.setTitleColor(Color.BLACK);
-				graficoMedidas.setTitle("Medidas de potencia (kW)");
-				
-
-				NumberFormat nf = NumberFormat.getInstance();
-				nf.setMinimumFractionDigits(0);
-				nf.setMinimumIntegerDigits(1);
-				
-				
-				graficoMedidas.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
-				//graficoMedidas.getGridLabelRenderer().setVerticalLabelsAlign(Align.LEFT);
-				graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
-				graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
-				graficoMedidas.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
-
-				serieMedidas.setDrawBackground(true);
-				serieMedidas.setBackgroundColor(Color.BLUE);
-				graficoMedidas.addSeries(serieMedidas);		// data
-				//RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-				graficoMedidas.setVisibility(View.VISIBLE); 		//hace visible el gráfico
-				//grafico.addView(graficoMedidas);
-				
-				menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// las medidas se tomarán cada 2 segundos
-
-				
-			} else handler.postDelayed(realizarUnaMedida, 0);
-			empezar=false;
+			handler.postDelayed(realizarUnaMedida, 0);
+			//empezar=false;
 			return true;
             
 		case R.id.parar:
@@ -1958,8 +1955,8 @@ public class NeurGai extends ActionBarActivity {
     			@Override
     			public void run() {
     				GraphView grafico = (GraphView) findViewById(R.id.grafica);
-    				//grafico.removeAllViews();
-    				grafico.clearAnimation();
+    				//grafico.removeAllSeries();
+    				//grafico.clearAnimation();
     				grafico.setVisibility(View.GONE); 		//hace invisible el gráfico
     			}
     		});
@@ -1969,7 +1966,6 @@ public class NeurGai extends ActionBarActivity {
 
 			menu.findItem(R.id.grabacion).setIcon(R.drawable.ic_empezar);
             
-			
 			return true;
         
 		case R.id.anotar:
@@ -2002,9 +1998,7 @@ public class NeurGai extends ActionBarActivity {
 			return true;
             
 		case R.id.grabarDatos:
-			
-			
-			
+
 			runOnUiThread(new Runnable() {	
 				@Override
 				public void run() {
