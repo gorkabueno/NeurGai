@@ -61,6 +61,7 @@ import com.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
 import com.ehu.neurgai.BaseDatosNeurGAI.ColumnasTarifas;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -751,7 +752,7 @@ public class NeurGai extends ActionBarActivity {
 					runOnUiThread(new Runnable() {	
 		    			@Override
 		    			public void run() {
-		    				// añade una medida nula como primer dato de la serie
+		    				// establece el tiempo de inicio de las medidas, y crea la serie de medidas
 		    				tiempoInicioMedida = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
 		    				serieMedidas = new LineGraphSeries<DataPoint>();
 		    				
@@ -787,19 +788,16 @@ public class NeurGai extends ActionBarActivity {
 		    				nf.setMinimumIntegerDigits(1);
 
 		    				graficoMedidas.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
-		    				//graficoMedidas.getGridLabelRenderer().setVerticalLabelsAlign(Align.LEFT);
+
 		    				graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
 		    				graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
 		    				graficoMedidas.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
-
+		    				
 		    				serieMedidas.setDrawBackground(true);
 		    				serieMedidas.setBackgroundColor(Color.BLUE);
-		    				graficoMedidas.addSeries(serieMedidas);		// data
-		    				//RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-		    				graficoMedidas.setVisibility(View.VISIBLE); 		//hace visible el gráfico
-		    				graficoMedidas.setVisibility(View.GONE);
-		    				graficoMedidas.setVisibility(View.VISIBLE);
-		    				//grafico.addView(graficoMedidas);
+		    				graficoMedidas.getViewport().setYAxisBoundsManual(true);
+		    				graficoMedidas.addSeries(serieMedidas);				// data
+		    				graficoMedidas.setVisibility(View.VISIBLE); 		// hace visible el gráfico
 		    				
 		    				menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// las medidas se tomarán cada 2 segundos
 		    			}
@@ -809,10 +807,20 @@ public class NeurGai extends ActionBarActivity {
 				
 				// se añade la medida a la serie
 				serieMedidas.appendData(
-						new DataPoint(tiempoActual - tiempoInicioMedida, potencia / datosCalibrado.coeficienteAjuste / 1000),
+						new DataPoint(tiempoActual - tiempoInicioMedida, potencia / datosCalibrado.coeficienteAjuste),
 						true,
 						Constants.NUMERO_MAXIMO_MEDIDAS_EN_GRAFICO
 				);
+				
+				// acondiciona los ejes verticales, si necesario, para que las marcas verticales coincidan con las potencias normalizadas de las tarifas
+				String[] escalasPotencia = new String[] {"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20"};
+				int numeroMarcasVerticales = (int) serieMedidas.getHighestValueY() / 1150 + 2;
+				String[] marcasVerticales = new String[numeroMarcasVerticales];
+				System.arraycopy(escalasPotencia, 0, marcasVerticales, 0, numeroMarcasVerticales);
+				graficoMedidas.getViewport().setMaxY(1150.0 * (numeroMarcasVerticales - 1));
+				StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graficoMedidas);
+				staticLabelsFormatter.setVerticalLabels(marcasVerticales);
+				graficoMedidas.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 				
 				//Consultar hora medida.
 				//Extraer el FEU correpondiente a esa hora.
@@ -1883,7 +1891,7 @@ public class NeurGai extends ActionBarActivity {
 			menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");
 			
 			//Hay que 
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 			handler.postDelayed(realizarUnaMedida, periodicidadMedidaEnSegundos);
 			
             return true;
@@ -1901,7 +1909,7 @@ public class NeurGai extends ActionBarActivity {
 			periodicidadMedidaEnSegundos = 30 - 1;
 			menu.findItem(R.id.tiempo).setIcon(null).setTitle("30 seg");
 			//Hay que 
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 			handler.postDelayed(realizarUnaMedida, periodicidadMedidaEnSegundos);
 			
 			return true;
@@ -1910,7 +1918,7 @@ public class NeurGai extends ActionBarActivity {
 			periodicidadMedidaEnSegundos = 60 - 1;
 			menu.findItem(R.id.tiempo).setIcon(null).setTitle("1 min");
 			//Hay que 
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 			handler.postDelayed(realizarUnaMedida, periodicidadMedidaEnSegundos);
 			
 			return true;
@@ -1919,7 +1927,7 @@ public class NeurGai extends ActionBarActivity {
 			periodicidadMedidaEnSegundos = 300 - 1;
 			menu.findItem(R.id.tiempo).setIcon(null).setTitle("5 min");
 			//Hay que 
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 			handler.postDelayed(realizarUnaMedida, periodicidadMedidaEnSegundos);
 			
 			return true;
@@ -1928,7 +1936,7 @@ public class NeurGai extends ActionBarActivity {
 			periodicidadMedidaEnSegundos = 600 - 1;
 			menu.findItem(R.id.tiempo).setIcon(null).setTitle("10 min");
 			//Hay que 
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 			handler.postDelayed(realizarUnaMedida, periodicidadMedidaEnSegundos);
 			
 			return true;
@@ -1943,27 +1951,20 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.parar:
 			midiendo = false;
 			menu.findItem(R.id.grabacion).setIcon(R.drawable.ic_parar);
-			handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+			handler.removeCallbacks(realizarUnaMedida);					// elimina la última llamada a realizar nueva medida
 	        
             return true;
             
 		case R.id.grabaryreiniciar:
 			empezar = true;
 			midiendo = false;
-			//eliminar el grafico
-	    	runOnUiThread(new Runnable() {	
+			runOnUiThread(new Runnable() {	
     			@Override
     			public void run() {
-    				GraphView grafico = (GraphView) findViewById(R.id.grafica);
-    				//grafico.removeAllSeries();
-    				//grafico.clearAnimation();
-    				grafico.setVisibility(View.GONE); 		//hace invisible el gráfico
+    				findViewById(R.id.grafica).setVisibility(View.GONE); 		// hace invisible el gráfico
     			}
     		});
-	    	
-	    	//Salva la tabla de costes de la BBDD y eliminar los registros.
-	    	volcarBBDDFichero_LimpiarBBBDD();
-
+	    	volcarBBDDFichero_LimpiarBBBDD();									// Salva la tabla de costes de la BBDD y eliminar los registros.
 			menu.findItem(R.id.grabacion).setIcon(R.drawable.ic_empezar);
             
 			return true;
