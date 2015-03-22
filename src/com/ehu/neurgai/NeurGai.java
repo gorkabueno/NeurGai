@@ -887,10 +887,7 @@ public class NeurGai extends ActionBarActivity {
 		//BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
 		//SQLiteDatabase dbWrite=bbdd.getWritableDatabase();
 		//dbWrite.deleteDatabase(new File(dbWrite.getPath()));
-		
-		// el control de volumen es el de MEDIA
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		
+
 		// configura actionBar
 		ActionBar bar = getSupportActionBar();
 		bar.setDisplayShowHomeEnabled(true);
@@ -985,6 +982,9 @@ public class NeurGai extends ActionBarActivity {
 				}
 			});
 			
+			// el control de volumen es el de MEDIA
+			setVolumeControlStream(AudioManager.STREAM_MUSIC);
+			
 			{	
 				//definición de los arrays donde se guardarán temporalmente los valores de calibrado, antes de guardar en fichero
 				final double[] frecuenciaCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
@@ -1058,7 +1058,9 @@ public class NeurGai extends ActionBarActivity {
 						boton.setText(R.string.calibrandoCAG);
 					}
 				});		   
-		    	
+				
+				
+				
 		    	//genera vector de amplitudes
 		    	final double amplitudInicial = 1000;
 		    	final double amplitudFinal = 30000;
@@ -1830,7 +1832,7 @@ public class NeurGai extends ActionBarActivity {
         //Falta, la verificación de los datos.     
 		case R.id.tarifas:{
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle("Introduce las tarifas de libre mercado");
+			alert.setTitle("Introduce las tarifas de libre mercado (€/kWh)");
 			LayoutInflater factory = LayoutInflater.from(this);
             View layout = factory.inflate(R.layout.row, null);
             

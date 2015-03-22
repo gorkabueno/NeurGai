@@ -61,8 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="" 
-              android:inputType="number"/>
+            android:inputType="numberDecimal"
+            android:text="0.129734" />
 
         <TextView
             android:id="@+id/textView7"
@@ -135,16 +135,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text=""
-              android:inputType="number" />
+            android:text="0.149231"
+              android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/editText3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="" 
-            android:inputType="number"/>
+            android:text="0.069670" 
+            android:inputType="numberDecimal"/>
 
         <TextView
             android:id="@+id/textView16"
@@ -213,24 +213,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="" 
-              android:inputType="number"/>
+            android:text="0.152775" 
+              android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/editText5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="" 
-              android:inputType="number"/>
+            android:text="0.079079" 
+              android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/editText6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text=""
-              android:inputType="number" />
+            android:text="0.061206"
+              android:inputType="numberDecimal" />
     </TableRow>
 
 </LinearLayout>
