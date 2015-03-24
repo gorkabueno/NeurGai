@@ -79,9 +79,11 @@ public class NeurGai extends ActionBarActivity {
 	
 	private boolean botonPulsado = false;
 	private boolean tonoLanzado = false;
+	private boolean pantallaInicializada = false;
 	
 	private Object llaveBotonPulsado = new Object();
 	private Object llaveTonoLanzado = new Object();
+	private Object llavePantallaInicializada = new Object();
 	
 	private int bufferSize = 0;
 	private AudioRecord recorder = null;
@@ -745,10 +747,11 @@ public class NeurGai extends ActionBarActivity {
 				final double potencia = calcularPotenciaX(DEP_X_grabar);		// calcula la densidad espectral de frecuencia de la señal antes del filtro
 				
 				final int potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
-
+				
 				double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
 				
 				if(empezar) {
+					pantallaInicializada = false;
 					runOnUiThread(new Runnable() {	
 		    			@Override
 		    			public void run() {
@@ -782,12 +785,6 @@ public class NeurGai extends ActionBarActivity {
 		    				serieMedidas.setColor(Color.BLACK);
 		    				graficoMedidas.setTitleColor(Color.BLACK);
 		    				graficoMedidas.setTitle("Medidas de potencia (kW)");
-		    				
-		    				NumberFormat nf = NumberFormat.getInstance();
-		    				nf.setMinimumFractionDigits(0);
-		    				nf.setMinimumIntegerDigits(1);
-
-		    				graficoMedidas.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
 
 		    				graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
 		    				graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
@@ -800,11 +797,25 @@ public class NeurGai extends ActionBarActivity {
 		    				graficoMedidas.setVisibility(View.VISIBLE); 		// hace visible el gráfico
 		    				
 		    				menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// las medidas se tomarán cada 2 segundos
+		    				periodicidadMedidaEnSegundos = 1;	
+		    				
+		    				empezar = false;
+							pantallaInicializada = true;
+					    	synchronized (llavePantallaInicializada) {
+					    		llavePantallaInicializada.notifyAll();
+					    	}
 		    			}
 		    		});
-					empezar = false;
 				};
 				
+				synchronized (llavePantallaInicializada) {
+		    		while (!pantallaInicializada) {
+						try {
+							llavePantallaInicializada.wait();
+						} catch (InterruptedException e) {}
+					}
+		    	}
+
 				// se añade la medida a la serie
 				serieMedidas.appendData(
 						new DataPoint(tiempoActual - tiempoInicioMedida, potencia / datosCalibrado.coeficienteAjuste),
@@ -973,6 +984,9 @@ public class NeurGai extends ActionBarActivity {
 		// comprueba si existe el fichero de calibración
 		if (false == new File(Constants.pathFicheroCalibracion + "/calibracion.bin").exists()) {
 			
+			// el control de volumen es el de MEDIA
+			setVolumeControlStream(AudioManager.STREAM_MUSIC);
+			
 			//no existe, así que iniciamos el calibrado
 			runOnUiThread(new Runnable() {	
 				@Override
@@ -981,9 +995,6 @@ public class NeurGai extends ActionBarActivity {
 					boton.setVisibility(View.VISIBLE); 		//hace visible el botón
 				}
 			});
-			
-			// el control de volumen es el de MEDIA
-			setVolumeControlStream(AudioManager.STREAM_MUSIC);
 			
 			{	
 				//definición de los arrays donde se guardarán temporalmente los valores de calibrado, antes de guardar en fichero
