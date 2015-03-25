@@ -41,6 +41,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.format.Time;
@@ -70,6 +72,7 @@ public class NeurGai extends ActionBarActivity {
 	private Menu menu;
 	
 	private boolean medidaSonda = true; 	// si false la medida es a través de bluetooth + KL05Z
+	private boolean euskaraz = false;
 	private short periodicidadMedidaEnSegundos = 1;
 	private boolean empezar = true;
 	private boolean midiendo = false;
@@ -114,7 +117,10 @@ public class NeurGai extends ActionBarActivity {
 	GraphView graficoMedidas;
 	
 	LineGraphSeries<DataPoint> serieMedidas;
-	private String comentario=null; //Revisar por si da error en la BBDD.
+	
+	private MyPhoneStateListener phoneStateListener = new MyPhoneStateListener();
+	
+	private String comentario = null; //Revisar por si da error en la BBDD.
 	
 	/**************************BASE DE DATOS******************************************/
 	
@@ -879,12 +885,17 @@ public class NeurGai extends ActionBarActivity {
 		}
 	}
 	
-	@Override
-	protected void onResume(){
-		
-		Log.i("neurGAI", "onResume");
-		visible = true;        
-		super.onResume();
+	public class MyPhoneStateListener extends PhoneStateListener {
+	    @Override
+	    public void onCallStateChanged(int state, String incomingNumber) 
+	    {
+	        if (state == TelephonyManager.CALL_STATE_RINGING) {
+	        	midiendo = false;
+	        	menu.findItem(R.id.grabacion).setIcon(R.drawable.ic_parar);
+	        	handler.removeCallbacks(realizarUnaMedida);		// elimina la última llamada a realizar nueva medida
+	        }
+	        super.onCallStateChanged(state, incomingNumber);
+	    }
 	}
 	
 	@Override
@@ -920,12 +931,24 @@ public class NeurGai extends ActionBarActivity {
 			}
 		});
     	
+    	// registra el listener del teléfono, para parar las medidas cuando llegan llamadas
+    	TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+    	telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+    	
     	// lanza el hilo con la actividad principal
     	new Thread() {
     		public void run() {
     			actividadNeurgai();
     		}
 		}.start();
+	}
+	
+	@Override
+	protected void onResume(){
+		
+		Log.i("neurGAI", "onResume");
+		visible = true;        
+		super.onResume();
 	}
 	
 	@Override
@@ -962,6 +985,10 @@ public class NeurGai extends ActionBarActivity {
 
         //Salva la tabla de costes y eliminar los valores guardados en la tabla Costes de la BDD.
         volcarBBDDFichero_LimpiarBBBDD();
+        
+        // desregistra el listener del teléfono
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         
         super.onDestroy();
     }
@@ -1839,15 +1866,16 @@ public class NeurGai extends ActionBarActivity {
         	// introducir ajustes
             return true;
             
-            
+
         //Falta, la verificación de los datos.     
 		case R.id.tarifas:{
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle("Introduce las tarifas de libre mercado (€/kWh)");
+			euskaraz = true;
+			alert.setTitle(euskaraz? "Sartu merkatu librearen tarifak (€/kWh) eta CO2 isurketak (gCO2/kWh)" : "Introduce las tarifas de libre mercado (€/kWh) y emisiones de CO2 (gCO2/kWh)");
 			LayoutInflater factory = LayoutInflater.from(this);
             View layout = factory.inflate(R.layout.row, null);
-            
-			final EditText feu20A =(EditText)layout.findViewById(R.id.editText1);
+
+            final EditText feu20A =(EditText)layout.findViewById(R.id.editText1);
 			final EditText feu20DHAPunta =(EditText)layout.findViewById(R.id.editText2);
 			final EditText feu20DHAValle =(EditText)layout.findViewById(R.id.editText3);
 
@@ -1855,18 +1883,9 @@ public class NeurGai extends ActionBarActivity {
 			final EditText feu20DHSValle =(EditText)layout.findViewById(R.id.editText5);
 			final EditText feu20DHSSuperValle =(EditText)layout.findViewById(R.id.editText6);
 
-			//feu20A.setHint("Tarifa 2.0A (€/kWh)");
-			//feu20DHA.setHint("Tarifa 2.0DHA (€/kWh)");
-			//feu20DHS.setHint("Tarifa 2.0DHS (€/kWh)");
-			//layout.addView(row1);
-			//layout.addView(row2);
-			//layout.addView(feu20A);
-			//layout.addView(feu20DHA);
-			//layout.addView(feu20DHS);
-
-
 			alert.setView(layout);
-			alert.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+			
+			alert.setPositiveButton(euskaraz? "Onartu" : "Aceptar", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				
 				//Se vuelcan las tarifas definidas por el usuario a la BBDD.
@@ -2002,7 +2021,7 @@ public class NeurGai extends ActionBarActivity {
 			  }
 			});
 			
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int whichButton) {
 				  return;
 			  }
