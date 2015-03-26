@@ -51,8 +51,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -765,6 +767,9 @@ public class NeurGai extends ActionBarActivity {
 		    				tiempoInicioMedida = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
 		    				serieMedidas = new LineGraphSeries<DataPoint>();
 		    				
+		    				// deshabilita el logo EHU
+		    				findViewById(R.id.logoEHU).setVisibility(View.INVISIBLE);
+		    				
 		    				// habilita ventanas de texto para mostrar la medida
 		    				findViewById(R.id.texto1).setVisibility(View.VISIBLE);
 		    				findViewById(R.id.textVCeldaEmpty).setVisibility(View.VISIBLE);
@@ -1189,7 +1194,8 @@ public class NeurGai extends ActionBarActivity {
 						serieCalibradoCAG.setColor(Color.BLACK);
 						serieCalibradoCAG.setThickness(anchuraLinea);
 						
-						GraphView graficoCAG = new GraphView(getBaseContext());
+						//GraphView graficoCAG = new GraphView(getBaseContext());
+						GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
 						
 						graficoCAG.setTitleColor(Color.BLACK);
 						graficoCAG.setTitle("x-log(AUDIO) vs y-log(MIC)");
@@ -1209,9 +1215,9 @@ public class NeurGai extends ActionBarActivity {
 						
 						graficoCAG.addSeries(serieCalibradoCAG);		// data
 						
-						RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-						grafico.addView(graficoCAG);
-						grafico.setVisibility(View.VISIBLE); 		//hace visible el gráfico
+						//RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
+						//grafico.addView(graficoCAG);
+						graficoCAG.setVisibility(View.VISIBLE); 		//hace visible el gráfico
 					}
 				});
 		    	
@@ -1280,9 +1286,10 @@ public class NeurGai extends ActionBarActivity {
 		    	runOnUiThread(new Runnable() {	
         			@Override
         			public void run() {
-        				RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-        				grafico.removeAllViews();
-        				grafico.setVisibility(View.GONE); 		//hace invisible el gráfico
+        				GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
+	    				graficoCAG.removeAllSeries();
+	    				graficoCAG.clearAnimation();
+        				graficoCAG.setVisibility(View.GONE); 		//hace invisible el gráfico
         			}
         		});
 		    	
@@ -1366,7 +1373,8 @@ public class NeurGai extends ActionBarActivity {
 						serieCalibradoFiltro.setColor(Color.BLACK);
 						serieCalibradoFiltro.setThickness(anchuraLinea);
 						
-						GraphView graficoFiltro = new GraphView(getBaseContext());
+						//GraphView graficoFiltro = new GraphView(getBaseContext());
+						GraphView graficoFiltro = (GraphView) findViewById(R.id.grafica);
 						graficoFiltro.setTitleColor(Color.BLACK);
 						graficoFiltro.setTitle("Audio-in vs Log(Hz)");
 						
@@ -1392,9 +1400,9 @@ public class NeurGai extends ActionBarActivity {
 						
 						graficoFiltro.addSeries(serieCalibradoFiltro);		// data
 						
-						RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-						grafico.addView(graficoFiltro);
-						grafico.setVisibility(View.VISIBLE); 		//hace visible el gráfico
+						//RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
+						//grafico.addView(graficoFiltro);
+						graficoFiltro.setVisibility(View.VISIBLE); 		//hace visible el gráfico
 					}
 				});
 		    	
@@ -1490,9 +1498,10 @@ public class NeurGai extends ActionBarActivity {
 				@Override
 				public void run() {
 					mProgress.setVisibility(View.GONE); 							//hace invisible la barra de progreso
-					RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-    				grafico.removeAllViews();
-    				grafico.setVisibility(View.GONE); 								//hace invisible el gráfico
+					GraphView graficoFiltro = (GraphView) findViewById(R.id.grafica);
+					graficoFiltro.removeAllSeries();
+					graficoFiltro.clearAnimation();
+					graficoFiltro.setVisibility(View.GONE); 		//hace invisible el gráfico
 				}
 			});
 		}
@@ -1898,7 +1907,7 @@ public class NeurGai extends ActionBarActivity {
 			  }
 			});
 			
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			alert.setNegativeButton(euskaraz? "Ezeztatu" : "Cancelar", new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int whichButton) {
 				  return;
 			  }
@@ -1993,7 +2002,25 @@ public class NeurGai extends ActionBarActivity {
 			runOnUiThread(new Runnable() {	
     			@Override
     			public void run() {
-    				findViewById(R.id.grafica).setVisibility(View.GONE); 		// hace invisible el gráfico
+    				findViewById(R.id.grafica).setVisibility(View.GONE); 		// hace invisible el gráfico y datos
+    				findViewById(R.id.texto1).setVisibility(View.GONE);
+    				findViewById(R.id.textVCeldaEmpty).setVisibility(View.GONE);
+    				findViewById(R.id.TextVLibre).setVisibility(View.GONE);
+    				findViewById(R.id.TextV20A).setVisibility(View.GONE);
+    				findViewById(R.id.textV20DHA).setVisibility(View.GONE);
+    				
+    				findViewById(R.id.text20A).setVisibility(View.GONE);
+    				findViewById(R.id.text20DHA).setVisibility(View.GONE);
+    				findViewById(R.id.text20DHS).setVisibility(View.GONE);
+    				
+    				findViewById(R.id.TextVPVPC).setVisibility(View.GONE);
+    				findViewById(R.id.textV20DHSPVPC).setVisibility(View.GONE);
+    				
+    				findViewById(R.id.text20APVPC).setVisibility(View.GONE);
+    				findViewById(R.id.text20DHAPVPC).setVisibility(View.GONE);
+    				findViewById(R.id.text20DHSPVPC).setVisibility(View.GONE);
+    				
+    				findViewById(R.id.logoEHU).setVisibility(View.VISIBLE);		// habilita el logo EHU
     			}
     		});
 	    	volcarBBDDFichero_LimpiarBBBDD();									// Salva la tabla de costes de la BBDD y eliminar los registros.
