@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="numberDecimal"
-            android:text="0.129734" />
+            android:hint="0.129734" />
 
         <TextView
             android:id="@+id/textView7"
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="0.149231"
+            android:hint="0.149231"
             android:inputType="numberDecimal" />
 
         <EditText
@@ -143,7 +143,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="0.069670" 
+            android:hint="0.069670" 
             android:inputType="numberDecimal"/>
 
         <TextView
@@ -213,7 +213,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="0.152775" 
+            android:hint="0.152775" 
               android:inputType="numberDecimal"/>
 
         <EditText
@@ -221,7 +221,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="0.079079" 
+            android:hint="0.079079" 
               android:inputType="numberDecimal"/>
 
         <EditText
@@ -229,7 +229,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="0.061206"
+            android:hint="0.061206"
             android:inputType="numberDecimal" />
     </TableRow>
 

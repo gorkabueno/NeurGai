@@ -27,6 +27,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    //Hora y fecha de la tarifa.
 	    public static final String COLUMN_NAME_HORA="hora";
 	    public static final String COLUMN_NAME_FECHA="fecha";
+	    //public static final String COLUMN_NAME_EMISIONES="emisiones";
 	    
 	    //Tarifas de Goiener.
 	    public static final String COLUMN_NAME_TARIFA_20A = "tarifa20A";
@@ -46,6 +47,8 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
         
         ColumnasTarifas.COLUMN_NAME_FECHA + TEXT_TYPE + COMMA_SEP+
 		ColumnasTarifas.COLUMN_NAME_HORA + INT_TYPE + COMMA_SEP+
+		//ColumnasTarifas.COLUMN_NAME_EMISIONES + REAL_TYPE+ COMMA_SEP+
+		
 		
 		ColumnasTarifas.COLUMN_NAME_TARIFA_20A + REAL_TYPE + COMMA_SEP+
 		ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA + REAL_TYPE + COMMA_SEP+
@@ -113,6 +116,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    public static final String COLUMN_NAME_TARIFA20DHS_PVPC="tarifa20DHS_PVPC";
 	    public static final String COLUMN_NAME_COSTE_ENERGIA20DHS_PVPC="coste20DHS_PVPC";
 	    public static final String COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC="coste_acumulado20DHS_PVPC";
+	    //public static final String COLUMN_NAME_EMISIONES_TOTALES="emisiones_co2";
 	    
 	    //Costes con la tarifa Goiener.
 	    public static final String COLUMN_NAME_TARIFA20A="tarifa20A";
@@ -126,9 +130,6 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    public static final String COLUMN_NAME_TARIFA20DHS="tarifa20DHS";
 	    public static final String COLUMN_NAME_COSTE_ENERGIA20DHS="coste20DHS";
 	    public static final String COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS="coste_acumulado20DHS";
-	    
-	   
-
 	}
 	
 	private static final String SQL_CREATE_COSTES=
@@ -161,7 +162,8 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    
 	    ColumnasCostes.COLUMN_NAME_TARIFA20DHS+REAL_TYPE+COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS+REAL_TYPE+COMMA_SEP+
-	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS+ REAL_TYPE+ 		
+	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS+ REAL_TYPE+ 
+	    //ColumnasCostes.COLUMN_NAME_COSTE_EMISIONES_TOTALES+ REAL_TYPE+ 		
 	    " )";
     
     
