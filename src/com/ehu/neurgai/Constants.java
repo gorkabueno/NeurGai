@@ -17,6 +17,8 @@ final public class Constants{
 	public static final String pathFicherosComplementarios = Environment.getExternalStorageDirectory().getAbsolutePath() + "/NeurGAI/medidasComplementarias";
 
 	public static final String formatoFichero = "UTF-8";
+	public static final String euskeraCode="eu";
+	public static final String castellanoCode="es";
 	
 	///
 	public static final int RECORDER_SAMPLERATE = 44100;

@@ -14,21 +14,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jtransforms.fft.DoubleFFT_1D;
-import org.w3c.dom.Text;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.Paint.Align;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -44,22 +46,17 @@ import android.support.v7.app.ActionBarActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
 import com.ehu.neurgai.BaseDatosNeurGAI.ColumnasTarifas;
@@ -68,13 +65,11 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
 public class NeurGai extends ActionBarActivity {
 	
 	private Menu menu;
 	
 	private boolean medidaSonda = true; 	// si false la medida es a través de bluetooth + KL05Z
-	private boolean euskaraz = false;
 	private short periodicidadMedidaEnSegundos = 1;
 	private boolean empezar = true;
 	private boolean midiendo = false;
@@ -247,9 +242,8 @@ public class NeurGai extends ActionBarActivity {
 		String horaSistema=new SimpleDateFormat("HH'h'mm'm'ss's'").format(calendar.getTime()).toString();
 		
 		costes=extraerTablaCostesBBDD();
-		
-		
-		cabecera = 
+		/*
+		String cabecera2 = 
 					"Comentarios, Fecha y Hora, Unix Time, Potencia(W),"+
 					"PVPC"+",,,,,,,,,"+"Comercializadora libre"+"\n"+
 					",,,,"+"2.0A"+",,,"+"2.0DHA"+",,,"+"2.0DHS"+",,,"+"2.0A"+",,,"+"2.0DHA"+",,,"+"2.0DHS"+" \n"+
@@ -261,10 +255,12 @@ public class NeurGai extends ActionBarActivity {
 					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
 					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
 					"\n";
-		
-    	try {
+					*/
+    	cabecera=getString(R.string.cabeceraFicheroCostes);
+    	
+		try {
     		new File(Constants.pathFicherosRegistros+"/"+diaSistema).mkdir();
-    		osCostesBBDDCSV = new FileOutputStream(Constants.pathFicherosRegistros+"/"+diaSistema+"/costes"+horaSistema+".csv");		// borra el fichero si existe
+    		osCostesBBDDCSV = new FileOutputStream(Constants.pathFicherosRegistros+"/"+diaSistema+"/"+getString(R.string.costes)+horaSistema+".csv");		// borra el fichero si existe
             
     		osCostesBBDDCSV.write(cabecera.getBytes(Charset.forName("UTF-8")));
             for(int i=0;i<costes.size();i++){
@@ -908,7 +904,8 @@ public class NeurGai extends ActionBarActivity {
 		Log.i("neurGAI", "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.neurgai);
-		
+		cargarIdioma();
+
 		//Hay que comentarlas después de la primera instalación.
 		
 		//BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
@@ -1007,10 +1004,6 @@ public class NeurGai extends ActionBarActivity {
 		new File(Constants.pathFicherosRegistros).mkdir();
 	
 		/****************Permisos*****************/
-		
-		
-		
-		
 		
 		// trata de recuperar los datos de calibración, y si no existen comienza el proceso de calibrado
 		// comprueba si existe el fichero de calibración
@@ -1258,7 +1251,7 @@ public class NeurGai extends ActionBarActivity {
 		            	runOnUiThread(new Runnable() {	
 		        			@Override
 		        			public void run() {
-		        				showMessage("Error", getString(R.string.introducirAmplitudCorrectamente));
+		        				showMessage(getString(R.string.error), getString(R.string.introducirAmplitudCorrectamente));
 		        			}
 		        		});
 		            }
@@ -1419,7 +1412,7 @@ public class NeurGai extends ActionBarActivity {
 		    		osCalibCSV = new FileOutputStream(fCalBIN, false);		// borra el fichero si existe
 		    		osCalibBIN = new FileOutputStream(Constants.pathFicheroCalibracion + "/calibracion.bin", false);
 		    		
-		            String cabecera = "amplitud, frecuencia, RMS\n";
+		            String cabecera = getString(R.string.cabeceraFicheroCalibracion);
 		            osCalibCSV.write(cabecera.getBytes(Charset.forName("UTF-8")));
 		            dosBIN = new DataOutputStream(osCalibBIN);   
 		        } catch (Exception e) {
@@ -1676,7 +1669,7 @@ public class NeurGai extends ActionBarActivity {
             	runOnUiThread(new Runnable() {	
         			@Override
         			public void run() {
-        				showMessage("Error", getString(R.string.introducirMedidaCorrectamente));
+        				showMessage(getString(R.string.error), getString(R.string.introducirMedidaCorrectamente));
         			}
         		});
             }
@@ -1879,8 +1872,8 @@ public class NeurGai extends ActionBarActivity {
         //Falta, la verificación de los datos.     
 		case R.id.tarifas:{
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			euskaraz = true;
-			alert.setTitle(euskaraz? "Sartu merkatu librearen tarifak (€/kWh) eta CO2 isurketak (gCO2/kWh)" : "Introduce las tarifas de libre mercado (€/kWh) y emisiones de CO2 (gCO2/kWh)");
+			
+			alert.setTitle(R.string.tituloConfigTarifasLibres);
 			LayoutInflater factory = LayoutInflater.from(this);
             View layout = factory.inflate(R.layout.row, null);
 
@@ -1894,7 +1887,7 @@ public class NeurGai extends ActionBarActivity {
 
 			alert.setView(layout);
 			
-			alert.setPositiveButton(euskaraz? "Onartu" : "Aceptar", new DialogInterface.OnClickListener() {
+			alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				
 				//Se vuelcan las tarifas definidas por el usuario a la BBDD.
@@ -1907,7 +1900,7 @@ public class NeurGai extends ActionBarActivity {
 			  }
 			});
 			
-			alert.setNegativeButton(euskaraz? "Ezeztatu" : "Cancelar", new DialogInterface.OnClickListener() {
+			alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int whichButton) {
 				  return;
 			  }
@@ -2036,11 +2029,11 @@ public class NeurGai extends ActionBarActivity {
 			//Guardarlo una vez en la bbdd.
 			
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle("Comenta la medida");
+			alert.setTitle(getString(R.string.tituloAnotar));
 			final EditText input = new EditText(this);
 			alert.setView(input);
-
-			alert.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+			
+			alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 			  Editable value= input.getText();
 			  comentario=value.toString();
@@ -2048,7 +2041,7 @@ public class NeurGai extends ActionBarActivity {
 			  }
 			});
 			
-			alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+			alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int whichButton) {
 				  return;
 			  }
@@ -2075,7 +2068,7 @@ public class NeurGai extends ActionBarActivity {
 		 			guardarArrays(Constants.pathFicherosComplementarios + "/" + Long.toString(tiempo.toMillis(false)) + "DEP_X.csv", "Hz, DEP_X(f)", DEP_X_grabar);
 		 			guardarArrays(Constants.pathFicherosComplementarios + "/" + Long.toString(tiempo.toMillis(false)) + "DEP_H.csv", "Hz, DEP_H(f)", DEP_H);
 		 			guardarArrays(Constants.pathFicherosComplementarios + "/" + Long.toString(tiempo.toMillis(false)) + "DEP_Y.csv", "Hz, DEP_Y(f)", DEP_Y_grabar);
-		 			guardarArrays(Constants.pathFicherosComplementarios + "/" + Long.toString(tiempo.toMillis(false)) + "Muestras.csv", "n, muestras", muestras_grabar);
+		 			guardarArrays(Constants.pathFicherosComplementarios + "/" + Long.toString(tiempo.toMillis(false)) + "Muestras.csv", "n,"+getString(R.string.muestras), muestras_grabar);
 		 			runOnUiThread(new Runnable() {	
 						@Override
 						public void run() {
@@ -2087,6 +2080,23 @@ public class NeurGai extends ActionBarActivity {
 		 		}
 			}.start();
             return true;
+		case R.id.castellano:{
+			
+	        //Guarda la configuración
+	        if(cambiarIdioma(Constants.castellanoCode)){
+	            Toast.makeText(this, "Idioma Castellao", Toast.LENGTH_LONG).show();
+	        }
+	        	
+			return true;
+		}	
+		case R.id.euskera:{
+			//Guarda la configuración
+	        if(cambiarIdioma(Constants.euskeraCode)){
+	            Toast.makeText(this, "Idioma Euskera", Toast.LENGTH_LONG).show();
+	        }
+
+			return true;
+		}
   
         default:
             return super.onOptionsItemSelected(item);
@@ -2134,9 +2144,9 @@ public class NeurGai extends ActionBarActivity {
 		
 		final EditText ventanaDato = (EditText) viewT.findViewById(R.id.ventanaDato);
 		new AlertDialog.Builder(this)
-		.setTitle("Amplitud de calibrado")
+		.setTitle(getString(R.string.amplitudCalibrado))
 		.setView(viewT)
-		.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+		.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) throws NumberFormatException {
 				try {
 					amplitudCalibradoFiltro = Short.valueOf(ventanaDato.getText().toString());
@@ -2152,6 +2162,37 @@ public class NeurGai extends ActionBarActivity {
 		.show();
 	}
 	
+	private boolean cambiarIdioma(String idiomaCod){
+		
+		//Fuerza la configuración del idioma.
+		Locale locale = new Locale(idiomaCod);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        
+		SharedPreferences prefs =
+			     getSharedPreferences("idiomaApp",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString("idioma", idiomaCod);
+		
+		return editor.commit();
+	}
+	
+	private boolean cargarIdioma(){
+		SharedPreferences prefs= 
+				getSharedPreferences("idiomaApp", Context.MODE_PRIVATE);
+		String idiomaCod=prefs.getString("idioma", Constants.castellanoCode);
+		
+		Locale locale = new Locale(idiomaCod);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        
+		return true;
+	}
+	
 	@SuppressLint("InflateParams")
 	public void preguntarMedidaReferencia() throws NumberFormatException {
 		
@@ -2160,9 +2201,9 @@ public class NeurGai extends ActionBarActivity {
 		
 		final EditText ventanaDato = (EditText) viewT.findViewById(R.id.ventanaDato);
 		new AlertDialog.Builder(this)
-		.setTitle("Medida de referencia")
+		.setTitle(getString(R.string.medidaReferencia))
 		.setView(viewT)
-		.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+		.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) throws NumberFormatException {
 				try {
 					medidaReferencia = Double.valueOf(ventanaDato.getText().toString());
@@ -2178,4 +2219,3 @@ public class NeurGai extends ActionBarActivity {
 		.show();
 	}
 }
-

@@ -31,7 +31,12 @@
             		<item android:id="@+id/bluetooth" android:icon="@drawable/ic_bluetoothnegro" android:title="@string/nulo" app:showAsAction="always" />
         		</menu>
     		</item>
-        </menu>
+    		 <item android:id="@+id/cambiarIdioma" android:icon="@drawable/ic_idioma" app:showAsAction="always|withText" android:title="@string/nulo">
+                <menu>
+            		<item android:id="@+id/castellano" android:icon="@drawable/ic_castellano" android:title="@string/nulo" app:showAsAction="always" />
+            		<item android:id="@+id/euskera" android:icon="@drawable/ic_euskera" android:title="@string/nulo" app:showAsAction="always" />
+        		</menu>
+    		</item>
+    	 </menu>
     </item>
 </menu>
-

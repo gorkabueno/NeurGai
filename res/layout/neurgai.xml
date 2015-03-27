@@ -13,7 +13,7 @@
         android:id="@+id/boton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="@string/pulsar"
         android:visibility="gone" />
 
     <TextView
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Potencia (W)"
-        android:textSize="30dp"
+        android:text="@string/potencia"
+        android:textSize="30sp"
         android:visibility="gone" />
 
     <TableRow
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/textVCeldaEmpty"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=""
@@ -41,24 +41,24 @@
 
         <TextView
             android:id="@+id/TextVPVPC"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="PVPC (c€)"
-            android:textSize="20dp"
+            android:text="@string/pvpc"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/TextVLibre"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Libre (c€)"
-            android:textSize="20dp"
+            android:text="@string/libre"
+            android:textSize="20sp"
             android:visibility="gone" />
 
    </TableRow>
@@ -70,33 +70,33 @@
 
        <TextView
            android:id="@+id/TextV20A"
-           android:layout_width="0dp"
+           android:layout_width="0sp"
            android:layout_height="wrap_content"
            android:layout_gravity="center"
            android:layout_weight="1"
            android:gravity="center"
-           android:text=" 2.0A "
-           android:textSize="20dp"
+           android:text="@string/t20a"
+           android:textSize="20sp"
            android:visibility="gone" />
 
        <TextView
            android:id="@+id/text20APVPC"
-           android:layout_width="0dp"
+           android:layout_width="0sp"
            android:layout_height="wrap_content"
            android:layout_gravity="center"
            android:layout_weight="1"
            android:gravity="center"
-           android:textSize="20dp"
+           android:textSize="20sp"
            android:visibility="gone" />
 
        <TextView
            android:id="@+id/text20A"
-           android:layout_width="0dp"
+           android:layout_width="0sp"
            android:layout_height="wrap_content"
            android:layout_gravity="center"
            android:layout_weight="1"
            android:gravity="center"
-           android:textSize="20dp"
+           android:textSize="20sp"
            android:visibility="gone" />
 
    </TableRow>
@@ -108,30 +108,30 @@
 
         <TextView
             android:id="@+id/textV20DHA"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text=" 2.0DHA "
-            android:textSize="20dp"
+            android:text="@string/t20dha"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/text20DHAPVPC"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/text20DHA"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="gone" />
 
     </TableRow>
@@ -143,30 +143,30 @@
 
         <TextView
             android:id="@+id/textV20DHSPVPC"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text=" 2.0DHS "
-            android:textSize="20dp"
+            android:text="@string/t20dhs"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/text20DHSPVPC"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/text20DHS"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="gone" />
         
     </TableRow>
@@ -176,8 +176,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="notas"
-        android:textSize="20dp"
+        android:text="@string/notas"
+        android:textSize="20sp"
         android:visibility="gone" />
 
     <ProgressBar
@@ -198,7 +198,7 @@
 		android:id="@+id/logoEHU"
     	android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:contentDescription="logo EHU"
+		android:contentDescription="@string/logoEHU"
     	android:src="@drawable/ic_upvehu"
     	android:visibility="visible" />
 

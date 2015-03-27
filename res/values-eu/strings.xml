@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name"> neurGAI</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="ajustarCoeficiente">Ajustar coeficiente</string>
+    <string name="euskaraz">Euskaraz</string>
+    <string name="local_language">Castellano</string>
+    <string name="calibracion">Kalibrazioa</string>
+    <string name="medicion">Neurketak</string>
+    <string name="tension">Tentsioa</string>
+    <string name="precio">Prezioa</string>
+    <string name="ajustes">Doiketak</string>
+    <string name="bienvenidos">Ongi etorri neurGAI-ra!</string>
+    <string name="creditos">"neurGAI\nUPV/EHU\nIraunkortasunaren arloko berrikuntzarako proiektua\nIkasleen, Enpleguaren eta Gizarte Erantzukizunaren arloko Errektoreordetza"	</string>
+    <string name="title_activity_calibrar">Calibrar</string>
+    <string name="textTension">Introduce la tensión de tu casa</string>
+    <string name="textPrecio">Precio por kWh</string>
+    <string name="textFrecuencia">Frecuencia:</string>
+    <string name="textRMS">RMS:</string>
+    <string name="ceroDefecto">0</string>
+    <string name="AvisoNoCalibracion">El dispositivo no esta calibrado.\n Calibra el dispositivo primero.</string>
+   	<string name="AvisoGuardadoFicheros">Los ficheros de prueba ha sido guardados.</string>
+    <string name="title_activity_medir">Medir</string>
+    <string name="textAmplitud">Introduce la amplitud para el calibrado del filtro</string>
+    <string name="inicioCalibrado">Pulsa el botón para iniciar la calibración</string>
+    <string name="introducirAmplitud">Introduce la amplitud de calibración del filtro y pulsa el botón</string>
+    <string name="calibrandoCAG">Calibrando el CAG del móvil...</string>
+    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil...</string>
+    <string name="ajustarConectoryVolumen">Conecta en la entrada de auriculares el conector de calibrado y sube el volumen al máximo</string>
+    <string name="resultadoCalibracionCAG">Calibración del CAG</string>
+    <string name="grabandoDatos">Grabando los datos de calibrado...</string>
+    <string name="cerrarCalibrado">Filtro calibrado, pulsa para continuar</string>
+    <string name="introducirAmplitudCorrectamente">Valor incorrecto</string>
+    <string name="pulsarParaEmpezarMedir">Pulsa para empezar a medir</string>
+    <string name="pulsarPararMedir">Pulsa para dejar de medir</string>
+    <string name="grabandoDatosMedida">Grabando datos medidos...</string>
+    <string name="grabarDatosMedida">Grabar medida (1 s)</string>
+    <string name="noGrabandoDatosMedida">No se pudieron guardar los datos; vuelve a intentarlo</string>
+    <string name="coeficienteSinCalibrar">Todavía hay que calibrar el coeficiente de proporcionalidad del medidor</string>
+    <string name="nulo">" "</string>
+    <string name="pulsaParaContinuar">Pulsa para continuar</string>
+    <string name="anularCalibrado">Pulsa para anular el calibrado</string>
+    <string name="leyendoCalibracion">Leyendo los datos de la calibración...</string>
+    <string name="introducirMedidaCorrectamente">Valor incorrecto</string>
+    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar... Pulsa para introducir la medida correcta</string>
+    <string name="aceptar">Onartu</string>
+    <string name="cancelar">Ezeztatu</string>
+    <string name="tituloConfigTarifasLibres">Sartu merkatu librearen tarifak (€/kWh) eta CO2 isurketak (gCO2/kWh)</string>
+     <string name="cabeceraFicheroCalibracion">amplitud, frecuencia, RMS\n</string>
+    
+    <string name="cabeceraFicheroCostes">
+        Comentarios, Fecha y Hora, Unix Time, Potencia(W),
+        PVPC,,,,,,,,,Comercializadora libre\n
+        ,,,,2.0A,,,2.0DHA,,,2.0DHS,,,2.0A,,,2.0DHA,,,2.0DHS \n
+	 ,,,,
+	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+     Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
+	 \n
+	</string>
+		<string name="pulsar">Pulsar</string>
+	<string name="potencia">Potencia (W)</string>
+	<string name="pvpc">PVPC (c€)</string>
+	<string name="libre">Libre (c€)</string>
+	<string name="notas">notas</string>
+	<string name="logoEHU">logo EHU</string>
+	<string name="t20dha">2.0DHA</string>
+	<string name="t20a">2.0A</string>
+	<string name="t20dhs">2.0DHS</string>
+	<string name="punta">Punta</string>
+	<string name="valle">Valle</string>
+	<string name="supervalle">SuperValle</string>
+	<string name="plana">Plana</string>
+     <string name="tituloAnotar">Comenta la medida</string>
+    <string name="costes">costes</string>
+    <string name="error">Error</string>
+    <string name="muestras">muestras</string>
+    <string name="amplitudCalibrado">Amplitud de calibrado</string>
+    <string name="medidaReferencia">Medida de referencia</string>
+</resources>

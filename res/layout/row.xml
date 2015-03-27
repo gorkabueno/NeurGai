@@ -23,8 +23,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Plana"
-            android:textSize="13dp" />
+            android:text="@string/plana"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/textView3"
@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="2.0A" />
+            android:text="@string/t20a" />
 
         <EditText
             android:id="@+id/editText1"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Punta" />
+            android:text="@string/punta" />
 
         <TextView
             android:id="@+id/textView11"
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Valle" />
+            android:text="@string/valle" />
 
         <TextView
             android:id="@+id/textView12"
@@ -127,7 +127,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="2.0DHA" />
+            android:text="@string/t20dha" />
 
         <EditText
             android:id="@+id/editText2"
@@ -136,7 +136,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="0.149231"
-              android:inputType="numberDecimal" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/editText3"
@@ -174,7 +174,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Punta" />
+            android:text="@string/punta" />
 
         <TextView
             android:id="@+id/textView19"
@@ -182,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Valle" />
+            android:text="@string/valle" />
 
         <TextView
             android:id="@+id/textView20"
@@ -190,7 +190,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="SuperValle" />
+            android:text="@string/supervalle" />
 
     </TableRow>
 
@@ -206,7 +206,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="2.0DHA" />
+            android:text="@string/t20dhs" />
 
         <EditText
             android:id="@+id/editText4"
@@ -230,7 +230,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="0.061206"
-              android:inputType="numberDecimal" />
+            android:inputType="numberDecimal" />
     </TableRow>
 
 </LinearLayout>
