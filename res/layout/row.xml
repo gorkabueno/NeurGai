@@ -16,6 +16,7 @@
             android:layout_weight="1"
             android:text="" />
 
+        
         <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
@@ -61,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="numberDecimal"
+            android:inputType="numberDecimal|none|"
             android:hint="0.129734" />
 
         <TextView
@@ -136,7 +137,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:hint="0.149231"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal|none" />
 
         <EditText
             android:id="@+id/editText3"
@@ -144,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="0.069670" 
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal|none"/>
 
         <TextView
             android:id="@+id/textView16"
@@ -213,8 +214,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="0.152775" 
-              android:inputType="numberDecimal"/>
+            android:hint="0.152775"
+            android:inputType="numberDecimal|none|number" />
 
         <EditText
             android:id="@+id/editText5"
@@ -222,7 +223,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="0.079079" 
-              android:inputType="numberDecimal"/>
+              android:inputType="numberDecimal|none"/>
 
         <EditText
             android:id="@+id/editText6"
@@ -230,7 +231,72 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="0.061206"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal|none" />
     </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:gravity="center"
+            android:text="@string/emisionesPVPC" />
+        <EditText
+            android:id="@+id/editText7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20"
+            android:gravity="end"
+            android:hint="@string/mediaNacionalEmisiones"
+            android:inputType="numberDecimal|none" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.30"
+            android:gravity="start"
+            android:text="@string/unidadEmisiones" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:gravity="center"
+            android:text="@string/emisionesLibre" />
+		
+        <EditText
+            android:id="@+id/editText8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20"
+            android:gravity="end"
+            android:hint="@string/cantidadEmisionLibre"
+            android:inputType="numberDecimal|none" >
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.30"
+            android:gravity="start"
+            android:text="@string/unidadEmisiones" />
+    </TableRow>
+
 
 </LinearLayout>

@@ -82,5 +82,11 @@
     <string name="muestras">muestras</string>
     <string name="amplitudCalibrado">Amplitud de calibrado</string>
     <string name="medidaReferencia">Medida de referencia</string>
-
+    <string name="emisionesPVPC">Emisiones Com. PVPC</string>
+    <string name="emisionesLibre">Emisiones Com. Libre</string>
+    <string name="unidadEmisiones">Kg CO2/kWh</string>
+    <string name="mediaNacionalEmisiones">0.27</string>
+    <string name="cantidadEmisionPVPC">0.36</string>
+    <string name="cantidadEmisionLibre">0</string>
+    <string name="co2">CO2</string>
 </resources>

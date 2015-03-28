@@ -170,7 +170,40 @@
             android:visibility="gone" />
         
     </TableRow>
+	<TableRow  android:id="@+id/tableRow5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
+		 <TextView
+            android:id="@+id/co2"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/co2"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/co2pvpc"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/co2libre"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone" />
+        
+	    
+	</TableRow>
     <TextView
         android:id="@+id/texto5"
         android:layout_width="match_parent"

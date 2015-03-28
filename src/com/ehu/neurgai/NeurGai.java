@@ -382,7 +382,10 @@ public class NeurGai extends ActionBarActivity {
 		dbWrite.close();
 		bbdd.close();
 	}
-	public void volcadoTarifasLibreUsuario(double feu20A,double feu20DHAP, double feu20DHAV ,double feu20DHSP,double feu20DHSV, double feu20DHSSV){
+	public void volcadoTarifasLibreUsuario(double feu20A,double feu20DHAP, double feu20DHAV ,
+											double feu20DHSP,double feu20DHSV, double feu20DHSSV,
+											double emisionesPVPC,double emisionesLibre){
+		
 		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
 		SQLiteDatabase dbWrite= bbdd.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -398,6 +401,7 @@ public class NeurGai extends ActionBarActivity {
 		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, null);
 		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, null);
 		
+		
 		for( int i=0;i<24;i++)
 		{
 			//db.execSQL("UPDATE Usuarios SET nombre='usunuevo' WHERE codigo=6 ");
@@ -406,6 +410,8 @@ public class NeurGai extends ActionBarActivity {
 
 			//plana
 			values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, feu20A);
+			values.put(ColumnasTarifas.COLUMN_NAME_EMISIONES_LIBRE,emisionesLibre);
+			values.put(ColumnasTarifas.COLUMN_NAME_EMISIONES_PVPC, emisionesPVPC);
 			
 			if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
 				
@@ -613,7 +619,6 @@ public class NeurGai extends ActionBarActivity {
 		coste.setCosteAcumulado20DHS_PVPC(coste.getCoste20DHS_PVPC()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC,ColumnasCostes.TABLE_NAME));
 		
 		
-		
 		//Tarifa Goiener
 		coste.setTarifa20A(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20A) );
 		coste.setCoste20A(coste.getTarifa20A()* (potencia / 1000) * (diferenciaTiempo / 3600));
@@ -626,8 +631,6 @@ public class NeurGai extends ActionBarActivity {
 		coste.setTarifa20DHS(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS));
 		coste.setCoste20DHS(coste.getTarifa20DHS()*(potencia / 1000) * (diferenciaTiempo / 3600));
 		coste.setCosteAcumulado20DHS(coste.getCoste20DHS()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS,ColumnasCostes.TABLE_NAME));
-		
-		
 		
 		//Hilo para mostrar los resultados en los correspondientes TextView
 		runOnUiThread(new Runnable() {
@@ -908,9 +911,9 @@ public class NeurGai extends ActionBarActivity {
 
 		//Hay que comentarlas después de la primera instalación.
 		
-		//BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
-		//SQLiteDatabase dbWrite=bbdd.getWritableDatabase();
-		//dbWrite.deleteDatabase(new File(dbWrite.getPath()));
+		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
+		SQLiteDatabase dbWrite=bbdd.getWritableDatabase();
+		dbWrite.deleteDatabase(new File(dbWrite.getPath()));
 
 		// configura actionBar
 		ActionBar bar = getSupportActionBar();
@@ -1884,20 +1887,62 @@ public class NeurGai extends ActionBarActivity {
 			final EditText feu20DHSPunta =(EditText)layout.findViewById(R.id.editText4);
 			final EditText feu20DHSValle =(EditText)layout.findViewById(R.id.editText5);
 			final EditText feu20DHSSuperValle =(EditText)layout.findViewById(R.id.editText6);
-
+			
+			final EditText emisionesPVPC=(EditText)layout.findViewById(R.id.editText7);
+			final EditText emisionesLibre=(EditText)layout.findViewById(R.id.editText8);
+			
 			alert.setView(layout);
 			
 			alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
+				double feu20,feu20dhap,feu20dhav,feu20dhsp,feu20dhsv,feu20dhssv,emispvpc,emislibre;
+				
+				//Validacion de los datos. 
+				if(feu20A!=null&&!feu20A.getText().toString().isEmpty()){
+					feu20=Double.parseDouble(feu20A.getText().toString());
+				}else{
+					feu20=0.129734;
+				}
+				if(feu20DHAPunta!=null&&!feu20DHAPunta.getText().toString().isEmpty()){
+					feu20dhap=Double.parseDouble(feu20DHAPunta.getText().toString());
+				}else{
+					feu20dhap=0.149231;
+				}
+				if(feu20DHAValle!=null&&!feu20DHAValle.getText().toString().isEmpty()){
+					feu20dhav=Double.parseDouble(feu20DHAValle.getText().toString());
+				}else{
+					feu20dhav=0.069670;
+				}
+				if(feu20DHSPunta!=null&&!feu20DHSPunta.getText().toString().isEmpty()){
+					feu20dhsp=Double.parseDouble(feu20DHSPunta.getText().toString());
+				}else{
+					feu20dhsp=0.152775;
+				}
+				if(feu20DHSValle!=null&&!feu20DHSValle.getText().toString().isEmpty()){
+					feu20dhsv=Double.parseDouble(feu20DHSValle.getText().toString());
+				}else{
+					feu20dhsv=0.079079;
+				}
+				if(feu20DHSSuperValle!=null&&!feu20DHSSuperValle.getText().toString().isEmpty()){
+					feu20dhssv=Double.parseDouble(feu20DHSSuperValle.getText().toString());
+				}else{
+					feu20dhssv=0.061206;
+				}
+				if(emisionesLibre!=null&&!emisionesLibre.getText().toString().isEmpty()){
+					emislibre=Double.parseDouble(emisionesLibre.getText().toString());
+				}else{
+					emislibre=(Double.parseDouble(getString(R.string.cantidadEmisionLibre)));
+				}
+				if(emisionesPVPC!=null&&!emisionesPVPC.getText().toString().isEmpty()){
+					emispvpc=Double.parseDouble(emisionesPVPC.getText().toString());
+				}else{
+					emispvpc=(Double.parseDouble(getString(R.string.cantidadEmisionPVPC)));;
+				}
 				
 				//Se vuelcan las tarifas definidas por el usuario a la BBDD.
-				 volcadoTarifasLibreUsuario(Double.parseDouble(feu20A.getText().toString()), 
-						 					Double.parseDouble(feu20DHAPunta.getText().toString()),
-						 					Double.parseDouble(feu20DHAValle.getText().toString()),
-						 					Double.parseDouble(feu20DHSPunta.getText().toString()),
-						 					Double.parseDouble(feu20DHSValle.getText().toString()),
-						 					Double.parseDouble(feu20DHSSuperValle.getText().toString()));
-			  }
+				volcadoTarifasLibreUsuario(feu20, feu20dhap, feu20dhav, feu20dhsp, feu20dhsv, feu20dhssv, emispvpc, emislibre);	
+			}
+			
 			});
 			
 			alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
