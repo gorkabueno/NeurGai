@@ -7,14 +7,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 
-
-
 public class DialogoIdiomas extends DialogFragment {
 
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		
 		final String[] idiomas = {getString(R.string.local_language), getString(R.string.euskaraz)};
-		
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.app_name);
@@ -29,8 +26,6 @@ public class DialogoIdiomas extends DialogFragment {
 			}
 		});
 
-		
-		
 		return builder.create();
 	}
 }

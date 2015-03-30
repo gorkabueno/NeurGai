@@ -22,9 +22,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Calibrar" android:label="@string/title_activity_calibrar">
-        </activity>
-        <activity android:name=".Medir" android:label="@string/title_activity_medir">
-        </activity>
     </application>
 </manifest>

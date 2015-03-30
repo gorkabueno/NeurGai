@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/plana"
+            android:text="@string/punta"
             android:textSize="13sp" />
 
         <TextView
@@ -183,7 +183,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/valle" />
+            android:text="@string/llano" />
 
         <TextView
             android:id="@+id/textView20"

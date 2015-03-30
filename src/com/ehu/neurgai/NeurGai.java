@@ -1870,7 +1870,6 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.ajustes:
         	// introducir ajustes
             return true;
-            
 
         //Falta, la verificación de los datos.     
 		case R.id.tarifas:{
@@ -2129,7 +2128,7 @@ public class NeurGai extends ActionBarActivity {
 			
 	        //Guarda la configuración
 	        if(cambiarIdioma(Constants.castellanoCode)){
-	            Toast.makeText(this, "Idioma Castellao", Toast.LENGTH_LONG).show();
+	            Toast.makeText(this, "Idioma Castellano", Toast.LENGTH_LONG).show();
 	        }
 	        	
 			return true;
@@ -2137,7 +2136,7 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.euskera:{
 			//Guarda la configuración
 	        if(cambiarIdioma(Constants.euskeraCode)){
-	            Toast.makeText(this, "Idioma Euskera", Toast.LENGTH_LONG).show();
+	            Toast.makeText(this, "Euskaraz aukeratuta", Toast.LENGTH_LONG).show();
 	        }
 
 			return true;
