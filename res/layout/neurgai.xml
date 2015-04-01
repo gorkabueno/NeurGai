@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/potencia"
+        android:text=""
         android:textSize="30sp"
         android:visibility="gone" />
 
@@ -231,7 +231,7 @@
 		android:id="@+id/logoEHU"
     	android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:contentDescription="@string/logoEHU"
+		android:contentDescription="@string/logo_ehu"
     	android:src="@drawable/ic_upvehu"
     	android:visibility="visible" />
 

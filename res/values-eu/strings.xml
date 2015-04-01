@@ -20,7 +20,7 @@
     <string name="realizandoMedidasSinCalibrar">Neurketak azkeneko kalibraziorik gabe egiten... Sakatu neurketa zuzena sartzeko</string>
     <string name="aceptar">Onartu</string>
     <string name="cancelar">Ezeztatu</string>
-    <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (c€/kWh) eta CO2 isurketa-mailak (gCO2/kWh)</string>
+    <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (gCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">anplitudea, maiztasuna, RMS\n</string>
     
     <string name="cabeceraFicheroCostes">
@@ -37,14 +37,9 @@
 	 \n
 	</string>
 	<string name="pulsar">Sakatu</string>
-	<string name="potencia">Potentzia (W)</string>
 	<string name="pvpc">PVPC (c€)</string>
 	<string name="libre">Librea (c€)</string>
 	<string name="notas">notak</string>
-	<string name="logoEHU">logo EHU</string>
-	<string name="t20dha">2.0DHA</string>
-	<string name="t20a">2.0A</string>
-	<string name="t20dhs">2.0DHS</string>
 	<string name="punta">Puntakoa</string>
 	<string name="valle">Sakonunekoa</string>
 	<string name="supervalle">Sakonunekoa</string>
@@ -61,5 +56,5 @@
     <string name="mediaNacionalEmisiones">0.27</string>
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
-    <string name="co2">CO2</string>
+    <string name="medidasDePotencia">Potentzia neurketak (kW)</string>
 </resources>

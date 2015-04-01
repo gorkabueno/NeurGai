@@ -37,11 +37,9 @@
 	 \n
 	</string>
 	<string name="pulsar">Pulsar</string>
-	<string name="potencia">Potencia (W)</string>
 	<string name="pvpc">PVPC (c€)</string>
 	<string name="libre">Libre (c€)</string>
 	<string name="notas">notas</string>
-	<string name="logoEHU">logo EHU</string>
 	<string name="t20dha">2.0DHA</string>
 	<string name="t20a">2.0A</string>
 	<string name="t20dhs">2.0DHS</string>
@@ -62,4 +60,12 @@
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
     <string name="co2">CO2</string>
+    <string name="valor2.0Apunta">0.129734</string>
+    <string name="valor2.0DHApunta">0.149231</string>
+    <string name="valor2.0DHAvalle">0.069670</string>
+    <string name="valor2.0DHSpunta">0.152775</string>
+    <string name="valor2.0DHSllano">0.079079</string>
+    <string name="valor2.0DHSvalle">0.061206</string>
+    <string name="medidasDePotencia">Medidas de potencia (kW)</string>
+    <string name="logo_ehu">logo EHU</string>
 </resources>

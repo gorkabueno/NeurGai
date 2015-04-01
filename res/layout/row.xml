@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="numberDecimal|none|"
-            android:hint="0.129734" />
+            android:hint="@string/valor2.0Apunta" />
 
         <TextView
             android:id="@+id/textView7"
@@ -136,7 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:hint="0.149231"
+            android:hint="@string/valor2.0DHApunta"
             android:inputType="numberDecimal|none" />
 
         <EditText
@@ -144,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="0.069670" 
+            android:hint="@string/valor2.0DHAvalle" 
             android:inputType="numberDecimal|none"/>
 
         <TextView
@@ -214,7 +214,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="0.152775"
+            android:hint="@string/valor2.0DHSpunta"
             android:inputType="numberDecimal|none|number" />
 
         <EditText
@@ -222,7 +222,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="0.079079" 
+            android:hint="@string/valor2.0DHSllano" 
               android:inputType="numberDecimal|none"/>
 
         <EditText
@@ -230,7 +230,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="0.061206"
+            android:hint="@string/valor2.0DHSvalle"
             android:inputType="numberDecimal|none" />
     </TableRow>
 
