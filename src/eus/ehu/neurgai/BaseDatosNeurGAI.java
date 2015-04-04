@@ -14,7 +14,6 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
     private static final String INT_TYPE=" INTEGER";
     private static final String TEXT_TYPE=" TEXT";
     private static final String COMMA_SEP = ", ";
-    private static final String DATE=" DATE";
     
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "neurgai.db";
@@ -29,11 +28,6 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    public static final String COLUMN_NAME_FECHA="fecha";
 	    public static final String COLUMN_NAME_EMISIONES_PVPC="emisionesPVPC";
 	    public static final String COLUMN_NAME_EMISIONES_LIBRE="emisionesLibre";
-	    
-	    //Tarifas de Goiener.
-	    public static final String COLUMN_NAME_TARIFA_20A = "tarifa20A";
-	    public static final String COLUMN_NAME_TARIFA_20DHA = "tarifa20DHA";
-	    public static final String COLUMN_NAME_TARIFA_20DHS = "tarifa20DHS";
 	    	
 	    //Tarifas oficiales en cada hora.
 	    public static final String COLUMN_NAME_TARIFA_20A_PVPC = "tarifa20A_PVPC";
@@ -48,22 +42,14 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
         
         ColumnasTarifas.COLUMN_NAME_FECHA + TEXT_TYPE + COMMA_SEP+
 		ColumnasTarifas.COLUMN_NAME_HORA + INT_TYPE + COMMA_SEP+
-		ColumnasTarifas.COLUMN_NAME_EMISIONES_PVPC + REAL_TYPE+ COMMA_SEP+
-		ColumnasTarifas.COLUMN_NAME_EMISIONES_LIBRE + REAL_TYPE+ COMMA_SEP+
-		
-		
-		ColumnasTarifas.COLUMN_NAME_TARIFA_20A + REAL_TYPE + COMMA_SEP+
-		ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA + REAL_TYPE + COMMA_SEP+
-		ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS + REAL_TYPE + COMMA_SEP+
 		
 		ColumnasTarifas.COLUMN_NAME_TARIFA_20A_PVPC + REAL_TYPE + COMMA_SEP+
 		ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA_PVPC + REAL_TYPE + COMMA_SEP+
 		ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS_PVPC + REAL_TYPE +
-        
         " )";
 	
     public static final String[] projectionCostes = {
-		ColumnasCostes.COLUMN_NAME_COSTE_COMENTARIOS,
+		ColumnasCostes.COLUMN_NAME_COMENTARIOS,
 		ColumnasCostes.COLUMN_NAME_FECHA_MEDIDA,
 		ColumnasCostes.COLUMN_NAME_TIEMPO_MEDIDA,
 		ColumnasCostes.COLUMN_NAME_POTENCIA,
@@ -76,22 +62,24 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 		ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA_PVPC,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA_PVPC,
 
-		ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC,
+	    ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS_PVPC,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC ,
 	    
 
-		ColumnasCostes.COLUMN_NAME_TARIFA20A,
+	    ColumnasCostes.COLUMN_NAME_TARIFA20A,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A,
 
-		ColumnasCostes.COLUMN_NAME_TARIFA20DHA,
+	    ColumnasCostes.COLUMN_NAME_TARIFA20DHA,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA,
 
 		ColumnasCostes.COLUMN_NAME_TARIFA20DHS,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS,
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS,
+	    
+	    
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre,
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC,
     };
@@ -101,7 +89,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 		public static final String TABLE_NAME = "costes";
 		
 		 //Potencia, tiempo, Coste energía en cada instántante y coste acumulado.
-		 public static final String COLUMN_NAME_COSTE_COMENTARIOS="comentarios";
+		 public static final String COLUMN_NAME_COMENTARIOS="comentarios";
 	    public static final String COLUMN_NAME_POTENCIA = "potencia";
 	    public static final String COLUMN_NAME_TIEMPO_MEDIDA = "tiempo";
 	    public static final String COLUMN_NAME_FECHA_MEDIDA="fecha";
@@ -139,7 +127,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_COSTES=
 		"CREATE TABLE "+ ColumnasCostes.TABLE_NAME+ " (" +
 		ColumnasCostes._ID + " INTEGER PRIMARY KEY," +
-		ColumnasCostes.COLUMN_NAME_COSTE_COMENTARIOS + TEXT_TYPE+COMMA_SEP+
+		ColumnasCostes.COLUMN_NAME_COMENTARIOS + TEXT_TYPE+COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_TIEMPO_MEDIDA + REAL_TYPE + COMMA_SEP +
 	    ColumnasCostes.COLUMN_NAME_FECHA_MEDIDA+ TEXT_TYPE + COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_POTENCIA + INT_TYPE + COMMA_SEP +
@@ -167,6 +155,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    ColumnasCostes.COLUMN_NAME_TARIFA20DHS+REAL_TYPE+COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS+REAL_TYPE+COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS+ REAL_TYPE+COMMA_SEP +
+	    
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC + REAL_TYPE+ COMMA_SEP+
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre + REAL_TYPE+ 
 	    " )";
