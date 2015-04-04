@@ -58,7 +58,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import eus.ehu.neurgai.R;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -147,7 +146,7 @@ public class NeurGai extends ActionBarActivity {
 			
 			costeFila.setComentario(c.getString(
 					c.getColumnIndex(
-							BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_COMENTARIOS)));
+							BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COMENTARIOS)));
 
 			costeFila.setFechaMedida(c.getString(
 								c.getColumnIndex(
@@ -159,24 +158,28 @@ public class NeurGai extends ActionBarActivity {
 							(c.getColumnIndex
 								(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_POTENCIA)));
 			
-			costeFila.setTarifa20A_PVPC(c.getDouble(
+			
+			costeFila.setTarifa20A(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A)));
+			costeFila.setTarifa20DHA(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA)));
+			costeFila.setTarifa20DHS(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS)));
+			
+			costeFila.setTarifa20A_PVPC(
+					c.getDouble(
 							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A_PVPC)));
+			costeFila.setTarifa20DHA_PVPC(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA_PVPC)));
+			costeFila.setTarifa20DHS_PVPC(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC)));
 			
-			costeFila.setTarifa20DHA_PVPC(c.getDouble(
-					c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA_PVPC)));
 			
-			costeFila.setTarifa20DHS_PVPC(c.getDouble(
-					c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC)));
-			
-			costeFila.setTarifa20A(c.getDouble(
-					c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A)));
-			
-			costeFila.setTarifa20DHA(c.getDouble(
-					c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA)));
-			
-			costeFila.setTarifa20DHS(c.getDouble(
-					c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS)));
-	
 			costeFila.setCoste20A_PVPC(
 					c.getDouble(
 							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A_PVPC)));
@@ -218,7 +221,15 @@ public class NeurGai extends ActionBarActivity {
 			costeFila.setCosteAcumulado20DHS(
 					c.getDouble(
 							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS)));
+			
+			costeFila.setEmisionesAcumuladasLibre(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre)));
+			costeFila.setEmisionesAcumuladasPVPC(
+					c.getDouble(
+							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC)));
 			tablaCostes.add(costeFila);
+			
 		}while(c.moveToNext());
 		
 		dbRead.delete(ColumnasCostes.TABLE_NAME, null, null);
@@ -244,20 +255,6 @@ public class NeurGai extends ActionBarActivity {
 		String horaSistema=new SimpleDateFormat("HH'h'mm'm'ss's'").format(calendar.getTime()).toString();
 		
 		costes=extraerTablaCostesBBDD();
-		/*
-		String cabecera2 = 
-					"Comentarios, Fecha y Hora, Unix Time, Potencia(W),"+
-					"PVPC"+",,,,,,,,,"+"Comercializadora libre"+"\n"+
-					",,,,"+"2.0A"+",,,"+"2.0DHA"+",,,"+"2.0DHS"+",,,"+"2.0A"+",,,"+"2.0DHA"+",,,"+"2.0DHS"+" \n"+
-					",,,,"+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"Tarifa(€/kWh)"+ COMA+"Coste medida(€)"+ COMA+"Coste acumulado(€)"+ COMA+
-					"\n";
-					*/
     	cabecera=getString(R.string.cabeceraFicheroCostes);
     	
 		try {
@@ -309,15 +306,11 @@ public class NeurGai extends ActionBarActivity {
     	
 	}
 	
-	//Escribe las tarifas en la BBDD
+	//Escribe las tarifas PVPC a la BBDD
 	private void volcarTarifasBDD(ParsearTarifas parseo){
 		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
 		SQLiteDatabase dbWrite= bbdd.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		
-		List<Tarifa> tarifa20A;
-		List<Tarifa> tarifa20DHA;
-		List<Tarifa> tarifa20DHS;
 		
 		List<Tarifa> tarifa20A_PVPC;
 		List<Tarifa> tarifa20DHA_PVPC;
@@ -326,12 +319,7 @@ public class NeurGai extends ActionBarActivity {
 		
 		//Borramos la tabla de las tarifas para evitar que se acumulen tarifas de días anteriores..
 		dbWrite.delete(ColumnasTarifas.TABLE_NAME, null, null);
-		if(parseo.domPVPC!=null&&parseo.domEstandar!=null){
-
-			tarifa20A=parseo.getTarifa20A();
-			tarifa20DHA=parseo.getTarifa20DHA();
-			tarifa20DHS=parseo.getTarifa20DHS();
-			
+		if(parseo.domPVPC!=null){
 			tarifa20A_PVPC=parseo.getTarifa20A_PVPC();
 			tarifa20DHA_PVPC=parseo.getTarifa20DHA_PVPC();
 			tarifa20DHS_PVPC=parseo.getTarifa20DHS_PVPC();
@@ -346,37 +334,6 @@ public class NeurGai extends ActionBarActivity {
 				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA_PVPC, (tarifa20DHA_PVPC.get(i).getFeu()));
 				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS_PVPC, (tarifa20DHS_PVPC.get(i).getFeu()));
 				
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, (tarifa20A.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, (tarifa20DHA.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, (tarifa20DHS.get(i).getFeu()));
-				dbWrite.insert(ColumnasTarifas.TABLE_NAME, null, values);
-			}
-		}else if(parseo.domPVPC!=null){
-			tarifa20A_PVPC=parseo.getTarifa20A_PVPC();
-			tarifa20DHA_PVPC=parseo.getTarifa20DHA_PVPC();
-			tarifa20DHS_PVPC=parseo.getTarifa20DHS_PVPC();
-			for( int i=0;i<24;i++)
-			{
-				
-				values.put(ColumnasTarifas.COLUMN_NAME_FECHA,tarifa20A_PVPC.get(i).getFecha());
-				values.put(ColumnasTarifas.COLUMN_NAME_HORA,tarifa20A_PVPC.get(i).getHora());
-				
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A_PVPC, (tarifa20A_PVPC.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA_PVPC, (tarifa20DHA_PVPC.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS_PVPC, (tarifa20DHS_PVPC.get(i).getFeu()));
-				
-				dbWrite.insert(ColumnasTarifas.TABLE_NAME, null, values);
-			}
-		}else if(parseo.domEstandar!=null){
-			tarifa20A=parseo.getTarifa20A();
-			tarifa20DHA=parseo.getTarifa20DHA();
-			tarifa20DHS=parseo.getTarifa20DHS();
-			
-			for( int i=0;i<24;i++)
-			{
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, (tarifa20A.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, (tarifa20DHA.get(i).getFeu()));
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, (tarifa20DHS.get(i).getFeu()));
 				dbWrite.insert(ColumnasTarifas.TABLE_NAME, null, values);
 			}
 		}
@@ -384,86 +341,144 @@ public class NeurGai extends ActionBarActivity {
 		dbWrite.close();
 		bbdd.close();
 	}
-	public void volcadoTarifasLibreUsuario(double feu20A,double feu20DHAP, double feu20DHAV ,
-											double feu20DHSP,double feu20DHSV, double feu20DHSSV,
-											double emisionesPVPC,double emisionesLibre){
+	
+	//Probablemente no valga para nada.
+	/*
+	public void volcadoTarifasLibreUsuario(){
 		
-		BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
-		SQLiteDatabase dbWrite= bbdd.getWritableDatabase();
-		ContentValues values = new ContentValues();
 		
 		Calendar calendar=Calendar.getInstance();
 		calendar.setTime(new Date());
 		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
+		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
+		
 		int eqinocVera=2106;
 		int eqinocInv=2212;
 		int fechaSistemInt=Integer.parseInt(fechaSistema);
-		
-		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20A, null);
-		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, null);
-		//dbWrite.delete(ColumnasTarifas.TABLE_NAME, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, null);
+		double tarifa20A, tarifa20DHA,tarifa20DHS;
 		
 		
-		for( int i=0;i<24;i++)
-		{
-			//db.execSQL("UPDATE Usuarios SET nombre='usunuevo' WHERE codigo=6 ");
-			//dbWrite.execSQL("UPDATE "+);
-			//Supuesto de que estamos en invierno
-
-			//plana
-			values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, feu20A);
-			values.put(ColumnasTarifas.COLUMN_NAME_EMISIONES_LIBRE,emisionesLibre);
-			values.put(ColumnasTarifas.COLUMN_NAME_EMISIONES_PVPC, emisionesPVPC);
+		//Supuesto de que estamos en invierno
+		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
 			
-			if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
-				
-				//Punta
-				if(i>=13&&i<23){
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAP);
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSP);
-					
-				}else{
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAV);
-					//Supervalle
-					if(i>=1&&i<7){
-						
-						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSSV);
-					}else{
-						//Valle DHS.
-						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSV);
-					}
-				}
+			//Punta
+			if(hora>=13&&hora<23){
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
+				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
 			}else{
-				//En caso contrario, estamos en verano.
-				//plana
-				values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20A, feu20A);
 				
-				
-				//Punta
-				if(i>=12&&i<22){
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAP);
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSP);
-					
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
+				//Supervalle
+				if(hora>=1&&hora<7){
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
+
 				}else{
-					//Valle y supervalle.
-					values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA, feu20DHAV);
-					
-					if(i>=0&&i<6){
-						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSSV);
-					}else{
-						values.put(ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS, feu20DHSV);
-					}
+					//Valle DHS.
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSvalle, R.string.valor2_0DHSsvalle);
 				}
 			}
+		}else{
+			//En caso contrario, estamos en verano.
+			//Punta
+			if(hora>=12&&hora<22){
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
+				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
+
+			}else{
+				//Valle y supervalle.
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
+				if(hora>=0&&hora<6){
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
+
+				}else{
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSvalle, R.string.valor2_0DHSsvalle);
+				}
+			}
+		}
+	}
+	*/
+	
+	private double getTarifa20DHS(){
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(new Date());
+		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
+		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
+		
+		int eqinocVera=2106;
+		int eqinocInv=2212;
+		int fechaSistemInt=Integer.parseInt(fechaSistema);
+		double tarifa20DHS;
+		
+		
+		//Supuesto de que estamos en invierno
+		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
+			//Punta
+			if(hora>=13&&hora<23){
+				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
+			}else{
+				//Supervalle
+				if(hora>=1&&hora<7){
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
+
+				}else{
+					//Valle DHS.
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSsupervalle, R.string.valor2_0DHSsvalle);
+				}
+			}
+		}else{
+			//En caso contrario, estamos en verano.
+			//Punta
+			if(hora>=12&&hora<22){
+				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
+
+			}else{
+				//Valle y supervalle.
+				if(hora>=0&&hora<6){
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
+				}else{
+					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSsupervalle, R.string.valor2_0DHSsvalle);
+				}
+			}
+		}
+		return tarifa20DHS;
+	}
+	private double getTarifa20DHA(){
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(new Date());
+		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
+		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
+		
+		int eqinocVera=2106;
+		int eqinocInv=2212;
+		int fechaSistemInt=Integer.parseInt(fechaSistema);
+		double tarifa20DHA;
+		
+		
+		//Supuesto de que estamos en invierno
+		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
 			
-			
-			dbWrite.update(ColumnasTarifas.TABLE_NAME, values, ColumnasTarifas.COLUMN_NAME_HORA+"="+Integer.toString(i), null);
-			//dbWrite.insert(ColumnasTarifas.TABLE_NAME, null, values);
+			//Punta
+			if(hora>=13&&hora<23){
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
+			}
+			else{
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
+			}
+		}else{
+			//En caso contrario, estamos en verano.
+			//Punta
+			if(hora>=12&&hora<22){
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
+
+			}else{
+				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
+			}
 		}
 		
-		bbdd.close();
-		dbWrite.close();
+		return tarifa20DHA;
 	}
+	
+	
 	
 	//Lee el último registro de tipo double de cualquiera de las tablas de la bbdd.
 	//Este método sirve para saber el tiempo de la medida anterior.
@@ -589,9 +604,6 @@ public class NeurGai extends ActionBarActivity {
 		
 		double diferenciaTiempo, tiempoAnterior;
 		
-		final Coste coste=new Coste();
-		
-		
 		//Método que comprueba y actualiza si es necesario la tabla de las tarifas en la BBDD.
 		consultaVigenciaTarifas(fechaSistema);
 		
@@ -605,40 +617,58 @@ public class NeurGai extends ActionBarActivity {
   			diferenciaTiempo=tiempoMedida-tiempoAnterior;
   		}
 		
-		//Se realizan los cálculos y las consultas necesarias para determinar los costes.
 		
-		//Tarifa PVPC
+		//El objeto coste contiene los métodos que calculan los costes. 
+		final Coste coste=new Coste();
+		double kWh=(potencia/1000)*(diferenciaTiempo/3600);
+		//Se lee la tarifa de la BBDD con leerFEU() y se calcula el coste de la energía y el coste acumulado..
+		
 		coste.setTarifa20A_PVPC(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20A_PVPC));
-		coste.setCoste20A_PVPC(coste.getTarifa20A_PVPC()* (potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20A_PVPC(coste.getCoste20A_PVPC()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A_PVPC,ColumnasCostes.TABLE_NAME));
+		coste.setCoste20A_PVPC((coste.getTarifa20A_PVPC())*kWh);
+		coste.setCosteAcumulado20A_PVPC(coste.getCoste20A_PVPC()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A_PVPC,ColumnasCostes.TABLE_NAME));
 		
 		coste.setTarifa20DHA_PVPC(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA_PVPC));
-		coste.setCoste20DHA_PVPC(coste.getTarifa20DHA_PVPC()* (potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20DHA_PVPC(coste.getCoste20DHA_PVPC()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA_PVPC,ColumnasCostes.TABLE_NAME));
+		coste.setCoste20DHA_PVPC(coste.getTarifa20DHA_PVPC()*kWh);
+		coste.setCosteAcumulado20DHA_PVPC(coste.getCoste20DHA_PVPC()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA_PVPC,ColumnasCostes.TABLE_NAME));
 		
 		coste.setTarifa20DHS_PVPC(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS_PVPC));
-		coste.setCoste20DHS_PVPC(coste.getTarifa20DHS_PVPC()* (potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20DHS_PVPC(coste.getCoste20DHS_PVPC()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC,ColumnasCostes.TABLE_NAME));
+		coste.setCoste20DHS_PVPC(coste.getTarifa20DHS_PVPC()*kWh);
+		coste.setCosteAcumulado20DHS_PVPC(coste.getCoste20DHS_PVPC()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC,ColumnasCostes.TABLE_NAME));
 		
 		
+		//FALTA LEER LAS TARIFAS LIBRES DE LA CONFIGURACION
 		//Tarifa Goiener
-		coste.setTarifa20A(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20A) );
-		coste.setCoste20A(coste.getTarifa20A()* (potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20A(coste.getCoste20A()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A,ColumnasCostes.TABLE_NAME));
-
-		coste.setTarifa20DHA(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHA));
-		coste.setCoste20DHA(coste.getTarifa20DHA()* (potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20DHA(coste.getCoste20DHA()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA,ColumnasCostes.TABLE_NAME));
+		coste.setTarifa20A(getTarifaLibre(R.string.nombreT20Apunta, R.string.valor2_0Apunta));
+		coste.setCoste20A(coste.getTarifa20A()*kWh);
+		coste.setCosteAcumulado20A(coste.getCoste20A()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A,ColumnasCostes.TABLE_NAME));
 		
-		coste.setTarifa20DHS(leerFEU(horaSistema, ColumnasTarifas.COLUMN_NAME_TARIFA_20DHS));
-		coste.setCoste20DHS(coste.getTarifa20DHS()*(potencia / 1000) * (diferenciaTiempo / 3600));
-		coste.setCosteAcumulado20DHS(coste.getCoste20DHS()+leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS,ColumnasCostes.TABLE_NAME));
+		coste.setTarifa20DHA(getTarifa20DHA());
+		coste.setCoste20DHA(coste.getTarifa20DHA()*kWh);
+		coste.setCosteAcumulado20DHA(coste.getCoste20DHA()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA,ColumnasCostes.TABLE_NAME));
 		
+		coste.setTarifa20DHS(getTarifa20DHS());
+		coste.setCoste20DHS(coste.getTarifa20DHS()*kWh);
+		coste.setCosteAcumulado20DHS(coste.getCoste20DHS()+
+				leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS,ColumnasCostes.TABLE_NAME));
+		
+		
+		//Calculan las emisiones acumuladas. kgCO2*kWh
+		coste.setEmisionesAcumuladasLibre(leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre, ColumnasCostes.TABLE_NAME)+
+				(kWh*getEmisionesCO2(R.string.nombreEmisionLibre, R.string.cantidadEmisionLibre)));
+		
+		coste.setEmisionesAcumuladasPVPC(leerUltimoRegistroDouble(ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC, ColumnasCostes.TABLE_NAME)+
+				(kWh*getEmisionesCO2(R.string.nombreEmisionPVPC, R.string.cantidadEmisionPVPC)));
 		//Hilo para mostrar los resultados en los correspondientes TextView
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				
+				//se multiplican por 100 para indicar el precio por pantalla en céntimos.
 				final TextView  text20APVPC= (TextView)findViewById(R.id.text20APVPC);
 				text20APVPC.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20A_PVPC()) );	
 				
@@ -657,6 +687,12 @@ public class NeurGai extends ActionBarActivity {
 				final TextView  text20DHS= (TextView)findViewById(R.id.text20DHS);
 				text20DHS.setText(String.format("%.2f", 100 * coste.getCosteAcumulado20DHS()) );
 				
+				//Las emisiones se multiplican por 1000 para que se muestren en gramos de CO2
+				final TextView  textCo2PVPC= (TextView)findViewById(R.id.co2pvpc);
+				textCo2PVPC.setText(String.format("%.2f", 1000*coste.getEmisionesAcumuladasPVPC()));
+				
+				final TextView  textCo2Libre= (TextView)findViewById(R.id.co2libre);
+				textCo2Libre.setText(String.format("%.2f", 1000*coste.getEmisionesAcumuladasLibre()));
 			}
 		});
 		
@@ -664,7 +700,6 @@ public class NeurGai extends ActionBarActivity {
 		values.put(ColumnasCostes.COLUMN_NAME_POTENCIA, potencia);
 		values.put(ColumnasCostes.COLUMN_NAME_TIEMPO_MEDIDA, tiempoMedida);
 		values.put(ColumnasCostes.COLUMN_NAME_FECHA_MEDIDA, new SimpleDateFormat("dd'/'MM'/'yyyy HH:mm:ss").format(calendar.getTime()));
-		//values.put(, value);
 		
 		//PVPC
 		values.put(ColumnasCostes.COLUMN_NAME_TARIFA20A_PVPC, coste.getTarifa20A_PVPC());
@@ -693,8 +728,11 @@ public class NeurGai extends ActionBarActivity {
 		values.put(ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS, coste.getCoste20DHS());
 		values.put(ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS, coste.getCosteAcumulado20DHS());
 		
+		values.put(ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre, coste.getEmisionesAcumuladasLibre());
+		values.put(ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC, coste.getEmisionesAcumuladasPVPC());
+		
 		if(anotar==true){
-			values.put(ColumnasCostes.COLUMN_NAME_COSTE_COMENTARIOS, comentario);
+			values.put(ColumnasCostes.COLUMN_NAME_COMENTARIOS, comentario);
 			anotar=false;
 		}
 		
@@ -737,10 +775,6 @@ public class NeurGai extends ActionBarActivity {
 	}
 
 	/**********************************************************************************************/
-	
-	
-	
-	
 	private final Runnable realizarUnaMedida = new Runnable(){
 		@Override
 	    public void run() {
@@ -788,6 +822,11 @@ public class NeurGai extends ActionBarActivity {
 		    				findViewById(R.id.text20APVPC).setVisibility(View.VISIBLE);
 		    				findViewById(R.id.text20DHAPVPC).setVisibility(View.VISIBLE);
 		    				findViewById(R.id.text20DHSPVPC).setVisibility(View.VISIBLE);
+		    				
+		    				findViewById(R.id.co2).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.co2libre).setVisibility(View.VISIBLE);
+		    				findViewById(R.id.co2pvpc).setVisibility(View.VISIBLE);
+		    				
 		    				
 		    				// crea el gráfico con los datos de las medidas
 		    				graficoMedidas = (GraphView) findViewById(R.id.grafica);
@@ -921,16 +960,6 @@ public class NeurGai extends ActionBarActivity {
     	TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
     	telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     	
-		//Se vuelcan las tarifas definidas por defecto a la BBDD.
-		volcadoTarifasLibreUsuario(
-				(Double.parseDouble(getString(R.string.valor2_0Apunta))),
-				(Double.parseDouble(getString(R.string.valor2_0DHApunta))), 
-				(Double.parseDouble(getString(R.string.valor2_0DHAvalle))), 
-				(Double.parseDouble(getString(R.string.valor2_0DHSpunta))), 
-				(Double.parseDouble(getString(R.string.valor2_0DHSllano))), 
-				(Double.parseDouble(getString(R.string.valor2_0DHSvalle))), 
-				(Double.parseDouble(getString(R.string.cantidadEmisionPVPC))), 
-				(Double.parseDouble(getString(R.string.cantidadEmisionLibre))));
     	
     	// lanza el hilo con la actividad principal
     	new Thread() {
@@ -1870,6 +1899,7 @@ public class NeurGai extends ActionBarActivity {
 	}
 
 	 
+	@SuppressLint("InflateParams")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -1888,16 +1918,17 @@ public class NeurGai extends ActionBarActivity {
 			
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			
-			alert.setTitle(R.string.tituloConfigTarifasLibres);
+	        alert.setTitle(R.string.tituloConfigTarifasLibres);
+			
 			LayoutInflater factory = LayoutInflater.from(this);
-            View layout = factory.inflate(R.layout.row, null);
+            View layout = factory.inflate(R.layout.row,null);
 
             final EditText feu20A =(EditText)layout.findViewById(R.id.editText1);
 			final EditText feu20DHAPunta =(EditText)layout.findViewById(R.id.editText2);
 			final EditText feu20DHAValle =(EditText)layout.findViewById(R.id.editText3);
 
 			final EditText feu20DHSPunta =(EditText)layout.findViewById(R.id.editText4);
-			final EditText feu20DHSValle =(EditText)layout.findViewById(R.id.editText5);
+			final EditText feu20DHSLlano =(EditText)layout.findViewById(R.id.editText5);
 			final EditText feu20DHSSuperValle =(EditText)layout.findViewById(R.id.editText6);
 			
 			final EditText emisionesPVPC=(EditText)layout.findViewById(R.id.editText7);
@@ -1907,13 +1938,13 @@ public class NeurGai extends ActionBarActivity {
 			
 			alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				double feu20,feu20dhap,feu20dhav,feu20dhsp,feu20dhsv,feu20dhssv,emispvpc,emislibre;
+				double feu20ap,feu20dhap,feu20dhav,feu20dhsp,feu20dhsll,feu20dhsv,emispvpc,emislibre;
 				
 				//Validacion de los datos. 
 				if(feu20A!=null&&!feu20A.getText().toString().isEmpty()){
-					feu20=Double.parseDouble(feu20A.getText().toString());
+					feu20ap=Double.parseDouble(feu20A.getText().toString());
 				}else{
-					feu20=(Double.parseDouble(getString(R.string.valor2_0Apunta)));
+					feu20ap=(Double.parseDouble(getString(R.string.valor2_0Apunta)));
 				}
 				if(feu20DHAPunta!=null&&!feu20DHAPunta.getText().toString().isEmpty()){
 					feu20dhap=Double.parseDouble(feu20DHAPunta.getText().toString());
@@ -1930,29 +1961,41 @@ public class NeurGai extends ActionBarActivity {
 				}else{
 					feu20dhsp=(Double.parseDouble(getString(R.string.valor2_0DHSpunta)));
 				}
-				if(feu20DHSValle!=null&&!feu20DHSValle.getText().toString().isEmpty()){
-					feu20dhsv=Double.parseDouble(feu20DHSValle.getText().toString());
+				if(feu20DHSLlano!=null&&!feu20DHSLlano.getText().toString().isEmpty()){
+					feu20dhsll=Double.parseDouble(feu20DHSLlano.getText().toString());
 				}else{
-					feu20dhsv=(Double.parseDouble(getString(R.string.valor2_0DHSllano)));
+					feu20dhsll=(Double.parseDouble(getString(R.string.valor2_0DHSllano)));
 				}
 				if(feu20DHSSuperValle!=null&&!feu20DHSSuperValle.getText().toString().isEmpty()){
-					feu20dhssv=Double.parseDouble(feu20DHSSuperValle.getText().toString());
+					feu20dhsv=Double.parseDouble(feu20DHSSuperValle.getText().toString());
 				}else{
-					feu20dhssv=(Double.parseDouble(getString(R.string.valor2_0DHSvalle)));
+					feu20dhsv=(Double.parseDouble(getString(R.string.valor2_0DHSsvalle)));
 				}
 				if(emisionesLibre!=null&&!emisionesLibre.getText().toString().isEmpty()){
 					emislibre=Double.parseDouble(emisionesLibre.getText().toString());
 				}else{
 					emislibre=(Double.parseDouble(getString(R.string.cantidadEmisionLibre)));
+					Toast.makeText(getBaseContext(), R.string.mensajeEmisionesLibreVacias, Toast.LENGTH_LONG).show();
 				}
 				if(emisionesPVPC!=null&&!emisionesPVPC.getText().toString().isEmpty()){
 					emispvpc=Double.parseDouble(emisionesPVPC.getText().toString());
 				}else{
-					emispvpc=(Double.parseDouble(getString(R.string.cantidadEmisionPVPC)));;
+					emispvpc=(Double.parseDouble(getString(R.string.cantidadEmisionPVPC)));
+					
 				}
 				
+				cambiarTarifaLibre(getString(R.string.nombreT20Apunta), feu20ap);
+				cambiarTarifaLibre(getString(R.string.nombreT20DHApunta), feu20dhap);
+				cambiarTarifaLibre(getString(R.string.nombreT20DHAvalle), feu20dhav);
+				cambiarTarifaLibre(getString(R.string.nombreT20DHSpunta), feu20dhsp);				
+				cambiarTarifaLibre(getString(R.string.nombreT20DHSllano), feu20dhsll);
+				cambiarTarifaLibre(getString(R.string.nombreT20DHSsupervalle), feu20dhsv);
+
+				cambiarEmisionesCO2(R.string.nombreEmisionPVPC,emispvpc);
+				cambiarEmisionesCO2(R.string.nombreEmisionLibre,emislibre);
+				
 				//Se vuelcan las tarifas definidas por el usuario a la BBDD.
-				volcadoTarifasLibreUsuario(feu20, feu20dhap, feu20dhav, feu20dhsp, feu20dhsv, feu20dhssv, emispvpc, emislibre);	
+				//volcadoTarifasLibreUsuario(feu20, feu20dhap, feu20dhav, feu20dhsp, feu20dhsv, feu20dhssv, emispvpc, emislibre);	
 			}
 			
 			});
@@ -2071,6 +2114,10 @@ public class NeurGai extends ActionBarActivity {
     				findViewById(R.id.text20APVPC).setVisibility(View.GONE);
     				findViewById(R.id.text20DHAPVPC).setVisibility(View.GONE);
     				findViewById(R.id.text20DHSPVPC).setVisibility(View.GONE);
+    				
+    				findViewById(R.id.co2).setVisibility(View.GONE);
+    				findViewById(R.id.co2libre).setVisibility(View.GONE);
+    				findViewById(R.id.co2pvpc).setVisibility(View.GONE);
     				
     				findViewById(R.id.logoEHU).setVisibility(View.VISIBLE);		// habilita el logo EHU
     			}
@@ -2226,6 +2273,46 @@ public class NeurGai extends ActionBarActivity {
 		.show();
 	}
 	
+	//Gurda las tarifas que el usuario intoduce. Sustituyen las tarifas por defecto.
+	private void cambiarTarifaLibre(String nombreTarifa, double valor){
+		
+		SharedPreferences prefs= 
+				getSharedPreferences("tarifasLibres", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(nombreTarifa, Double.toString(valor));
+		
+		editor.commit();
+	}
+	
+	//Devuelve la tarifa libre que el usuario tenga guardada en su configuración. Sino hay ninguna, devuelve una tarifa por defecto.
+	private double getTarifaLibre(int nombreTarifa, int valorDefecto){
+		SharedPreferences prefs= 
+				getSharedPreferences("tarifasLibres", Context.MODE_PRIVATE);
+		String tarifa =prefs.getString(getString(nombreTarifa), getString(valorDefecto));
+		
+		return Double.parseDouble(tarifa);
+	}
+	
+	//Devuelve la emisión de CO que el usuario tenga guardada sino tuviera, devuelve un valor por defecto.
+	private double getEmisionesCO2(int nombreEmision, int valorDefecto){
+		SharedPreferences prefs= 
+				getSharedPreferences("emisionesCO2", Context.MODE_PRIVATE);
+		String emision =prefs.getString(getString(nombreEmision), getString(valorDefecto));
+		return Double.parseDouble(emision);
+	}
+	
+	//Modifica el valor por defecto.
+	private boolean cambiarEmisionesCO2(int nombreEmision, double valor){
+		
+		SharedPreferences prefs =
+			     getSharedPreferences("emisionesCO2",Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(getString(nombreEmision), Double.toString(valor));
+		
+		return editor.commit();
+	}
+	
+	
 	private boolean cambiarIdioma(String idiomaCod){
 		
 		//Fuerza la configuración del idioma.
@@ -2243,7 +2330,7 @@ public class NeurGai extends ActionBarActivity {
 		return editor.commit();
 	}
 	
-	private boolean cargarIdioma(){
+	private void cargarIdioma(){
 		SharedPreferences prefs= 
 				getSharedPreferences("idiomaApp", Context.MODE_PRIVATE);
 		String idiomaCod=prefs.getString("idioma", Constants.castellanoCode);
@@ -2254,7 +2341,6 @@ public class NeurGai extends ActionBarActivity {
         config.locale = locale;
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
         
-		return true;
 	}
 	
 	@SuppressLint("InflateParams")
