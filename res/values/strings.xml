@@ -7,20 +7,20 @@
     <string name="bienvenidos">¡Bienvenido a neurGAI!</string>
     <string name="creditos">	    neurGAI\nUPV/EHU\nProyecto de innovación para la sostenibilidad.\nVicerrectorado de Estudiantes Empleo y Responsabilidad Social.</string>
     <string name="introducirAmplitud">Introduce la amplitud de calibración del filtro y pulsa el botón</string>
-    <string name="calibrandoCAG">Calibrando el CAG del móvil...</string>
-    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil...</string>
+    <string name="calibrandoCAG">Calibrando el CAG del móvil&#8230;</string>
+    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil&#8230;</string>
     <string name="ajustarConectoryVolumen">Conecta en la entrada de auriculares el conector de calibrado y sube el volumen al máximo</string>
     <string name="cerrarCalibrado">Filtro calibrado, pulsa para continuar</string>
     <string name="introducirAmplitudCorrectamente">Valor incorrecto</string>
-    <string name="grabandoDatosMedida">Grabando datos medidos...</string>
+    <string name="grabandoDatosMedida">Grabando datos medidos&#8230;</string>
     <string name="nulo">" "</string>
     <string name="pulsaParaContinuar">Pulsa para continuar</string>
-    <string name="leyendoCalibracion">Leyendo los datos de la calibración...</string>
+    <string name="leyendoCalibracion">Leyendo los datos de la calibración&#8230;</string>
     <string name="introducirMedidaCorrectamente">Valor incorrecto</string>
-    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar... Pulsa para introducir la medida correcta</string>
+    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar&#8230; Pulsa para introducir la medida correcta</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="tituloConfigTarifasLibres">"Introduce las tarifas de libre mercado (€/kWh) y emisiones de CO2 (gCO2/kWh)</string>
+    <string name="tituloConfigTarifasLibres">Tarifas de libre mercado (€/kWh)&#8230; y emisiones de CO2 (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">amplitud, frecuencia, RMS\n</string>
     
     <string name="cabeceraFicheroCostes">
@@ -46,7 +46,7 @@
 	<string name="punta">Punta</string>
 	<string name="valle">Valle</string>
 	<string name="supervalle">SuperValle</string>
-	<string name="llano">Plana</string>
+	<string name="llano">Llano</string>
     <string name="tituloAnotar">Comenta la medida</string>
     <string name="costes">costes</string>
     <string name="error">Error</string>
@@ -61,11 +61,23 @@
     <string name="cantidadEmisionLibre">0</string>
     <string name="co2">CO2</string>
     <string name="valor2.0Apunta">0.129734</string>
-    <string name="valor2.0DHApunta">0.149231</string>
-    <string name="valor2.0DHAvalle">0.069670</string>
-    <string name="valor2.0DHSpunta">0.152775</string>
-    <string name="valor2.0DHSllano">0.079079</string>
-    <string name="valor2.0DHSvalle">0.061206</string>
+    <string name="valor2.0DHApunta">0.154954</string>
+    <string name="valor2.0DHAvalle">0.076413</string>
+    <string name="valor2.0DHSpunta">0.155062</string>
+    <string name="valor2.0DHSllano">0.086362</string>
+    <string name="valor2.0DHSsvalle">0.063813</string>
+    
+    <string name="nombreT20Apunta">t20A</string>
+    <string name="nombreT20DHApunta">t20dhap</string>
+    <string name="nombreT20DHAvalle">t20dhav</string>
+    <string name="nombreT20DHSpunta">t20dhsp</string>
+    <string name="nombreT20DHSllano">t20dhsll</string>
+    <string name="nombreT20DHSsupervalle">t20dhssv</string>
+    
+    <string name="nombreEmisionPVPC">emisionPVPC</string>
+    <string name="nombreEmisionLibre">emisionLibre</string>
+    
+    <string name="mensajeEmisionesLibreVacias">No has introducido las emisiones de tu comercializadora</string>
     <string name="medidasDePotencia">Medidas de potencia (kW)</string>
     <string name="logo_ehu">logo EHU</string>
 </resources>

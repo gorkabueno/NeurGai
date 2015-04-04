@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="match_parent"
@@ -62,8 +61,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
+            android:hint="@string/valor2.0Apunta"
             android:inputType="numberDecimal|none|"
-            android:hint="@string/valor2.0Apunta" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -136,16 +137,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:hint="@string/valor2.0DHApunta"
-            android:inputType="numberDecimal|none" />
+            android:inputType="numberDecimal|none"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/editText3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/valor2.0DHAvalle" 
-            android:inputType="numberDecimal|none"/>
+            android:gravity="center"
+            android:hint="@string/valor2.0DHAvalle"
+            android:inputType="numberDecimal|none"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView16"
@@ -214,24 +219,31 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:hint="@string/valor2.0DHSpunta"
-            android:inputType="numberDecimal|none|number" />
+            android:inputType="numberDecimal|none|number"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/editText5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/valor2.0DHSllano" 
-              android:inputType="numberDecimal|none"/>
+            android:gravity="center"
+            android:hint="@string/valor2.0DHSllano"
+            android:inputType="numberDecimal|none"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/editText6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/valor2.0DHSvalle"
-            android:inputType="numberDecimal|none" />
+            android:gravity="center"
+            android:hint="@string/valor2.0DHSsvalle"
+            android:inputType="numberDecimal|none"
+            android:textSize="16sp" />
+
     </TableRow>
 
     <TableRow

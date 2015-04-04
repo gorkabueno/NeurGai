@@ -7,20 +7,20 @@
     <string name="bienvenidos">¡Bienvenido a neurGAI!</string>
     <string name="creditos">	    neurGAI\nUPV/EHU\nProyecto de innovación para la sostenibilidad.\nVicerrectorado de Estudiantes Empleo y Responsabilidad Social.</string>
     <string name="introducirAmplitud">Introduce la amplitud de calibración del filtro y pulsa el botón</string>
-    <string name="calibrandoCAG">Calibrando el CAG del móvil...</string>
-    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil...</string>
+    <string name="calibrandoCAG">Calibrando el CAG del móvil&#8230;</string>
+    <string name="calibrandoFiltro">Calibrando el filtro de entrada de audio del móvil&#8230;</string>
     <string name="ajustarConectoryVolumen">Conecta en la entrada de auriculares el conector de calibrado y sube el volumen al máximo</string>
     <string name="cerrarCalibrado">Filtro calibrado, pulsa para continuar</string>
     <string name="introducirAmplitudCorrectamente">Valor incorrecto</string>
-    <string name="grabandoDatosMedida">Grabando datos medidos...</string>
+    <string name="grabandoDatosMedida">Grabando datos medidos&#8230;</string>
     <string name="nulo">" "</string>
     <string name="pulsaParaContinuar">Pulsa para continuar</string>
-    <string name="leyendoCalibracion">Leyendo los datos de la calibración...</string>
+    <string name="leyendoCalibracion">Leyendo los datos de la calibración&#8230;</string>
     <string name="introducirMedidaCorrectamente">Valor incorrecto</string>
-    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar... Pulsa para introducir la medida correcta</string>
+    <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar&#8230; Pulsa para introducir la medida correcta</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="tituloConfigTarifasLibres">"Introduce las tarifas de libre mercado (€/kWh) y emisiones de CO2 (gCO2/kWh)</string>
+    <string name="tituloConfigTarifasLibres">Tarifas libre mercado (€/kWh) y emisiones CO2 (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">amplitud, frecuencia, RMS\n</string>
     
     <string name="cabeceraFicheroCostes">
@@ -43,7 +43,7 @@
 	<string name="punta">Punta</string>
 	<string name="valle">Valle</string>
 	<string name="supervalle">SuperValle</string>
-	<string name="llano">Plana</string>
+	<string name="llano">Llano</string>
     <string name="tituloAnotar">Comenta la medida</string>
     <string name="costes">costes</string>
     <string name="error">Error</string>

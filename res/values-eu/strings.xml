@@ -7,20 +7,20 @@
     <string name="bienvenidos">Ongi etorri neurGAI-ra!</string>
     <string name="creditos">	    neurGAI\nUPV/EHU\n Iraunkortasunaren arloko Berrikuntzarako proiektua.\nIkasleen, Enpleguaren eta Gizarte Erantzukizunaren arloko Errektoreordetza.</string>
     <string name="introducirAmplitud">Iragazkiaren kalibraziorako anplitudea sartu, eta botoia sakatu</string>
-    <string name="calibrandoCAG">Mugikorraren Irabazi Automatikoaren Kontrola kalibratzen...</string>
-    <string name="calibrandoFiltro">Mugikorraren audio-sarrerako iragazkia kalibratzen...</string>
+    <string name="calibrandoCAG">Mugikorraren Irabazi Automatikoaren Kontrola kalibratzen&#8230;</string>
+    <string name="calibrandoFiltro">Mugikorraren audio-sarrerako iragazkia kalibratzen&#8230;</string>
     <string name="ajustarConectoryVolumen">Kalibraziorako konektorea aurikularren sarreran jarri, eta bolumena maila altuenean jarri</string>
     <string name="cerrarCalibrado">Iragazkia kalibratuta dago, sakatu jarraitzeko</string>
     <string name="introducirAmplitudCorrectamente">Balioa ez da zuzena</string>
-    <string name="grabandoDatosMedida">Neurtutako datuak gordetzen...</string>
+    <string name="grabandoDatosMedida">Neurtutako datuak gordetzen&#8230;</string>
     <string name="nulo">" "</string>
     <string name="pulsaParaContinuar">Sakatu jarraitzeko</string>
-    <string name="leyendoCalibracion">Kalibrazioko datuak berreskuratzen...</string>
+    <string name="leyendoCalibracion">Kalibrazioko datuak berreskuratzen&#8230;</string>
     <string name="introducirMedidaCorrectamente">Balioa ez da zuzena</string>
-    <string name="realizandoMedidasSinCalibrar">Neurketak azkeneko kalibraziorik gabe egiten... Sakatu neurketa zuzena sartzeko</string>
+    <string name="realizandoMedidasSinCalibrar">Neurketak azkeneko kalibraziorik gabe egiten&#8230; Sakatu neurketa zuzena sartzeko</string>
     <string name="aceptar">Onartu</string>
     <string name="cancelar">Ezeztatu</string>
-    <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (gCO2/kWh)</string>
+    <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">anplitudea, maiztasuna, RMS\n</string>
     
     <string name="cabeceraFicheroCostes">

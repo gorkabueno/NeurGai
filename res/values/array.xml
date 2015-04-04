@@ -5,4 +5,17 @@
         <item>500</item>
         <item >1000</item>
     </integer-array>
+    
+    <string-array name="tarifasLibres">
+        <item name="valor2.0Apunta">0.129734</item>
+	    <item name="valor2.0DHApunta">0.149231</item>
+	    <item name="valor2.0DHAvalle">0.069670</item>
+	    <item name="valor2.0DHSpunta">0.152775</item>
+	    <item name="valor2.0DHSllano">0.079079</item>
+	    <item name="valor2.0DHSvalle">0.061206</item>
+    </string-array>
+    <string-array name="emisionesCO2">
+	    <item name="mediaNacionalEmisiones">0.27</item>
+	    <item name="cantidadEmisionPVPC">0.36</item>
+    </string-array>
 </resources>

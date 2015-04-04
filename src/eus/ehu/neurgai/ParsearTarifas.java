@@ -24,13 +24,10 @@ public class ParsearTarifas {
 	private List<Tarifa> tarifa20APVPC=new ArrayList<Tarifa>();
 	private List<Tarifa> tarifa20DHAPVPC=new ArrayList<Tarifa>();
 	private List<Tarifa> tarifa20DHSPVPC=new ArrayList<Tarifa>();
-	
-	//Tarifas estándar
-	private List<Tarifa> tarifa20A=new ArrayList<Tarifa>();
-	private List<Tarifa> tarifa20DHA=new ArrayList<Tarifa>();
-	private List<Tarifa> tarifa20DHS=new ArrayList<Tarifa>();
 	private String fecha;
 	
+	
+	//Al crear el objeto, se descargan los datos de la web.
 	public ParsearTarifas(){
 		
 		//algoritmoActualizacionURLPVPC();
@@ -81,12 +78,7 @@ public class ParsearTarifas {
 		}
 	}
 	
-	
-	//Método de extracción de las tarifas estándar (Goiener).
-	private List<Tarifa> asignarTarifaEstandar(){
-		return null;
-	}
-	
+	//Descarga la jerarquía DOM de la web del ministerio.
 	public Document descargarDOM(String direccion){
 		URL url;
 		Document dom = null;
@@ -103,33 +95,6 @@ public class ParsearTarifas {
 			}
 			return dom;
 	}
-/*
-	private boolean algoritmoActualizacionURLPVPC(){
-		boolean resultadoConsulta=false;
-		
-		String direccion;
-		String fechaDiaSig;
-        
-		Calendar calendar=Calendar.getInstance();
-		calendar.setTime(new Date());
-		
-		
-		calendar.add(Calendar.DAY_OF_YEAR, 1);
-		fechaDiaSig=new SimpleDateFormat("yyyyMMdd").format(calendar.getTime());
-		direccion= "http://www.esios.ree.es/Solicitar?fileName=pvpcdesglosehorario_"+fechaDiaSig+"&fileType=xml&idioma=es";
-			
-		if(descargarDOM(direccion)==null){
-			resultadoConsulta=false;
-		}
-		else{
-			resultadoConsulta=true;
-		}
-			
-		return resultadoConsulta;
-	}
-
-	*/
-	
 	public List<Tarifa> getTarifa20A_PVPC() {
 		if(domPVPC!=null){
 			tarifa20APVPC=asignarTarifaPVPC(6);
@@ -147,20 +112,5 @@ public class ParsearTarifas {
 			tarifa20DHAPVPC=asignarTarifaPVPC(7);
 		}
 		return tarifa20DHAPVPC;
-	}
-
-	public List<Tarifa> getTarifa20A() {
-		return tarifa20A;
-	}
-
-	
-
-	public List<Tarifa> getTarifa20DHA() {
-		return tarifa20DHA;
-	}
-
-	
-	public List<Tarifa> getTarifa20DHS() {
-		return tarifa20DHS;
 	}
 }
