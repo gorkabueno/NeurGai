@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <string name="app_name"> neurGAI</string>
     <string name="euskaraz">Euskaraz</string>
     <string name="local_language">Castellano</string>
@@ -22,9 +22,7 @@
     <string name="cancelar">Cancelar</string>
     <string name="tituloConfigTarifasLibres">Tarifas de libre mercado (€/kWh)&#8230; y emisiones de CO2 (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">amplitud, frecuencia, RMS\n</string>
-    
-    <string name="cabeceraFicheroCostes">
-        Comentarios, Fecha y Hora, Tiempo Unix, Potencia(W),
+    <string name="cabeceraFicheroCostes">        Comentarios, Fecha y Hora, Tiempo Unix, Potencia(W),
         PVPC,,,,,,,,,Comercializadora libre\n
         ,,,,2.0A,,,2.0DHA,,,2.0DHS,,,2.0A,,,2.0DHA,,,2.0DHS \n
 	 ,,,,
@@ -34,19 +32,18 @@
      Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
 	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
 	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
-	 \n
-	</string>
-	<string name="pulsar">Pulsar</string>
-	<string name="pvpc">PVPC (c€)</string>
-	<string name="libre">Libre (c€)</string>
-	<string name="notas">notas</string>
-	<string name="t20dha">2.0DHA</string>
-	<string name="t20a">2.0A</string>
-	<string name="t20dhs">2.0DHS</string>
-	<string name="punta">Punta</string>
-	<string name="valle">Valle</string>
-	<string name="supervalle">SuperValle</string>
-	<string name="llano">Llano</string>
+	 \n</string>
+    <string name="pulsar">Pulsar</string>
+    <string name="pvpc">PVPC (c€)</string>
+    <string name="libre">Libre (c€)</string>
+    <string name="notas">notas</string>
+    <string name="t20dha">2.0DHA</string>
+    <string name="t20a">2.0A</string>
+    <string name="t20dhs">2.0DHS</string>
+    <string name="punta">Punta</string>
+    <string name="valle">Valle</string>
+    <string name="supervalle">SuperValle</string>
+    <string name="llano">Llano</string>
     <string name="tituloAnotar">Comenta la medida</string>
     <string name="costes">costes</string>
     <string name="error">Error</string>
@@ -66,18 +63,19 @@
     <string name="valor2.0DHSpunta">0.155062</string>
     <string name="valor2.0DHSllano">0.086362</string>
     <string name="valor2.0DHSsvalle">0.063813</string>
-    
     <string name="nombreT20Apunta">t20A</string>
     <string name="nombreT20DHApunta">t20dhap</string>
     <string name="nombreT20DHAvalle">t20dhav</string>
     <string name="nombreT20DHSpunta">t20dhsp</string>
     <string name="nombreT20DHSllano">t20dhsll</string>
     <string name="nombreT20DHSsupervalle">t20dhssv</string>
-    
     <string name="nombreEmisionPVPC">emisionPVPC</string>
     <string name="nombreEmisionLibre">emisionLibre</string>
-    
     <string name="mensajeEmisionesLibreVacias">No has introducido las emisiones de tu comercializadora</string>
     <string name="medidasDePotencia">Medidas de potencia (kW)</string>
     <string name="logo_ehu">logo EHU</string>
+    <string name="title_activity_bluetooth_dialog">BluetoothDialog</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

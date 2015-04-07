@@ -1,11 +1,14 @@
 package eus.ehu.neurgai;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +18,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
@@ -22,10 +26,14 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -41,6 +49,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.PhoneStateListener;
@@ -134,103 +143,107 @@ public class NeurGai extends ActionBarActivity {
 		Cursor c = dbRead.query(
 				ColumnasCostes.TABLE_NAME, BaseDatosNeurGAI.projectionCostes , null, null, null, null, null, null
 		    );
-	
+		
+			
+		
 		c.moveToFirst();
-		do{
-			
-			Coste costeFila=new Coste();
-			
-			
-
-			/*************************Tabla de los Costes*************************************/
-			
-			costeFila.setComentario(c.getString(
-					c.getColumnIndex(
-							BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COMENTARIOS)));
-
-			costeFila.setFechaMedida(c.getString(
-								c.getColumnIndex(
-										BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_FECHA_MEDIDA)));
-			costeFila.setTiempoMedida(c.getDouble
+		if(c.getCount()>0&&c!=null){
+			do{
+				
+				Coste costeFila=new Coste();
+				
+				
+	
+				/*************************Tabla de los Costes*************************************/
+				
+				costeFila.setComentario(c.getString(
+						c.getColumnIndex(
+								BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COMENTARIOS)));
+	
+				costeFila.setFechaMedida(c.getString(
+									c.getColumnIndex(
+											BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_FECHA_MEDIDA)));
+				costeFila.setTiempoMedida(c.getDouble
+									(c.getColumnIndex
+										(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TIEMPO_MEDIDA)));
+				costeFila.setPotencia(c.getInt
 								(c.getColumnIndex
-									(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TIEMPO_MEDIDA)));
-			costeFila.setPotencia(c.getInt
-							(c.getColumnIndex
-								(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_POTENCIA)));
-			
-			
-			costeFila.setTarifa20A(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A)));
-			costeFila.setTarifa20DHA(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA)));
-			costeFila.setTarifa20DHS(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS)));
-			
-			costeFila.setTarifa20A_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A_PVPC)));
-			costeFila.setTarifa20DHA_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA_PVPC)));
-			costeFila.setTarifa20DHS_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC)));
-			
-			
-			costeFila.setCoste20A_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A_PVPC)));
-			
-			costeFila.setCoste20DHA_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA_PVPC)));
-			costeFila.setCoste20DHS_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS_PVPC)));
-
-			costeFila.setCoste20A(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A)));
-			costeFila.setCoste20DHA(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA)));
-			costeFila.setCoste20DHS(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS)));
-			
-			
-			costeFila.setCosteAcumulado20A_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A_PVPC)));
-			costeFila.setCosteAcumulado20DHA_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA_PVPC)));
-			costeFila.setCosteAcumulado20DHS_PVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC)));
-
-			costeFila.setCosteAcumulado20A(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A)));
-			costeFila.setCosteAcumulado20DHA(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA)));
-			costeFila.setCosteAcumulado20DHS(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS)));
-			
-			costeFila.setEmisionesAcumuladasLibre(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre)));
-			costeFila.setEmisionesAcumuladasPVPC(
-					c.getDouble(
-							c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC)));
-			tablaCostes.add(costeFila);
-			
-		}while(c.moveToNext());
+									(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_POTENCIA)));
+				
+				
+				costeFila.setTarifa20A(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A)));
+				costeFila.setTarifa20DHA(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA)));
+				costeFila.setTarifa20DHS(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS)));
+				
+				costeFila.setTarifa20A_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20A_PVPC)));
+				costeFila.setTarifa20DHA_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHA_PVPC)));
+				costeFila.setTarifa20DHS_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_TARIFA20DHS_PVPC)));
+				
+				
+				costeFila.setCoste20A_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A_PVPC)));
+				
+				costeFila.setCoste20DHA_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA_PVPC)));
+				costeFila.setCoste20DHS_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS_PVPC)));
+	
+				costeFila.setCoste20A(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20A)));
+				costeFila.setCoste20DHA(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHA)));
+				costeFila.setCoste20DHS(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ENERGIA20DHS)));
+				
+				
+				costeFila.setCosteAcumulado20A_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A_PVPC)));
+				costeFila.setCosteAcumulado20DHA_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA_PVPC)));
+				costeFila.setCosteAcumulado20DHS_PVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS_PVPC)));
+	
+				costeFila.setCosteAcumulado20A(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20A)));
+				costeFila.setCosteAcumulado20DHA(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHA)));
+				costeFila.setCosteAcumulado20DHS(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_COSTE_ACUMULADO_ENERGIA20DHS)));
+				
+				costeFila.setEmisionesAcumuladasLibre(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre)));
+				costeFila.setEmisionesAcumuladasPVPC(
+						c.getDouble(
+								c.getColumnIndex(BaseDatosNeurGAI.ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC)));
+				tablaCostes.add(costeFila);
+				
+			}while(c.moveToNext());
+		}
 		
 		dbRead.delete(ColumnasCostes.TABLE_NAME, null, null);
 		c.close();
@@ -342,61 +355,6 @@ public class NeurGai extends ActionBarActivity {
 		bbdd.close();
 	}
 	
-	//Probablemente no valga para nada.
-	/*
-	public void volcadoTarifasLibreUsuario(){
-		
-		
-		Calendar calendar=Calendar.getInstance();
-		calendar.setTime(new Date());
-		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
-		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
-		
-		int eqinocVera=2106;
-		int eqinocInv=2212;
-		int fechaSistemInt=Integer.parseInt(fechaSistema);
-		double tarifa20A, tarifa20DHA,tarifa20DHS;
-		
-		
-		//Supuesto de que estamos en invierno
-		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
-			
-			//Punta
-			if(hora>=13&&hora<23){
-				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
-				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
-			}else{
-				
-				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
-				//Supervalle
-				if(hora>=1&&hora<7){
-					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
-
-				}else{
-					//Valle DHS.
-					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSvalle, R.string.valor2_0DHSsvalle);
-				}
-			}
-		}else{
-			//En caso contrario, estamos en verano.
-			//Punta
-			if(hora>=12&&hora<22){
-				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
-				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
-
-			}else{
-				//Valle y supervalle.
-				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
-				if(hora>=0&&hora<6){
-					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSllano, R.string.valor2_0DHSllano);
-
-				}else{
-					tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSvalle, R.string.valor2_0DHSsvalle);
-				}
-			}
-		}
-	}
-	*/
 	
 	private double getTarifa20DHS(){
 		Calendar calendar=Calendar.getInstance();
@@ -774,8 +732,182 @@ public class NeurGai extends ActionBarActivity {
 		
 	}
 
+	/******************************Bluetooth*************************************/
+	int requestCode=0000;
+	
+	
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		BluetoothDevice device ;
+		if ( requestCode == this.requestCode ){
+	          if ( resultCode == Activity.RESULT_OK ){
+	        	  device=data.getParcelableExtra("dispositivo");
+	        	  Toast.makeText(getBaseContext(), device.getName().toString()+"\n"+device.getAddress(), Toast.LENGTH_LONG).show();
+	        	  ConnectThread mConnectThread = new ConnectThread(device);
+	    	      mConnectThread.start();
+	          }
+	     }
+	}
+
+	// Handler que recogerá los valores enviados por hilo de conexión.
+	private final Handler handlerBT = new Handler() {
+		
+		
+		public void handleMessage(Message mensaje)
+		{	
+			StringBuilder tiempo=new StringBuilder();
+			StringBuilder potencia=new StringBuilder();
+			char[] charArray=mensaje.obj.toString().toCharArray();
+			int j=0;
+			
+			if(charArray.length>0){
+				if(charArray[j]=='#'){
+					j++;
+					while(charArray[j]!='€'){
+						tiempo.append(charArray[j]);
+						j++;
+					}
+				}
+				if(charArray[j]=='€'){
+					j++;
+					while(charArray[j]!='*'){
+						potencia.append(charArray[j]);
+						j++;
+					}
+				}
+			}
+			
+			
+			TextView tx=(TextView)findViewById(R.id.texto1);
+			tx.setVisibility(View.VISIBLE);
+			tx.setText((String)mensaje.obj);
+			tx.setText("Tiempo: "+tiempo+" Potencia: "+potencia);
+			
+			
+			
+			
+			
+			
+			Log.i("Medidas", "Tiempo: "+tiempo+" Potencia: "+potencia);
+		}
+	};
+	
+
+	private class ConnectThread extends Thread {
+		private final BluetoothSocket mSocket;
+		private  final UUID direccionSerieDefecto =UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	
+	    public ConnectThread(BluetoothDevice device) {
+	        
+	    	BluetoothSocket tmp = null;
+	        // Get a BluetoothSocket to connect with the given BluetoothDevice
+	        try {
+	            // MY_UUID is the app's UUID string, also used by the server code
+	            tmp = device.createRfcommSocketToServiceRecord(direccionSerieDefecto);
+	            
+	        } catch (IOException e) { 
+	        	Log.i("Problema creación del socket", e.getMessage());
+	        }
+	        mSocket = tmp;
+	    }
+	 
+    	public void run() {
+
+ 
+	        try {
+	        	
+	        	//Se conecta el dispositivo a través del socket.
+	            mSocket.connect();
+	        } catch (IOException connectException) {
+	        	Log.i("Problemas en la conexión a través del socket.", connectException.getMessage());
+	            
+	        	try {
+	                mSocket.close();
+	            } catch (IOException closeException) { }
+	            return;
+	        }
+ 
+	        //Para la gestión de la conexión se utilia otro hilo.
+	        ConnectedThread mConnectedThred = new ConnectedThread(mSocket);
+	        mConnectedThred.start();
+        }
+	    	
+	    	
+    	//Cerrar socket.
+    	public void cancel() {
+    		try {
+    			mSocket.close();
+    		}catch (IOException e) { }
+    	}
+	}
+	private class ConnectedThread extends Thread {
+	    
+		private final BluetoothSocket mSocket;			//El socket abierto por el hilo padre.
+        private final InputStream mInputStream;			//Stream de recepción de datos que estará asociado al socket.
+        	
+        public ConnectedThread(BluetoothSocket socket) {
+            mSocket = socket;
+            InputStream tmpIn = null;
+
+            try {
+                tmpIn = socket.getInputStream();
+            
+            } catch (IOException e) {
+                Log.i("Socket temporal no se ha podido crear: ", e.getMessage());
+            }
+            
+            mInputStream = tmpIn;
+        }
+		 
+	    public void run() {
+            Log.i("Inicio datos.","Iniciada la recepción de datos");
+            
+            //Permance a la escucha de datos.
+            while (true) {
+            	read();
+            }
+        }
+	    
+	    
+		public void read(){
+	    	
+        	BufferedReader bufferedReader=null;
+        	String lineaLeida;
+        	
+        	//Se construye un BufferedReader para facilitar la lectura de los datos en InputStream
+        	bufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
+        	
+        	
+        	try {
+        		//Se recorre el BufferedReader, en cada salto de línea 
+				while ((lineaLeida = bufferedReader.readLine()) != null) {
+					Message msg=new Message();
+					msg.obj=lineaLeida;
+					handlerBT.sendMessage(msg);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+
+		 
+	    //Se cierra la conexión del socket.
+	    public void cancel() {
+	        try {
+	            mSocket.close();
+	        } catch (IOException e) { }
+	    }
+	}
+	/******************************Bluetooth*************************************/
+	
+	
+	
+	
+	
+	
 	/**********************************************************************************************/
 	private final Runnable realizarUnaMedida = new Runnable(){
+		
 		@Override
 	    public void run() {
 			if (!grabarDatos&&midiendo) {							// mientras graba datos de última medida no realiza más medidas
@@ -874,6 +1006,7 @@ public class NeurGai extends ActionBarActivity {
 						Constants.NUMERO_MAXIMO_MEDIDAS_EN_GRAFICO
 				);
 				
+				
 				// acondiciona los ejes verticales, si necesario, para que las marcas verticales coincidan con las potencias normalizadas de las tarifas
 				String[] escalasPotencia = new String[] {"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20"};
 				int numeroMarcasVerticales = (int) serieMedidas.getHighestValueY() / 1150 + 2;
@@ -909,6 +1042,7 @@ public class NeurGai extends ActionBarActivity {
 			if (!isFinishing()) handler.postDelayed(this, periodicidadMedidaEnSegundos * 1000);
 	    }
 	};
+
 	
 	private DatosCalibrado datosCalibrado = new DatosCalibrado(Constants.numeroAmplitudes, Constants.numeroFrecuencias);
 	
@@ -949,7 +1083,6 @@ public class NeurGai extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.neurgai);
 		cargarIdioma();
-
 		//Hay que comentarlas después de la primera instalación.
 		
 		//BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
@@ -2018,8 +2151,13 @@ public class NeurGai extends ActionBarActivity {
             return true;
             
 		case R.id.bluetooth:
+			
+			
 			medidaSonda = false;
 			menu.findItem(R.id.sonda_bluetooth).setIcon(R.drawable.ic_bluetoothnegro);
+			Intent intent=new Intent(getApplicationContext(), BluetoothDialog.class);
+			startActivityForResult(intent, requestCode);
+
             return true;
             
 		case R.id.s1:
@@ -2136,12 +2274,12 @@ public class NeurGai extends ActionBarActivity {
 			//Incluir anotar=true; en la condición de Aceptar del diálogo.
 			//Guardarlo una vez en la bbdd.
 			
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle(getString(R.string.tituloAnotar));
+			AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+			alerta.setTitle(getString(R.string.tituloAnotar));
 			final EditText input = new EditText(this);
-			alert.setView(input);
+			alerta.setView(input);
 			
-			alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+			alerta.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 			  Editable value= input.getText();
 			  comentario=value.toString();
@@ -2149,13 +2287,13 @@ public class NeurGai extends ActionBarActivity {
 			  }
 			});
 			
-			alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+			alerta.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int whichButton) {
 				  return;
 			  }
 			});
 
-			alert.show();
+			alerta.show();
 			handler.postDelayed(realizarUnaMedida, 0);
 			return true;
             
@@ -2226,6 +2364,7 @@ public class NeurGai extends ActionBarActivity {
 	     })
 	     .show();
 	}
+	
 	
 	private void guardarArrays(String path, String cabecera, double[] arrayDatos) {
 
@@ -2311,7 +2450,6 @@ public class NeurGai extends ActionBarActivity {
 		
 		return editor.commit();
 	}
-	
 	
 	private boolean cambiarIdioma(String idiomaCod){
 		
