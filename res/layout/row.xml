@@ -264,7 +264,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.20"
             android:gravity="end"
-            android:hint="@string/mediaNacionalEmisiones"
+            android:hint="@string/cantidadEmisionPVPC"
             android:inputType="numberDecimal|none" >
         </EditText>
 

@@ -20,7 +20,7 @@
     <string name="realizandoMedidasSinCalibrar">Realizando medidas sin calibrar&#8230; Pulsa para introducir la medida correcta</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="tituloConfigTarifasLibres">Tarifas de libre mercado (€/kWh)&#8230; y emisiones de CO2 (kgCO2/kWh)</string>
+    <string name="tituloConfigTarifasLibres">Tarifas libre mercado (€/kWh) y emisiones CO2 (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">amplitud, frecuencia, RMS\n</string>
     <string name="cabeceraFicheroCostes">        Comentarios, Fecha y Hora, Tiempo Unix, Potencia(W),
         PVPC,,,,,,,,,Comercializadora libre\n
@@ -34,12 +34,12 @@
 	 Tarifa(€/kWh) ,Coste medida(€) ,Coste acumulado(€) ,
 	 \n</string>
     <string name="pulsar">Pulsar</string>
-    <string name="pvpc">PVPC (c€)</string>
-    <string name="libre">Libre (c€)</string>
+    <string name="pvpc">PVPC</string>
+    <string name="libre">Libre</string>
     <string name="notas">notas</string>
-    <string name="t20dha">2.0DHA</string>
-    <string name="t20a">2.0A</string>
-    <string name="t20dhs">2.0DHS</string>
+    <string name="t20dha">2.0DHA (c€)</string>
+    <string name="t20a">2.0A (c€)</string>
+    <string name="t20dhs">2.0DHS (c€)</string>
     <string name="punta">Punta</string>
     <string name="valle">Valle</string>
     <string name="supervalle">SuperValle</string>
@@ -53,10 +53,9 @@
     <string name="emisionesPVPC">Emisiones Com. PVPC</string>
     <string name="emisionesLibre">Emisiones Com. Libre</string>
     <string name="unidadEmisiones">kg CO2/kWh</string>
-    <string name="mediaNacionalEmisiones">0.27</string>
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
-    <string name="co2">g CO2</string>
+    <string name="co2">CO2 (g)</string>
     <string name="valor2.0Apunta">0.129734</string>
     <string name="valor2.0DHApunta">0.154954</string>
     <string name="valor2.0DHAvalle">0.076413</string>
@@ -71,11 +70,24 @@
     <string name="nombreT20DHSsupervalle">t20dhssv</string>
     <string name="nombreEmisionPVPC">emisionPVPC</string>
     <string name="nombreEmisionLibre">emisionLibre</string>
-    <string name="mensajeEmisionesLibreVacias">No has introducido las emisiones de tu comercializadora</string>
     <string name="medidasDePotencia">Medidas de potencia (kW)</string>
     <string name="logo_ehu">logo EHU</string>
     <string name="title_activity_bluetooth_dialog">BluetoothDialog</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="continuar">Continuar</string>
+    <string name="parar">Parar</string>
+    <string name="grabaryreiniciar">Grabar y reiniciar</string>
+    <string name="anotar">Anotar</string>
+    <string name="grabarDatos">Grabar datos</string>
+    <string name="tarifas">Tarifas y emisiones</string>
+    <string name="sondaBluetooth">Sonda/Bluetooth</string>
+    <string name="cambiarIdioma">Cambiar idioma</string>
+    <string name="s1">Cada 2 segundos</string>
+    <string name="s10">Cada 10 segundos</string>
+    <string name="s30">Cada 30 segundos</string>
+    <string name="m1">Cada minuto</string>
+    <string name="m5">Cada 5 minutos</string>
+    <string name="m10">Cda 10 minutos</string>
+    <string name="castellano">Castellano</string>
 </resources>

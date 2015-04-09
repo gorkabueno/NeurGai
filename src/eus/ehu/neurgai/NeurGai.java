@@ -1082,7 +1082,17 @@ public class NeurGai extends ActionBarActivity {
 		Log.i("neurGAI", "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.neurgai);
+		
+		// configura actionBar
+		ActionBar bar = getSupportActionBar();
+		bar.setDisplayShowHomeEnabled(true);
+		bar.setTitle(R.string.app_name);
+		bar.setLogo(R.drawable.ic_launcher);
+		bar.setDisplayShowTitleEnabled(true);
+		bar.setDisplayUseLogoEnabled(true);
+		
 		cargarIdioma();
+		
 		//Hay que comentarlas después de la primera instalación.
 		
 		//BaseDatosNeurGAI bbdd = new BaseDatosNeurGAI(this);
@@ -1174,14 +1184,6 @@ public class NeurGai extends ActionBarActivity {
 		// trata de recuperar los datos de calibración, y si no existen comienza el proceso de calibrado
 		// comprueba si existe el fichero de calibración
 		if (false == new File(Constants.pathFicheroCalibracion + "/calibracion.bin").exists()) {
-			
-			// configura actionBar
-			ActionBar bar = getSupportActionBar();
-			bar.setDisplayShowHomeEnabled(true);
-			bar.setTitle(R.string.app_name);
-			bar.setLogo(R.drawable.ic_launcher);
-			bar.setDisplayShowTitleEnabled(true);
-			bar.setDisplayUseLogoEnabled(true);
 			
 			mProgress = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -2108,13 +2110,11 @@ public class NeurGai extends ActionBarActivity {
 					emislibre=Double.parseDouble(emisionesLibre.getText().toString());
 				}else{
 					emislibre=(Double.parseDouble(getString(R.string.cantidadEmisionLibre)));
-					Toast.makeText(getBaseContext(), R.string.mensajeEmisionesLibreVacias, Toast.LENGTH_LONG).show();
 				}
 				if(emisionesPVPC!=null&&!emisionesPVPC.getText().toString().isEmpty()){
 					emispvpc=Double.parseDouble(emisionesPVPC.getText().toString());
 				}else{
 					emispvpc=(Double.parseDouble(getString(R.string.cantidadEmisionPVPC)));
-					
 				}
 				
 				cambiarTarifaLibre(getString(R.string.nombreT20Apunta), feu20ap);
@@ -2336,6 +2336,7 @@ public class NeurGai extends ActionBarActivity {
 	        if(cambiarIdioma(Constants.castellanoCode)){
 	            Toast.makeText(this, "Idioma Castellano", Toast.LENGTH_LONG).show();
 	        }
+	        supportInvalidateOptionsMenu();
 	        	
 			return true;
 			
@@ -2344,6 +2345,7 @@ public class NeurGai extends ActionBarActivity {
 	        if(cambiarIdioma(Constants.euskeraCode)){
 	            Toast.makeText(this, "Euskaraz aukeratuta", Toast.LENGTH_LONG).show();
 	        }
+	        supportInvalidateOptionsMenu();
 
 			return true;
   
@@ -2432,7 +2434,7 @@ public class NeurGai extends ActionBarActivity {
 		return Double.parseDouble(tarifa);
 	}
 	
-	//Devuelve la emisión de CO que el usuario tenga guardada sino tuviera, devuelve un valor por defecto.
+	//Devuelve la emisión de CO2 que el usuario tenga guardada sino tuviera, devuelve un valor por defecto.
 	private double getEmisionesCO2(int nombreEmision, int valorDefecto){
 		SharedPreferences prefs= 
 				getSharedPreferences("emisionesCO2", Context.MODE_PRIVATE);

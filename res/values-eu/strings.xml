@@ -22,9 +22,7 @@
     <string name="cancelar">Ezeztatu</string>
     <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">anplitudea, maiztasuna, RMS\n</string>
-    
-    <string name="cabeceraFicheroCostes">
-        Komentarioak, Data eta ordua, Unix Denbora, Potentzia(W),
+    <string name="cabeceraFicheroCostes">        Komentarioak, Data eta ordua, Unix Denbora, Potentzia(W),
         PVPC,,,,,,,,,Merkaturatzaile librea\n
         ,,,,2.0A,,,2.0DHA,,,2.0DHS,,,2.0A,,,2.0DHA,,,2.0DHS \n
 	 ,,,,
@@ -34,11 +32,8 @@
      Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
-	 \n
-	</string>
+	 \n</string>
 	<string name="pulsar">Sakatu</string>
-	<string name="pvpc">PVPC (c€)</string>
-	<string name="libre">Librea (c€)</string>
 	<string name="notas">notak</string>
 	<string name="punta">Puntakoa</string>
 	<string name="valle">Sakonunekoa</string>
@@ -53,8 +48,22 @@
     <string name="emisionesPVPC">PVPC-ren isurketak</string>
     <string name="emisionesLibre">Merk. Librearen isurketak</string>
     <string name="unidadEmisiones">kg CO2/kWh</string>
-    <string name="mediaNacionalEmisiones">0.27</string>
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
     <string name="medidasDePotencia">Potentzia neurketak (kW)</string>
+    <string name="continuar">Jarraitu neurketekin</string>
+    <string name="parar">Gelditu</string>
+    <string name="grabaryreiniciar">Grabatu eta berrabiarazi</string>
+    <string name="anotar">Idatzi</string>
+    <string name="grabarDatos">Datuak grabatu</string>
+    <string name="tarifas">Tarifak eta isurketak</string>
+    <string name="sondaBluetooth">Zunda/Bluetooth</string>
+    <string name="cambiarIdioma">Hizkuntza aldatu</string>
+    <string name="s1">2 segundoz behin</string>
+    <string name="s10">10 segundoz behin</string>
+    <string name="s30">30 segundoz behin</string>
+    <string name="m1">Minuturo</string>
+    <string name="m5">5 minuturo</string>
+    <string name="m10">10 minuturo</string>
+    <string name="castellano">Castellano</string>
 </resources>

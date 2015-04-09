@@ -5,36 +5,36 @@
     
     <item android:id="@+id/tiempo" android:icon="@drawable/ic_reloj" android:title="@string/nulo" app:showAsAction="always">
         <menu>
-            <item android:id="@+id/s1" android:title="2 s" app:showAsAction="always"/>
-            <item android:id="@+id/s10" android:title="10 s" app:showAsAction="always"/>
-            <item android:id="@+id/s30" android:title="30 s" app:showAsAction="always"/>
-            <item android:id="@+id/m1" android:title="1 m" app:showAsAction="always"/>
-            <item android:id="@+id/m5" android:title="5 m" app:showAsAction="always"/>
-            <item android:id="@+id/m10" android:width="15px" android:title="10 m" app:showAsAction="always"/>
+            <item android:id="@+id/s1" android:title="@string/s1" app:showAsAction="always"/>
+            <item android:id="@+id/s10" android:title="@string/s10" app:showAsAction="always"/>
+            <item android:id="@+id/s30" android:title="@string/s30" app:showAsAction="always"/>
+            <item android:id="@+id/m1" android:title="@string/m1" app:showAsAction="always"/>
+            <item android:id="@+id/m5" android:title="@string/m5" app:showAsAction="always"/>
+            <item android:id="@+id/m10" android:width="15px" android:title="@string/m10" app:showAsAction="always"/>
         </menu>
     </item>
     <item android:id="@+id/grabacion" android:icon="@drawable/ic_parar" android:title="@string/nulo" app:showAsAction="always">
         <menu>
-            <item android:id="@+id/continuar" android:icon="@drawable/ic_continuarnegro" android:title="@string/nulo" app:showAsAction="always"/>
-            <item android:id="@+id/parar" android:icon="@drawable/ic_pararnegro" android:title="@string/nulo" app:showAsAction="always"/>
-            <item android:id="@+id/grabaryreiniciar" android:icon="@drawable/ic_empezarnegro" android:title="@string/nulo" app:showAsAction="always"/>
+            <item android:id="@+id/continuar" android:icon="@drawable/ic_continuarnegro" android:title="@string/continuar" app:showAsAction="always"/>
+            <item android:id="@+id/parar" android:icon="@drawable/ic_pararnegro" android:title="@string/parar" app:showAsAction="always"/>
+            <item android:id="@+id/grabaryreiniciar" android:icon="@drawable/ic_empezarnegro" android:title="@string/grabaryreiniciar" app:showAsAction="always"/>
         </menu>
     </item>
-    <item android:id="@+id/anotar" android:icon="@drawable/ic_anotacion" android:title="@string/nulo" app:showAsAction="always"></item>
+    <item android:id="@+id/anotar" android:icon="@drawable/ic_anotacion" android:title="@string/anotar" app:showAsAction="always"></item>
     <item android:id="@+id/ajustes" android:icon="@drawable/ic_ajustes" android:title="@string/nulo" app:showAsAction="always|withText">
         <menu>
-            <item android:id="@+id/grabarDatos" android:icon="@drawable/ic_grabardatosnegro" android:title="@string/nulo" app:showAsAction="always"></item>
-            <item android:id="@+id/tarifas" android:icon="@drawable/ic_tarifasnegro" android:title="@string/nulo" />
-            <item android:id="@+id/sonda_bluetooth" android:icon="@drawable/ic_sondanegro" app:showAsAction="always|withText" android:title="@string/nulo">
+            <item android:id="@+id/grabarDatos" android:icon="@drawable/ic_grabardatosnegro" android:title="@string/grabarDatos" app:showAsAction="always"></item>
+            <item android:id="@+id/tarifas" android:icon="@drawable/ic_tarifasnegro" android:title="@string/tarifas" />
+            <item android:id="@+id/sonda_bluetooth" android:icon="@drawable/ic_sondanegro" app:showAsAction="always|withText" android:title="@string/sondaBluetooth">
                 <menu>
             		<item android:id="@+id/sonda" android:icon="@drawable/ic_sondanegro" android:title="@string/nulo" app:showAsAction="always" />
             		<item android:id="@+id/bluetooth" android:icon="@drawable/ic_bluetoothnegro" android:title="@string/nulo" app:showAsAction="always" />
         		</menu>
     		</item>
-    		 <item android:id="@+id/cambiarIdioma" android:icon="@drawable/ic_idioma" app:showAsAction="always|withText" android:title="@string/nulo">
+    		 <item android:id="@+id/cambiarIdioma" android:icon="@drawable/ic_idioma" app:showAsAction="always|withText" android:title="@string/cambiarIdioma">
                 <menu>
-            		<item android:id="@+id/castellano" android:icon="@drawable/ic_castellano" android:title="@string/nulo" app:showAsAction="always" />
-            		<item android:id="@+id/euskera" android:icon="@drawable/ic_euskera" android:title="@string/nulo" app:showAsAction="always" />
+            		<item android:id="@+id/castellano" android:icon="@drawable/ic_castellano" android:title="@string/castellano" app:showAsAction="always" />
+            		<item android:id="@+id/euskera" android:icon="@drawable/ic_euskera" android:title="@string/euskaraz" app:showAsAction="always" />
         		</menu>
     		</item>
     	 </menu>
