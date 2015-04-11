@@ -284,10 +284,10 @@ public class NeurGai extends ActionBarActivity {
             			costes.get(i).getTiempoMedida()+COMA+
             			Integer.toString(costes.get(i).getPotencia())+COMA+
             			
+            			Double.toString(costes.get(i).getEmisionesAcumuladasPVPC())+COMA+
             			Double.toString(costes.get(i).getTarifa20A_PVPC())+COMA+
             			Double.toString(costes.get(i).getCoste20A_PVPC())+COMA+
             			Double.toString(costes.get(i).getCosteAcumulado20A_PVPC())+COMA+
-            			
             			
             			Double.toString(costes.get(i).getTarifa20DHA_PVPC())+COMA+
             			Double.toString(costes.get(i).getCoste20DHA_PVPC())+COMA+
@@ -297,6 +297,7 @@ public class NeurGai extends ActionBarActivity {
             			Double.toString(costes.get(i).getCoste20DHS_PVPC())+COMA+
             			Double.toString(costes.get(i).getCosteAcumulado20DHS_PVPC())+COMA+
             			
+            			Double.toString(costes.get(i).getEmisionesAcumuladasLibre())+COMA+
             			Double.toString(costes.get(i).getTarifa20A())+COMA+
             			Double.toString(costes.get(i).getCoste20A())+COMA+
             			Double.toString(costes.get(i).getCosteAcumulado20A())+COMA+
@@ -316,8 +317,6 @@ public class NeurGai extends ActionBarActivity {
             e.printStackTrace();
             
         }
-    	
-    	
 	}
 	
 	//Escribe las tarifas PVPC a la BBDD

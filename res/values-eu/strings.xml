@@ -22,13 +22,15 @@
     <string name="cancelar">Ezeztatu</string>
     <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">anplitudea, maiztasuna, RMS\n</string>
-    <string name="cabeceraFicheroCostes">        Komentarioak, Data eta ordua, Unix Denbora, Potentzia(W),
+    <string name="cabeceraFicheroCostes">Komentarioak, Data eta ordua, Unix Denbora, Potentzia(W),
         PVPC,,,,,,,,,Merkaturatzaile librea\n
-        ,,,,2.0A,,,2.0DHA,,,2.0DHS,,,2.0A,,,2.0DHA,,,2.0DHS \n
+        ,,,,Emisiones CO2,2.0A,,,2.0DHA,,,2.0DHS,,,Emisiones CO2,2.0A,,,2.0DHA,,,2.0DHS \n
 	 ,,,,
+	 CO2(kg),
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
+	 CO2(kg),
      Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
 	 Tarifa(€/kWh) ,Neurketaren kostua(€) ,Metatutako kostua(€) ,
