@@ -23,9 +23,6 @@ import java.util.UUID;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.transform.DftNormalization;
-import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 import org.jtransforms.fft.DoubleFFT_1D;
 
@@ -1990,18 +1987,19 @@ public class NeurGai extends ActionBarActivity {
 		
 		double[] dep_Y = new double[Constants.numeroFrecuenciasInterp];
 		double[] modFFT = new double[Constants.LONGITUD_TONO_GRABADO];
+		DoubleFFT_1D fft = new DoubleFFT_1D(Constants.LONGITUD_TONO_GRABADO); 		
+		//FastFourierTransformer fft=new FastFourierTransformer(DftNormalization.STANDARD);
+		//Complex[] tftMuestras;
 		
-		//DoubleFFT_1D fft = new DoubleFFT_1D(Constants.LONGITUD_TONO_GRABADO); 		
-		FastFourierTransformer fft=new FastFourierTransformer(DftNormalization.STANDARD);
-		Complex[] tftMuestras;
+		fft.complexForward(muestras);
+		//tftMuestras=fft.transform(muestras, TransformType.FORWARD);
 		
-		//fft.complexForward(muestras);
-		tftMuestras=fft.transform(muestras, TransformType.FORWARD);
 		
 		for(int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++) {
 			//No se incluye la raíz cuadrada porque necesitamos el módulo al cuadrado.
-			//modFFT[i] = (muestras[2 * i] * muestras[2 * i] + muestras[2 * i + 1] * muestras[2 * i + 1]);	 
-			modFFT[i]=Math.pow(tftMuestras[i].abs(), 2);
+			modFFT[i] = (muestras[2 * i] * muestras[2 * i] + muestras[2 * i + 1] * muestras[2 * i + 1]);	
+			
+			//modFFT[i]=Math.pow(tftMuestras[i].abs(), 2);
 		}
 		
 		//toma las componentes desde frecuenciaInterpInicial hasta frecuenciaInterpFinal
