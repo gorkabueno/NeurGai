@@ -733,9 +733,7 @@ public class NeurGai extends ActionBarActivity {
 	}
 
 	/******************************Bluetooth*************************************/
-	int requestCode=0000;
-	
-	
+	int requestCode = 0000;
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		BluetoothDevice device ;
@@ -749,9 +747,9 @@ public class NeurGai extends ActionBarActivity {
 	     }
 	}
 
+	String potenciaBluetooth;
 	// Handler que recogerá los valores enviados por hilo de conexión.
 	private final Handler handlerBT = new Handler() {
-		
 		
 		public void handleMessage(Message mensaje)
 		{	
@@ -759,7 +757,7 @@ public class NeurGai extends ActionBarActivity {
 			StringBuilder potencia=new StringBuilder();
 			char[] charArray=mensaje.obj.toString().toCharArray();
 			int j=0;
-			
+			Log.i("BT", mensaje.obj.toString());
 			if(charArray.length>0){
 				if(charArray[j]=='#'){
 					j++;
@@ -777,17 +775,12 @@ public class NeurGai extends ActionBarActivity {
 				}
 			}
 			
-			
-			TextView tx=(TextView)findViewById(R.id.texto1);
-			tx.setVisibility(View.VISIBLE);
-			tx.setText((String)mensaje.obj);
-			tx.setText("Tiempo: "+tiempo+" Potencia: "+potencia);
-			
-			
-			
-			
-			
-			
+			potenciaBluetooth = potencia.toString();
+			//TextView tx=(TextView)findViewById(R.id.texto1);
+			//tx.setVisibility(View.VISIBLE);
+			//tx.setText((String)mensaje.obj);
+			//tx.setText("Tiempo: "+tiempo+" Potencia: "+potencia);
+
 			Log.i("Medidas", "Tiempo: "+tiempo+" Potencia: "+potencia);
 		}
 	};
@@ -795,7 +788,7 @@ public class NeurGai extends ActionBarActivity {
 
 	private class ConnectThread extends Thread {
 		private final BluetoothSocket mSocket;
-		private  final UUID direccionSerieDefecto =UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+		private final UUID direccionSerieDefecto =UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	
 	    public ConnectThread(BluetoothDevice device) {
 	        
@@ -813,7 +806,6 @@ public class NeurGai extends ActionBarActivity {
 	 
     	public void run() {
 
- 
 	        try {
 	        	
 	        	//Se conecta el dispositivo a través del socket.
@@ -912,17 +904,24 @@ public class NeurGai extends ActionBarActivity {
 	    public void run() {
 			if (!grabarDatos&&midiendo) {							// mientras graba datos de última medida no realiza más medidas
 				
-				//recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);
-				double[] muestras = guardarMuestras();							// lee las muestras del canal de grabación
-				for (int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++)		// prescinde de los términos nulos antes de guardarlos
-					muestras_grabar[i] = muestras[2 * i];
-				muestras = compensarCAG(muestras);								// compensa el efecto del CAG sobre las muestras leídas
-				DEP_Y_grabar = calcularDEP_Y(muestras);							// calcula la densidad espectral de frecuencia de la señal leída
-				DEP_X_grabar = calcularDEP_X(DEP_Y_grabar);						// calcula la densidad espectral de frecuencia de la señal antes del filtro
-				final double potencia = calcularPotenciaX(DEP_X_grabar);		// calcula la densidad espectral de frecuencia de la señal antes del filtro
+				int potenciaCorregida;
 				
-				final int potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
-				
+				if (medidaSonda) {
+					//recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);
+					double[] muestras = guardarMuestras();							// lee las muestras del canal de grabación
+					for (int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++)		// prescinde de los términos nulos antes de guardarlos
+						muestras_grabar[i] = muestras[2 * i];
+					muestras = compensarCAG(muestras);								// compensa el efecto del CAG sobre las muestras leídas
+					DEP_Y_grabar = calcularDEP_Y(muestras);							// calcula la densidad espectral de frecuencia de la señal leída
+					DEP_X_grabar = calcularDEP_X(DEP_Y_grabar);						// calcula la densidad espectral de frecuencia de la señal antes del filtro
+					final double potencia = calcularPotenciaX(DEP_X_grabar);		// calcula la densidad espectral de frecuencia de la señal antes del filtro
+					
+					potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
+				} else {
+					potenciaCorregida = (int) Float.parseFloat(potenciaBluetooth); // coger la última medida del bluetooth (en W)
+					
+				}
+
 				double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
 				
 				if(empezar) {
@@ -1001,7 +1000,7 @@ public class NeurGai extends ActionBarActivity {
 
 				// se añade la medida a la serie
 				serieMedidas.appendData(
-						new DataPoint(tiempoActual - tiempoInicioMedida, potencia / datosCalibrado.coeficienteAjuste),
+						new DataPoint(tiempoActual - tiempoInicioMedida, potenciaCorregida),
 						true,
 						Constants.NUMERO_MAXIMO_MEDIDAS_EN_GRAFICO
 				);
@@ -1026,6 +1025,8 @@ public class NeurGai extends ActionBarActivity {
 				
 				calcularPrecioMedida(potenciaCorregida, tiempoActual);
 				
+				final int potenciaCorregidaAuxiliar = potenciaCorregida;
+				
 				if (visible) {
 					// muestra en pantalla el dato
 					// y actualiza los ejes del gráfico
@@ -1033,7 +1034,7 @@ public class NeurGai extends ActionBarActivity {
 						@Override
 						public void run() {
 							final TextView textViewMedida = (TextView)findViewById(R.id.texto1);
-							textViewMedida.setText(Integer.toString(potenciaCorregida) + " W");
+							textViewMedida.setText(Integer.toString(potenciaCorregidaAuxiliar) + " W");
 							graficoMedidas.onDataChanged(true, false);
 						}
 					});
@@ -2156,11 +2157,9 @@ public class NeurGai extends ActionBarActivity {
             return true;
             
 		case R.id.bluetooth:
-			
-			
 			medidaSonda = false;
 			menu.findItem(R.id.sonda_bluetooth).setIcon(R.drawable.ic_bluetoothnegro);
-			Intent intent=new Intent(getApplicationContext(), BluetoothDialog.class);
+			Intent intent = new Intent(getApplicationContext(), BluetoothDialog.class);
 			startActivityForResult(intent, requestCode);
 
             return true;

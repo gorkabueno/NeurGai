@@ -39,9 +39,9 @@
     <string name="pvpc">PVPC</string>
     <string name="libre">Libre</string>
     <string name="notas">notas</string>
-    <string name="t20dha">2.0DHA (c€)</string>
+    <string name="t20dha">2.0DHA</string>
     <string name="t20a">2.0A (c€)</string>
-    <string name="t20dhs">2.0DHS (c€)</string>
+    <string name="t20dhs">2.0DHS</string>
     <string name="punta">Punta</string>
     <string name="valle">Valle</string>
     <string name="supervalle">SuperValle</string>
@@ -92,4 +92,6 @@
     <string name="m5">Cada 5 minutos</string>
     <string name="m10">Cda 10 minutos</string>
     <string name="castellano">Castellano</string>
+    <string name="sonda">Sonda</string>
+    <string name="bluetooth">Bluetooth</string>
 </resources>

@@ -27,8 +27,8 @@
             <item android:id="@+id/tarifas" android:icon="@drawable/ic_tarifasnegro" android:title="@string/tarifas" />
             <item android:id="@+id/sonda_bluetooth" android:icon="@drawable/ic_sondanegro" app:showAsAction="always|withText" android:title="@string/sondaBluetooth">
                 <menu>
-            		<item android:id="@+id/sonda" android:icon="@drawable/ic_sondanegro" android:title="@string/nulo" app:showAsAction="always" />
-            		<item android:id="@+id/bluetooth" android:icon="@drawable/ic_bluetoothnegro" android:title="@string/nulo" app:showAsAction="always" />
+            		<item android:id="@+id/sonda" android:icon="@drawable/ic_sondanegro" android:title="@string/sonda" app:showAsAction="always" />
+            		<item android:id="@+id/bluetooth" android:icon="@drawable/ic_bluetoothnegro" android:title="@string/bluetooth" app:showAsAction="always" />
         		</menu>
     		</item>
     		 <item android:id="@+id/cambiarIdioma" android:icon="@drawable/ic_idioma" app:showAsAction="always|withText" android:title="@string/cambiarIdioma">

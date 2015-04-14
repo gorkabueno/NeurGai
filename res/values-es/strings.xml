@@ -68,4 +68,6 @@
     <string name="m5">Cada 5 minutos</string>
     <string name="m10">Cda 10 minutos</string>
     <string name="castellano">Castellano</string>
+    <string name="sonda">Sonda</string>
+    <string name="bluetooth">Bluetooth</string>
 </resources>
