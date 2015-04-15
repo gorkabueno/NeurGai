@@ -108,8 +108,9 @@ public class BluetoothDialog extends ListActivity {
 	
 	public void onCancel(View view){
 		mBluetoothAdapter.cancelDiscovery();
-		buscando.setText(getText(R.string.buscarBT));
-		buscando.setEnabled(true);
+		BluetoothDialog.this.finish();
+		//buscando.setText(getText(R.string.buscarBT));
+		//buscando.setEnabled(true);
 	}
 	
 	 @Override
@@ -121,8 +122,9 @@ public class BluetoothDialog extends ListActivity {
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		
-		unregisterReceiver(mReceiver);
+		if(mReceiver!=null){
+			unregisterReceiver(mReceiver);
+		}
 		
 		super.onPause();
 	}
@@ -133,8 +135,9 @@ public class BluetoothDialog extends ListActivity {
 		super.onRestart();
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		
-		registerReceiver(mReceiver, filter);
+		if(mReceiver!=null){
+			registerReceiver(mReceiver, filter);
+		}
 		
 	}
 	@Override

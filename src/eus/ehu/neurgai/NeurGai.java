@@ -771,8 +771,11 @@ public class NeurGai extends ActionBarActivity {
 						}
 					}
 					if(charArray[j]=='€'){
+						
 						j++;
+						
 						while(charArray[j]!='*'){
+							
 							potencia.append(charArray[j]);
 							j++;
 						}
@@ -1186,7 +1189,7 @@ public class NeurGai extends ActionBarActivity {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         if(mConnectThread!=null){
-        	mConnectThread.cancel();
+        	//mConnectThread.cancel();
         }
         
         super.onDestroy();
