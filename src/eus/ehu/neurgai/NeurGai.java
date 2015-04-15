@@ -847,7 +847,9 @@ public class NeurGai extends ActionBarActivity {
     	//Cerrar socket.
     	public void cancel() {
     		try {
-
+    			if(mConnectedThred!=null){
+    				mConnectedThred.cancel();
+    			}
     			mSocket.close();
     		}catch (IOException e) { }
     	}
@@ -1183,7 +1185,9 @@ public class NeurGai extends ActionBarActivity {
         // desregistra el listener del teléfono
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
-        mConnectThread.cancel();
+        if(mConnectThread!=null){
+        	mConnectThread.cancel();
+        }
         
         super.onDestroy();
     }
