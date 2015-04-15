@@ -2384,7 +2384,7 @@ public class NeurGai extends ActionBarActivity {
 		case R.id.arabe:
 			//Guarda la configuración
 	        if(cambiarIdioma(Constants.arabeCode)){
-	            Toast.makeText(this, "Euskaraz aukeratuta", Toast.LENGTH_LONG).show();
+	            Toast.makeText(this, "اللغة العربية", Toast.LENGTH_LONG).show();
 	        }
 	        supportInvalidateOptionsMenu();
 
