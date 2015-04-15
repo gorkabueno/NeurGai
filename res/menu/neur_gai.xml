@@ -35,7 +35,8 @@
                 <menu>
             		<item android:id="@+id/castellano" android:icon="@drawable/ic_castellano" android:title="@string/castellano" app:showAsAction="always" />
             		<item android:id="@+id/euskera" android:icon="@drawable/ic_euskera" android:title="@string/euskaraz" app:showAsAction="always" />
-        		</menu>
+        			<item android:id="@+id/arabe" android:icon="@drawable/ic_arabe" android:title="@string/arabe" app:showAsAction="always" />
+           		</menu>
     		</item>
     	 </menu>
     </item>

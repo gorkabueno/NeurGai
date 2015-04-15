@@ -733,21 +733,21 @@ public class NeurGai extends ActionBarActivity {
 	}
 
 	/******************************Bluetooth*************************************/
-	int requestCode = 0000;
-	
+	private int requestCode = 0000;
+	private String potenciaBluetooth;
+	private ConnectThread mConnectThread;
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		BluetoothDevice device ;
 		if ( requestCode == this.requestCode ){
 	          if ( resultCode == Activity.RESULT_OK ){
 	        	  device=data.getParcelableExtra("dispositivo");
-	        	  Toast.makeText(getBaseContext(), device.getName().toString()+"\n"+device.getAddress(), Toast.LENGTH_LONG).show();
-	        	  ConnectThread mConnectThread = new ConnectThread(device);
+	        	  mConnectThread = new ConnectThread(device);
 	    	      mConnectThread.start();
 	          }
 	     }
 	}
 
-	String potenciaBluetooth;
+	
 	// Handler que recogerá los valores enviados por hilo de conexión.
 	private final Handler handlerBT = new Handler() {
 		
@@ -758,38 +758,47 @@ public class NeurGai extends ActionBarActivity {
 			char[] charArray=mensaje.obj.toString().toCharArray();
 			int j=0;
 			Log.i("BT", mensaje.obj.toString());
+			
+			
 			if(charArray.length>0){
-				if(charArray[j]=='#'){
-					j++;
-					while(charArray[j]!='€'){
-						tiempo.append(charArray[j]);
+				
+				if(charArray[0]=='#'){
+					if(charArray[j]=='#'){
 						j++;
+						while(charArray[j]!='€'){
+							tiempo.append(charArray[j]);
+							j++;
+						}
 					}
-				}
-				if(charArray[j]=='€'){
-					j++;
-					while(charArray[j]!='*'){
-						potencia.append(charArray[j]);
+					if(charArray[j]=='€'){
 						j++;
+						while(charArray[j]!='*'){
+							potencia.append(charArray[j]);
+							j++;
+						}
 					}
+				}else{
+					Toast.makeText(getBaseContext(), "Configurando la recepción de medidas...", Toast.LENGTH_LONG).show();
 				}
 			}
 			
 			potenciaBluetooth = potencia.toString();
-			//TextView tx=(TextView)findViewById(R.id.texto1);
-			//tx.setVisibility(View.VISIBLE);
-			//tx.setText((String)mensaje.obj);
-			//tx.setText("Tiempo: "+tiempo+" Potencia: "+potencia);
-
 			Log.i("Medidas", "Tiempo: "+tiempo+" Potencia: "+potencia);
 		}
 	};
 	
+	private final Handler handlerToast = new Handler() {
+		
+		public void handleMessage(Message mensaje)
+		{	
+			Toast.makeText(getBaseContext(), mensaje.obj.toString(), Toast.LENGTH_LONG).show();
+		}
+	};
 
 	private class ConnectThread extends Thread {
 		private final BluetoothSocket mSocket;
 		private final UUID direccionSerieDefecto =UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-	
+		private ConnectedThread mConnectedThred;
 	    public ConnectThread(BluetoothDevice device) {
 	        
 	    	BluetoothSocket tmp = null;
@@ -810,28 +819,40 @@ public class NeurGai extends ActionBarActivity {
 	        	
 	        	//Se conecta el dispositivo a través del socket.
 	            mSocket.connect();
+	            
+	            Message msg=new Message();
+    			msg.obj= "Conexion éxitosa";
+    			handlerToast.sendMessage(msg);
+	            
 	        } catch (IOException connectException) {
 	        	Log.i("Problemas en la conexión a través del socket.", connectException.getMessage());
-	            
+	        	 Message msg=new Message();
+	    			msg.obj= "Error de conexión. Intentalo otra vez";
+	    			handlerToast.sendMessage(msg);
 	        	try {
 	                mSocket.close();
-	            } catch (IOException closeException) { }
+	            } catch (IOException closeException) { 
+	            	cancel();
+	            }
 	            return;
 	        }
  
 	        //Para la gestión de la conexión se utilia otro hilo.
-	        ConnectedThread mConnectedThred = new ConnectedThread(mSocket);
+	        mConnectedThred = new ConnectedThread(mSocket);
 	        mConnectedThred.start();
+	        
         }
 	    	
 	    	
     	//Cerrar socket.
     	public void cancel() {
     		try {
+
     			mSocket.close();
     		}catch (IOException e) { }
     	}
 	}
+	
 	private class ConnectedThread extends Thread {
 	    
 		private final BluetoothSocket mSocket;			//El socket abierto por el hilo padre.
@@ -843,17 +864,24 @@ public class NeurGai extends ActionBarActivity {
 
             try {
                 tmpIn = socket.getInputStream();
-            
+                
             } catch (IOException e) {
                 Log.i("Socket temporal no se ha podido crear: ", e.getMessage());
+               
+                Message msg=new Message();
+    			msg.obj= "Error de conexión. Intentalo otra vez";
+    			handlerToast.sendMessage(msg);
             }
             
             mInputStream = tmpIn;
+            
+            Message msg=new Message();
+			msg.obj= "Iniciada la recepción de datos. Resetea dispositivo.";
+			handlerToast.sendMessage(msg);
         }
 		 
 	    public void run() {
             Log.i("Inicio datos.","Iniciada la recepción de datos");
-            
             //Permance a la escucha de datos.
             while (true) {
             	read();
@@ -878,6 +906,7 @@ public class NeurGai extends ActionBarActivity {
 					handlerBT.sendMessage(msg);
 				}
 			} catch (IOException e) {
+				cancel();
 				e.printStackTrace();
 			}
 	    }
@@ -891,11 +920,6 @@ public class NeurGai extends ActionBarActivity {
 	    }
 	}
 	/******************************Bluetooth*************************************/
-	
-	
-	
-	
-	
 	
 	/**********************************************************************************************/
 	private final Runnable realizarUnaMedida = new Runnable(){
@@ -1159,6 +1183,7 @@ public class NeurGai extends ActionBarActivity {
         // desregistra el listener del teléfono
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        mConnectThread.cancel();
         
         super.onDestroy();
     }
@@ -2352,7 +2377,14 @@ public class NeurGai extends ActionBarActivity {
 	        supportInvalidateOptionsMenu();
 
 			return true;
-  
+		case R.id.arabe:
+			//Guarda la configuración
+	        if(cambiarIdioma(Constants.arabeCode)){
+	            Toast.makeText(this, "Euskaraz aukeratuta", Toast.LENGTH_LONG).show();
+	        }
+	        supportInvalidateOptionsMenu();
+
+			return true;
         default:
             return super.onOptionsItemSelected(item);
 		}
