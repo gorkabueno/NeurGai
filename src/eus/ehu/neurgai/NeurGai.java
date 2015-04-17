@@ -948,7 +948,6 @@ public class NeurGai extends ActionBarActivity {
 					potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
 				} else {
 					potenciaCorregida = (int) Float.parseFloat(potenciaBluetooth); // coger la última medida del bluetooth (en W)
-					
 				}
 
 				double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
@@ -1007,8 +1006,8 @@ public class NeurGai extends ActionBarActivity {
 		    				graficoMedidas.addSeries(serieMedidas);				// data
 		    				graficoMedidas.setVisibility(View.VISIBLE); 		// hace visible el gráfico
 		    				
-		    				menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// las medidas se tomarán cada 2 segundos
-		    				periodicidadMedidaEnSegundos = 1;	
+		    				if (periodicidadMedidaEnSegundos == 1)
+		    					menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");		// pone el icono si no está puesto
 		    				
 		    				empezar = false;
 							pantallaInicializada = true;

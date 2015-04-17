@@ -274,6 +274,17 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int buttonBarStyle=0x7f01002e;
+        /** <p>Must be one or more (separated by '|') of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>top</code></td><td>0x30</td><td> Push object to the top of its container, not changing its size. </td></tr>
+<tr><td><code>bottom</code></td><td>0x50</td><td> Push object to the bottom of its container, not changing its size. </td></tr>
+</table>
+         */
+        public static final int buttonGravity=0x7f010093;
         /**  Close button icon 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -284,20 +295,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int closeItemLayout=0x7f01006d;
-        /**  Text to set as the content description for the collapse button. 
-         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int collapseContentDescription=0x7f010094;
-        /**  Icon drawable to use for the collapse button. 
-         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int collapseIcon=0x7f010093;
+        public static final int collapseIcon=0x7f010094;
         /**  The drawing color for the bars 
          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
@@ -1665,153 +1666,155 @@ containing a value of this type.
         public static final int ic_upvehu=0x7f020049;
     }
     public static final class id {
-        public static final int TableLayout1=0x7f09003f;
-        public static final int TextV20A=0x7f09004b;
-        public static final int TextVLibre=0x7f090049;
-        public static final int TextVPVPC=0x7f090048;
-        public static final int action_bar=0x7f090031;
+        public static final int TableLayout1=0x7f090041;
+        public static final int TextV20A=0x7f09004d;
+        public static final int TextVLibre=0x7f09004b;
+        public static final int TextVPVPC=0x7f09004a;
+        public static final int action_bar=0x7f090033;
         public static final int action_bar_activity_content=0x7f090003;
-        public static final int action_bar_container=0x7f090030;
-        public static final int action_bar_root=0x7f09002c;
+        public static final int action_bar_container=0x7f090032;
+        public static final int action_bar_root=0x7f09002e;
         public static final int action_bar_spinner=0x7f090002;
-        public static final int action_bar_subtitle=0x7f09001f;
-        public static final int action_bar_title=0x7f09001e;
-        public static final int action_context_bar=0x7f090032;
+        public static final int action_bar_subtitle=0x7f090021;
+        public static final int action_bar_title=0x7f090020;
+        public static final int action_context_bar=0x7f090034;
         public static final int action_menu_divider=0x7f090005;
         public static final int action_menu_presenter=0x7f090006;
-        public static final int action_mode_bar=0x7f09002e;
-        public static final int action_mode_bar_stub=0x7f09002d;
-        public static final int action_mode_close_button=0x7f090020;
-        public static final int action_settings=0x7f09007e;
-        public static final int activity_chooser_view_content=0x7f090021;
-        public static final int ajustes=0x7f09008b;
+        public static final int action_mode_bar=0x7f090030;
+        public static final int action_mode_bar_stub=0x7f09002f;
+        public static final int action_mode_close_button=0x7f090022;
+        public static final int action_settings=0x7f090080;
+        public static final int activity_chooser_view_content=0x7f090023;
+        public static final int ajustes=0x7f09008d;
         public static final int always=0x7f090014;
-        public static final int anotar=0x7f09008a;
-        public static final int arabe=0x7f090094;
+        public static final int anotar=0x7f09008c;
+        public static final int arabe=0x7f090096;
         public static final int beginning=0x7f09001b;
-        public static final int bluetooth=0x7f090090;
-        public static final int boton=0x7f090045;
-        public static final int button1=0x7f090043;
-        public static final int button2=0x7f090044;
-        public static final int cambiarIdioma=0x7f090091;
-        public static final int castellano=0x7f090092;
-        public static final int checkbox=0x7f090029;
-        public static final int co2=0x7f090057;
-        public static final int co2libre=0x7f090059;
-        public static final int co2pvpc=0x7f090058;
+        public static final int bluetooth=0x7f090092;
+        public static final int boton=0x7f090047;
+        public static final int bottom=0x7f09001e;
+        public static final int button1=0x7f090045;
+        public static final int button2=0x7f090046;
+        public static final int cambiarIdioma=0x7f090093;
+        public static final int castellano=0x7f090094;
+        public static final int checkbox=0x7f09002b;
+        public static final int co2=0x7f090059;
+        public static final int co2libre=0x7f09005b;
+        public static final int co2pvpc=0x7f09005a;
         public static final int collapseActionView=0x7f090015;
-        public static final int continuar=0x7f090087;
-        public static final int decor_content_parent=0x7f09002f;
-        public static final int default_activity_button=0x7f090024;
+        public static final int continuar=0x7f090089;
+        public static final int decor_content_parent=0x7f090031;
+        public static final int default_activity_button=0x7f090026;
         public static final int dialog=0x7f090019;
         public static final int disableHome=0x7f09000d;
         public static final int dropdown=0x7f09001a;
-        public static final int editText1=0x7f090062;
-        public static final int editText2=0x7f09006a;
-        public static final int editText3=0x7f09006b;
-        public static final int editText4=0x7f090073;
-        public static final int editText5=0x7f090074;
-        public static final int editText6=0x7f090075;
-        public static final int editText7=0x7f090078;
-        public static final int editText8=0x7f09007c;
-        public static final int edit_query=0x7f090033;
+        public static final int editText1=0x7f090064;
+        public static final int editText2=0x7f09006c;
+        public static final int editText3=0x7f09006d;
+        public static final int editText4=0x7f090075;
+        public static final int editText5=0x7f090076;
+        public static final int editText6=0x7f090077;
+        public static final int editText7=0x7f09007a;
+        public static final int editText8=0x7f09007e;
+        public static final int edit_query=0x7f090035;
         public static final int end=0x7f09001c;
-        public static final int euskera=0x7f090093;
-        public static final int expand_activities_button=0x7f090022;
-        public static final int expanded_menu=0x7f090028;
-        public static final int grabacion=0x7f090086;
-        public static final int grabarDatos=0x7f09008c;
-        public static final int grabaryreiniciar=0x7f090089;
-        public static final int grafica=0x7f09005c;
+        public static final int euskera=0x7f090095;
+        public static final int expand_activities_button=0x7f090024;
+        public static final int expanded_menu=0x7f09002a;
+        public static final int grabacion=0x7f090088;
+        public static final int grabarDatos=0x7f09008e;
+        public static final int grabaryreiniciar=0x7f09008b;
+        public static final int grafica=0x7f09005e;
         public static final int home=0x7f090000;
         public static final int homeAsUp=0x7f09000e;
-        public static final int icon=0x7f090026;
+        public static final int icon=0x7f090028;
         public static final int ifRoom=0x7f090016;
-        public static final int image=0x7f090023;
+        public static final int image=0x7f090025;
         public static final int listMode=0x7f09000a;
-        public static final int list_item=0x7f090025;
-        public static final int logoEHU=0x7f09005d;
-        public static final int m1=0x7f090083;
-        public static final int m10=0x7f090085;
-        public static final int m5=0x7f090084;
+        public static final int list_item=0x7f090027;
+        public static final int logoEHU=0x7f09005f;
+        public static final int m1=0x7f090085;
+        public static final int m10=0x7f090087;
+        public static final int m5=0x7f090086;
         public static final int middle=0x7f09001d;
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
         public static final int normal=0x7f09000b;
-        public static final int parar=0x7f090088;
-        public static final int progressBar=0x7f09005b;
+        public static final int parar=0x7f09008a;
+        public static final int progressBar=0x7f09005d;
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
-        public static final int radio=0x7f09002b;
-        public static final int s1=0x7f090080;
-        public static final int s10=0x7f090081;
-        public static final int s30=0x7f090082;
-        public static final int search_badge=0x7f090035;
-        public static final int search_bar=0x7f090034;
-        public static final int search_button=0x7f090036;
-        public static final int search_close_btn=0x7f09003b;
-        public static final int search_edit_frame=0x7f090037;
-        public static final int search_go_btn=0x7f09003d;
-        public static final int search_mag_icon=0x7f090038;
-        public static final int search_plate=0x7f090039;
-        public static final int search_src_text=0x7f09003a;
-        public static final int search_voice_btn=0x7f09003e;
-        public static final int shortcut=0x7f09002a;
+        public static final int radio=0x7f09002d;
+        public static final int s1=0x7f090082;
+        public static final int s10=0x7f090083;
+        public static final int s30=0x7f090084;
+        public static final int search_badge=0x7f090037;
+        public static final int search_bar=0x7f090036;
+        public static final int search_button=0x7f090038;
+        public static final int search_close_btn=0x7f09003d;
+        public static final int search_edit_frame=0x7f090039;
+        public static final int search_go_btn=0x7f09003f;
+        public static final int search_mag_icon=0x7f09003a;
+        public static final int search_plate=0x7f09003b;
+        public static final int search_src_text=0x7f09003c;
+        public static final int search_voice_btn=0x7f090040;
+        public static final int shortcut=0x7f09002c;
         public static final int showCustom=0x7f090010;
         public static final int showHome=0x7f090011;
         public static final int showTitle=0x7f090012;
-        public static final int sonda=0x7f09008f;
-        public static final int sonda_bluetooth=0x7f09008e;
+        public static final int sonda=0x7f090091;
+        public static final int sonda_bluetooth=0x7f090090;
         public static final int split_action_bar=0x7f090004;
-        public static final int submit_area=0x7f09003c;
+        public static final int submit_area=0x7f09003e;
         public static final int tabMode=0x7f09000c;
-        public static final int tableRow1=0x7f090042;
-        public static final int tableRow2=0x7f09004a;
-        public static final int tableRow3=0x7f09004e;
-        public static final int tableRow4=0x7f090052;
-        public static final int tableRow5=0x7f090056;
-        public static final int tableRow6=0x7f090071;
-        public static final int tableRow7=0x7f090076;
-        public static final int tableRow8=0x7f09007a;
-        public static final int tarifas=0x7f09008d;
-        public static final int text20A=0x7f09004d;
-        public static final int text20APVPC=0x7f09004c;
-        public static final int text20DHA=0x7f090051;
-        public static final int text20DHAPVPC=0x7f090050;
-        public static final int text20DHS=0x7f090055;
-        public static final int text20DHSPVPC=0x7f090054;
-        public static final int textV20DHA=0x7f09004f;
-        public static final int textV20DHSPVPC=0x7f090053;
-        public static final int textVCeldaEmpty=0x7f090047;
-        public static final int textView10=0x7f090066;
-        public static final int textView11=0x7f090067;
-        public static final int textView12=0x7f090068;
-        public static final int textView13=0x7f090069;
-        public static final int textView14=0x7f090079;
-        public static final int textView15=0x7f09007b;
-        public static final int textView16=0x7f09006c;
-        public static final int textView17=0x7f09006d;
-        public static final int textView18=0x7f09006e;
-        public static final int textView19=0x7f09006f;
-        public static final int textView2=0x7f09005e;
-        public static final int textView20=0x7f090070;
-        public static final int textView21=0x7f090072;
-        public static final int textView22=0x7f09007d;
-        public static final int textView3=0x7f09005f;
-        public static final int textView4=0x7f090060;
-        public static final int textView5=0x7f090061;
-        public static final int textView6=0x7f090077;
-        public static final int textView7=0x7f090063;
-        public static final int textView8=0x7f090064;
-        public static final int textView9=0x7f090065;
-        public static final int texto1=0x7f090046;
-        public static final int texto5=0x7f09005a;
-        public static final int tiempo=0x7f09007f;
-        public static final int title=0x7f090027;
-        public static final int tituloBluetooth=0x7f090041;
+        public static final int tableRow1=0x7f090044;
+        public static final int tableRow2=0x7f09004c;
+        public static final int tableRow3=0x7f090050;
+        public static final int tableRow4=0x7f090054;
+        public static final int tableRow5=0x7f090058;
+        public static final int tableRow6=0x7f090073;
+        public static final int tableRow7=0x7f090078;
+        public static final int tableRow8=0x7f09007c;
+        public static final int tarifas=0x7f09008f;
+        public static final int text20A=0x7f09004f;
+        public static final int text20APVPC=0x7f09004e;
+        public static final int text20DHA=0x7f090053;
+        public static final int text20DHAPVPC=0x7f090052;
+        public static final int text20DHS=0x7f090057;
+        public static final int text20DHSPVPC=0x7f090056;
+        public static final int textV20DHA=0x7f090051;
+        public static final int textV20DHSPVPC=0x7f090055;
+        public static final int textVCeldaEmpty=0x7f090049;
+        public static final int textView10=0x7f090068;
+        public static final int textView11=0x7f090069;
+        public static final int textView12=0x7f09006a;
+        public static final int textView13=0x7f09006b;
+        public static final int textView14=0x7f09007b;
+        public static final int textView15=0x7f09007d;
+        public static final int textView16=0x7f09006e;
+        public static final int textView17=0x7f09006f;
+        public static final int textView18=0x7f090070;
+        public static final int textView19=0x7f090071;
+        public static final int textView2=0x7f090060;
+        public static final int textView20=0x7f090072;
+        public static final int textView21=0x7f090074;
+        public static final int textView22=0x7f09007f;
+        public static final int textView3=0x7f090061;
+        public static final int textView4=0x7f090062;
+        public static final int textView5=0x7f090063;
+        public static final int textView6=0x7f090079;
+        public static final int textView7=0x7f090065;
+        public static final int textView8=0x7f090066;
+        public static final int textView9=0x7f090067;
+        public static final int texto1=0x7f090048;
+        public static final int texto5=0x7f09005c;
+        public static final int tiempo=0x7f090081;
+        public static final int title=0x7f090029;
+        public static final int tituloBluetooth=0x7f090043;
+        public static final int top=0x7f09001f;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
-        public static final int ventanaDato=0x7f090040;
+        public static final int ventanaDato=0x7f090042;
         public static final int withText=0x7f090018;
         public static final int wrap_content=0x7f090009;
     }
@@ -1885,13 +1888,13 @@ containing a value of this type.
          %1$s is the title. %2$s is the description of what tapping/clicking the whole
          thing is going to do. 
          */
-        public static final int abc_action_bar_home_description_format=0x7f0a0005;
+        public static final int abc_action_bar_home_description_format=0x7f0a0004;
         /**  Just like action_bar_home_description_format, but this one will be used
          if the window is also providing subtitle text.
          %1$s is the title. %2$s is the subtitle. %3$s is the description of what
          tapping/clicking the whole thing is going to do. 
          */
-        public static final int abc_action_bar_home_subtitle_description_format=0x7f0a0006;
+        public static final int abc_action_bar_home_subtitle_description_format=0x7f0a0005;
         /**  Content description for the action bar "up" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abc_action_bar_up_description=0x7f0a0002;
@@ -1903,121 +1906,118 @@ containing a value of this type.
         public static final int abc_action_mode_done=0x7f0a0000;
         /**  Title for a button to expand the list of activities in ActivityChooserView [CHAR LIMIT=25] 
          */
-        public static final int abc_activity_chooser_view_see_all=0x7f0a000d;
+        public static final int abc_activity_chooser_view_see_all=0x7f0a000c;
         /**  ActivityChooserView - accessibility support 
  Description of the shwoing of a popup window with activities to choose from. [CHAR LIMIT=NONE] 
          */
-        public static final int abc_activitychooserview_choose_application=0x7f0a000c;
+        public static final int abc_activitychooserview_choose_application=0x7f0a000b;
         /**  SearchView accessibility description for clear button [CHAR LIMIT=NONE] 
          */
-        public static final int abc_searchview_description_clear=0x7f0a0009;
+        public static final int abc_searchview_description_clear=0x7f0a0008;
         /**  SearchView accessibility description for search text field [CHAR LIMIT=NONE] 
          */
-        public static final int abc_searchview_description_query=0x7f0a0008;
+        public static final int abc_searchview_description_query=0x7f0a0007;
         /**  SearchView accessibility description for search button [CHAR LIMIT=NONE] 
          */
-        public static final int abc_searchview_description_search=0x7f0a0007;
+        public static final int abc_searchview_description_search=0x7f0a0006;
         /**  SearchView accessibility description for submit button [CHAR LIMIT=NONE] 
          */
-        public static final int abc_searchview_description_submit=0x7f0a000a;
+        public static final int abc_searchview_description_submit=0x7f0a0009;
         /**  SearchView accessibility description for voice button [CHAR LIMIT=NONE] 
          */
-        public static final int abc_searchview_description_voice=0x7f0a000b;
+        public static final int abc_searchview_description_voice=0x7f0a000a;
         /**  Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
-        public static final int abc_shareactionprovider_share_with=0x7f0a000f;
+        public static final int abc_shareactionprovider_share_with=0x7f0a000e;
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
-        public static final int abc_shareactionprovider_share_with_application=0x7f0a000e;
-        /**  Content description for the Toolbar icon used to collapse an expanded action mode. [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_toolbar_collapse_description=0x7f0a0004;
-        public static final int aceptar=0x7f0a0021;
-        public static final int action_settings=0x7f0a004f;
-        public static final int ajustarConectoryVolumen=0x7f0a0018;
-        public static final int amplitudCalibrado=0x7f0a0035;
-        public static final int anotar=0x7f0a0053;
-        public static final int app_name=0x7f0a0010;
-        public static final int arabe=0x7f0a005f;
-        public static final int bienvenidos=0x7f0a0013;
-        public static final int bluetooth=0x7f0a0062;
-        public static final int buscandoBT=0x7f0a0064;
-        public static final int buscarBT=0x7f0a0063;
-        public static final int cabeceraFicheroCalibracion=0x7f0a0024;
-        public static final int cabeceraFicheroCostes=0x7f0a0025;
-        public static final int calibrandoCAG=0x7f0a0016;
-        public static final int calibrandoFiltro=0x7f0a0017;
-        public static final int cambiarIdioma=0x7f0a0057;
-        public static final int cancelar=0x7f0a0022;
-        public static final int cantidadEmisionLibre=0x7f0a003b;
-        public static final int cantidadEmisionPVPC=0x7f0a003a;
-        public static final int castellano=0x7f0a005e;
-        public static final int cerrarCalibrado=0x7f0a0019;
-        public static final int co2=0x7f0a003c;
-        public static final int continuar=0x7f0a0050;
-        public static final int costes=0x7f0a0032;
-        public static final int creditos=0x7f0a0014;
-        public static final int dispositivosBT=0x7f0a0065;
-        public static final int emisionesLibre=0x7f0a0038;
-        public static final int emisionesPVPC=0x7f0a0037;
-        public static final int error=0x7f0a0033;
-        public static final int euskaraz=0x7f0a0011;
-        public static final int grabandoDatosMedida=0x7f0a001b;
-        public static final int grabarDatos=0x7f0a0054;
-        public static final int grabaryreiniciar=0x7f0a0052;
-        public static final int hello_world=0x7f0a004e;
-        public static final int introducirAmplitud=0x7f0a0015;
-        public static final int introducirAmplitudCorrectamente=0x7f0a001a;
-        public static final int introducirMedidaCorrectamente=0x7f0a001f;
-        public static final int leyendoCalibracion=0x7f0a001e;
-        public static final int libre=0x7f0a0028;
-        public static final int llano=0x7f0a0030;
-        public static final int local_language=0x7f0a0012;
-        public static final int logo_ehu=0x7f0a004c;
-        public static final int m1=0x7f0a005b;
-        public static final int m10=0x7f0a005d;
-        public static final int m5=0x7f0a005c;
-        public static final int medidaReferencia=0x7f0a0036;
-        public static final int medidasDePotencia=0x7f0a004b;
-        public static final int muestras=0x7f0a0034;
-        public static final int nombreEmisionLibre=0x7f0a004a;
-        public static final int nombreEmisionPVPC=0x7f0a0049;
-        public static final int nombreT20Apunta=0x7f0a0043;
-        public static final int nombreT20DHApunta=0x7f0a0044;
-        public static final int nombreT20DHAvalle=0x7f0a0045;
-        public static final int nombreT20DHSllano=0x7f0a0047;
-        public static final int nombreT20DHSpunta=0x7f0a0046;
-        public static final int nombreT20DHSsupervalle=0x7f0a0048;
-        public static final int notas=0x7f0a0029;
-        public static final int nulo=0x7f0a001c;
-        public static final int parar=0x7f0a0051;
-        public static final int pulsaParaContinuar=0x7f0a001d;
-        public static final int pulsar=0x7f0a0026;
-        public static final int punta=0x7f0a002d;
-        public static final int pvpc=0x7f0a0027;
-        public static final int realizandoMedidasSinCalibrar=0x7f0a0020;
-        public static final int s1=0x7f0a0058;
-        public static final int s10=0x7f0a0059;
-        public static final int s30=0x7f0a005a;
-        public static final int sonda=0x7f0a0061;
-        public static final int sondaBluetooth=0x7f0a0056;
-        public static final int supervalle=0x7f0a002f;
-        public static final int t20a=0x7f0a002b;
-        public static final int t20dha=0x7f0a002a;
-        public static final int t20dhs=0x7f0a002c;
-        public static final int tarifas=0x7f0a0055;
-        public static final int textoIdioma=0x7f0a0060;
-        public static final int title_activity_bluetooth_dialog=0x7f0a004d;
-        public static final int tituloAnotar=0x7f0a0031;
-        public static final int tituloConfigTarifasLibres=0x7f0a0023;
-        public static final int unidadEmisiones=0x7f0a0039;
-        public static final int valle=0x7f0a002e;
-        public static final int valor2_0Apunta=0x7f0a003d;
-        public static final int valor2_0DHApunta=0x7f0a003e;
-        public static final int valor2_0DHAvalle=0x7f0a003f;
-        public static final int valor2_0DHSllano=0x7f0a0041;
-        public static final int valor2_0DHSpunta=0x7f0a0040;
-        public static final int valor2_0DHSsvalle=0x7f0a0042;
+        public static final int abc_shareactionprovider_share_with_application=0x7f0a000d;
+        public static final int aceptar=0x7f0a0020;
+        public static final int action_settings=0x7f0a004e;
+        public static final int ajustarConectoryVolumen=0x7f0a0017;
+        public static final int amplitudCalibrado=0x7f0a0034;
+        public static final int anotar=0x7f0a0052;
+        public static final int app_name=0x7f0a000f;
+        public static final int arabe=0x7f0a005e;
+        public static final int bienvenidos=0x7f0a0012;
+        public static final int bluetooth=0x7f0a0061;
+        public static final int buscandoBT=0x7f0a0063;
+        public static final int buscarBT=0x7f0a0062;
+        public static final int cabeceraFicheroCalibracion=0x7f0a0023;
+        public static final int cabeceraFicheroCostes=0x7f0a0024;
+        public static final int calibrandoCAG=0x7f0a0015;
+        public static final int calibrandoFiltro=0x7f0a0016;
+        public static final int cambiarIdioma=0x7f0a0056;
+        public static final int cancelar=0x7f0a0021;
+        public static final int cantidadEmisionLibre=0x7f0a003a;
+        public static final int cantidadEmisionPVPC=0x7f0a0039;
+        public static final int castellano=0x7f0a005d;
+        public static final int cerrarCalibrado=0x7f0a0018;
+        public static final int co2=0x7f0a003b;
+        public static final int continuar=0x7f0a004f;
+        public static final int costes=0x7f0a0031;
+        public static final int creditos=0x7f0a0013;
+        public static final int dispositivosBT=0x7f0a0064;
+        public static final int emisionesLibre=0x7f0a0037;
+        public static final int emisionesPVPC=0x7f0a0036;
+        public static final int error=0x7f0a0032;
+        public static final int euskaraz=0x7f0a0010;
+        public static final int grabandoDatosMedida=0x7f0a001a;
+        public static final int grabarDatos=0x7f0a0053;
+        public static final int grabaryreiniciar=0x7f0a0051;
+        public static final int hello_world=0x7f0a004d;
+        public static final int introducirAmplitud=0x7f0a0014;
+        public static final int introducirAmplitudCorrectamente=0x7f0a0019;
+        public static final int introducirMedidaCorrectamente=0x7f0a001e;
+        public static final int leyendoCalibracion=0x7f0a001d;
+        public static final int libre=0x7f0a0027;
+        public static final int llano=0x7f0a002f;
+        public static final int local_language=0x7f0a0011;
+        public static final int logo_ehu=0x7f0a004b;
+        public static final int m1=0x7f0a005a;
+        public static final int m10=0x7f0a005c;
+        public static final int m5=0x7f0a005b;
+        public static final int medidaReferencia=0x7f0a0035;
+        public static final int medidasDePotencia=0x7f0a004a;
+        public static final int muestras=0x7f0a0033;
+        public static final int nombreEmisionLibre=0x7f0a0049;
+        public static final int nombreEmisionPVPC=0x7f0a0048;
+        public static final int nombreT20Apunta=0x7f0a0042;
+        public static final int nombreT20DHApunta=0x7f0a0043;
+        public static final int nombreT20DHAvalle=0x7f0a0044;
+        public static final int nombreT20DHSllano=0x7f0a0046;
+        public static final int nombreT20DHSpunta=0x7f0a0045;
+        public static final int nombreT20DHSsupervalle=0x7f0a0047;
+        public static final int notas=0x7f0a0028;
+        public static final int nulo=0x7f0a001b;
+        public static final int parar=0x7f0a0050;
+        public static final int pulsaParaContinuar=0x7f0a001c;
+        public static final int pulsar=0x7f0a0025;
+        public static final int punta=0x7f0a002c;
+        public static final int pvpc=0x7f0a0026;
+        public static final int realizandoMedidasSinCalibrar=0x7f0a001f;
+        public static final int s1=0x7f0a0057;
+        public static final int s10=0x7f0a0058;
+        public static final int s30=0x7f0a0059;
+        public static final int sonda=0x7f0a0060;
+        public static final int sondaBluetooth=0x7f0a0055;
+        public static final int supervalle=0x7f0a002e;
+        public static final int t20a=0x7f0a002a;
+        public static final int t20dha=0x7f0a0029;
+        public static final int t20dhs=0x7f0a002b;
+        public static final int tarifas=0x7f0a0054;
+        public static final int textoIdioma=0x7f0a005f;
+        public static final int title_activity_bluetooth_dialog=0x7f0a004c;
+        public static final int tituloAnotar=0x7f0a0030;
+        public static final int tituloConfigTarifasLibres=0x7f0a0022;
+        public static final int unidadEmisiones=0x7f0a0038;
+        public static final int valle=0x7f0a002d;
+        public static final int valor2_0Apunta=0x7f0a003c;
+        public static final int valor2_0DHApunta=0x7f0a003d;
+        public static final int valor2_0DHAvalle=0x7f0a003e;
+        public static final int valor2_0DHSllano=0x7f0a0040;
+        public static final int valor2_0DHSpunta=0x7f0a003f;
+        public static final int valor2_0DHSsvalle=0x7f0a0041;
     }
     public static final class style {
         /** 
@@ -2040,42 +2040,9 @@ containing a value of this type.
         res/values-v11/styles.xml on API 14+ devices.
     
  API 14 theme customizations can go here. 
-
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
-
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
-
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
          */
         public static final int AppBaseTheme=0x7f0b00eb;
         /**  Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
- Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
- Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
- Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0b00ec;
@@ -5958,8 +5925,8 @@ containing a value of this type.
            <tr><th>Attribute</th><th>Description</th></tr>
            <tr><td><code>{@link #Toolbar_android_gravity android:gravity}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_android_minHeight android:minHeight}</code></td><td> Allows us to read in the minHeight attr pre-v16 </td></tr>
-           <tr><td><code>{@link #Toolbar_collapseContentDescription eus.ehu.neurgai:collapseContentDescription}</code></td><td> Text to set as the content description for the collapse button.</td></tr>
-           <tr><td><code>{@link #Toolbar_collapseIcon eus.ehu.neurgai:collapseIcon}</code></td><td> Icon drawable to use for the collapse button.</td></tr>
+           <tr><td><code>{@link #Toolbar_buttonGravity eus.ehu.neurgai:buttonGravity}</code></td><td></td></tr>
+           <tr><td><code>{@link #Toolbar_collapseIcon eus.ehu.neurgai:collapseIcon}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_contentInsetEnd eus.ehu.neurgai:contentInsetEnd}</code></td><td> Minimum inset for content views within a bar.</td></tr>
            <tr><td><code>{@link #Toolbar_contentInsetLeft eus.ehu.neurgai:contentInsetLeft}</code></td><td> Minimum inset for content views within a bar.</td></tr>
            <tr><td><code>{@link #Toolbar_contentInsetRight eus.ehu.neurgai:contentInsetRight}</code></td><td> Minimum inset for content views within a bar.</td></tr>
@@ -5984,7 +5951,7 @@ containing a value of this type.
            </table>
            @see #Toolbar_android_gravity
            @see #Toolbar_android_minHeight
-           @see #Toolbar_collapseContentDescription
+           @see #Toolbar_buttonGravity
            @see #Toolbar_collapseIcon
            @see #Toolbar_contentInsetEnd
            @see #Toolbar_contentInsetLeft
@@ -6029,33 +5996,32 @@ containing a value of this type.
         */
         public static final int Toolbar_android_minHeight = 1;
         /**
-          <p>
-          @attr description
-           Text to set as the content description for the collapse button. 
+          <p>This symbol is the offset where the {@link eus.ehu.neurgai.R.attr#buttonGravity}
+          attribute's value can be found in the {@link #Toolbar} array.
 
 
-          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          <p>This is a private symbol.
-          @attr name eus.ehu.neurgai:collapseContentDescription
+          <p>Must be one or more (separated by '|') of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>top</code></td><td>0x30</td><td> Push object to the top of its container, not changing its size. </td></tr>
+<tr><td><code>bottom</code></td><td>0x50</td><td> Push object to the bottom of its container, not changing its size. </td></tr>
+</table>
+          @attr name eus.ehu.neurgai:buttonGravity
         */
-        public static final int Toolbar_collapseContentDescription = 19;
+        public static final int Toolbar_buttonGravity = 18;
         /**
-          <p>
-          @attr description
-           Icon drawable to use for the collapse button. 
+          <p>This symbol is the offset where the {@link eus.ehu.neurgai.R.attr#collapseIcon}
+          attribute's value can be found in the {@link #Toolbar} array.
 
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          <p>This is a private symbol.
           @attr name eus.ehu.neurgai:collapseIcon
         */
-        public static final int Toolbar_collapseIcon = 18;
+        public static final int Toolbar_collapseIcon = 19;
         /**
           <p>
           @attr description
