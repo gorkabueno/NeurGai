@@ -121,6 +121,8 @@ public class NeurGai extends ActionBarActivity {
 	private double[] DEP_Y_grabar = new double[Constants.numeroFrecuenciasInterp];
 	private double[] muestras_grabar = new double[Constants.LONGITUD_TONO_GRABADO];
 	
+	private double medidaRMS;
+	
 	final Handler handler = new Handler();
 	GraphView graficoMedidas;
 	
@@ -1853,7 +1855,7 @@ public class NeurGai extends ActionBarActivity {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						textViewMedida.setText(Double.toString(potencia));
+						textViewMedida.setText(Double.toString(potencia) + " / " + Double.toString(medidaRMS));
 					}
 				});
 			}
@@ -1990,7 +1992,7 @@ public class NeurGai extends ActionBarActivity {
 	private double[] compensarCAG(double[] muestras) {
 		
 		// calcula RMS de la muestra grabada
-		double medidaRMS = 0;
+		medidaRMS = 0;
 		double energiaMedida = 0;
 		for(int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++){
 			energiaMedida += muestras[i * 2] * muestras[i * 2];
