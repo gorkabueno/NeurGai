@@ -23,7 +23,7 @@
     <string name="tituloConfigTarifasLibres">"Sartu merkatu libreko tarifak (€/kWh) eta CO2 isurketa-mailak (kgCO2/kWh)</string>
     <string name="cabeceraFicheroCalibracion">anplitudea, maiztasuna, RMS\n</string>
     <string name="cabeceraFicheroCostes">Komentarioak, Data eta ordua, Unix Denbora, Potentzia(W),
-        PVPC,,,,,,,,,Merkaturatzaile librea\n
+        PVPC,,,,,,,,,,Merkaturatzaile librea\n
         ,,,,CO2 isurketak,2.0A,,,2.0DHA,,,2.0DHS,,,CO2 isurketak,2.0A,,,2.0DHA,,,2.0DHS \n
 	 ,,,,
 	 CO2(kg),

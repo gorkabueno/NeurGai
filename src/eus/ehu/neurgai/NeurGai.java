@@ -332,7 +332,7 @@ public class NeurGai extends ActionBarActivity {
 		List<Tarifa> tarifa20DHS_PVPC;
 			
 		
-		//Borramos la tabla de las tarifas para evitar que se acumulen tarifas de días anteriores..
+		//Borramos la tabla de las tarifas para evitar que se acumulen tarifas de días anteriores
 		dbWrite.delete(ColumnasTarifas.TABLE_NAME, null, null);
 		if(parseo.domPVPC!=null){
 			tarifa20A_PVPC=parseo.getTarifa20A_PVPC();
@@ -361,17 +361,13 @@ public class NeurGai extends ActionBarActivity {
 	private double getTarifa20DHS(){
 		Calendar calendar=Calendar.getInstance();
 		calendar.setTime(new Date());
-		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
 		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
 		
-		int eqinocVera=2106;
-		int eqinocInv=2212;
-		int fechaSistemInt=Integer.parseInt(fechaSistema);
 		double tarifa20DHS;
+			
+		//Comprueba si estamos en horario de verano (Daylight Savings Time)
+		if(new Time().isDst > 0){
 		
-		
-		//Supuesto de que estamos en invierno
-		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
 			//Punta
 			if(hora>=13&&hora<23){
 				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
@@ -386,7 +382,7 @@ public class NeurGai extends ActionBarActivity {
 				}
 			}
 		}else{
-			//En caso contrario, estamos en verano.
+			//En caso contrario, estamos en horario de invierno (fuera de Daylight Savings Time)
 			//Punta
 			if(hora>=12&&hora<22){
 				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
@@ -405,17 +401,12 @@ public class NeurGai extends ActionBarActivity {
 	private double getTarifa20DHA(){
 		Calendar calendar=Calendar.getInstance();
 		calendar.setTime(new Date());
-		String fechaSistema=new SimpleDateFormat("ddMM").format(calendar.getTime());
 		int hora=Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
 		
-		int eqinocVera=2106;
-		int eqinocInv=2212;
-		int fechaSistemInt=Integer.parseInt(fechaSistema);
 		double tarifa20DHA;
 		
-		
-		//Supuesto de que estamos en invierno
-		if((fechaSistemInt>=eqinocVera)&&(fechaSistemInt<eqinocInv)){
+		//Comprueba si estamos en horario de verano (Daylight Savings Time)
+		if(new Time().isDst > 0){
 			
 			//Punta
 			if(hora>=13&&hora<23){
@@ -425,7 +416,7 @@ public class NeurGai extends ActionBarActivity {
 				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHAvalle, R.string.valor2_0DHAvalle);
 			}
 		}else{
-			//En caso contrario, estamos en verano.
+			//En caso contrario, estamos en horario de invierno (fuera de Daylight Savings Time)
 			//Punta
 			if(hora>=12&&hora<22){
 				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
@@ -938,7 +929,7 @@ public class NeurGai extends ActionBarActivity {
 				int potenciaCorregida;
 				
 				if (medidaSonda) {
-					//recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);
+					//recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);		// vacía el buffer de grabación del micro
 					double[] muestras = guardarMuestras();							// lee las muestras del canal de grabación
 					for (int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++)		// prescinde de los términos nulos antes de guardarlos
 						muestras_grabar[i] = muestras[2 * i];
@@ -1070,7 +1061,7 @@ public class NeurGai extends ActionBarActivity {
 					});
 				}
 			}
-			if (!isFinishing()) handler.postDelayed(this, periodicidadMedidaEnSegundos * 1000);
+			if (!isFinishing()&&midiendo) handler.postDelayed(this, periodicidadMedidaEnSegundos * 1000);
 	    }
 	};
 

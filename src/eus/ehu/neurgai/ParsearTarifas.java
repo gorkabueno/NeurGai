@@ -64,7 +64,7 @@ public class ParsearTarifas {
 				Node nodoPeriodo=nodosPeriodo.item(j);
 				String name=nodoPeriodo.getNodeName();
 				if(name.equals("Intervalo")){
-					tarifa.setHora(Integer.parseInt(nodoPeriodo.getFirstChild().getAttributes().getNamedItem("v").getNodeValue()));
+					tarifa.setHora(Integer.parseInt(nodoPeriodo.getFirstChild().getAttributes().getNamedItem("v").getNodeValue())-1);
 					tarifa.setFeu(Double.parseDouble(nodoPeriodo.getLastChild().getAttributes().getNamedItem("v").getNodeValue()));
 					tarifa.setFecha(fecha);
 					tarifas.add(tarifa);
