@@ -1,3 +1,3 @@
-prueba2
-
-
+El proyecto neurGAI ha consistido en el diseño y el desarrollo de una aplicación en la plataforma nativa Android. neurGAI monitoriza instantáneamente el consumo energético de una instalación eléctrica (ej. vivienda) de forma local. Las medidas que realiza la aplicación son mostradas en la pantalla del móvil en una gráfica (potencia-tiempo) junto a la potencia instantánea y coste económico de las diferentes tarifas del mercado eléctrico a través de unas tablas que muestras el coste acumulado de la energía consumida en el periodo de medidas. Además, calcula y muestra la cantidad de CO2 emitidos por la empresa generadora de la electricidad que el usuario está consumiendo. Todas las medidas que neurGAI realiza están a disposición del usuario para poder analizar su consumo energético.
+neurGAI es además un proyecto de sensibilización sobre necesidad del control de consumo eléctrico. Para ello, neurGAI tiene habilitado un blog que explica el funcionamiento de neurGAI y del impacto de los datos que aporta en la factura eléctrica.
+Blog de neurGAI: http://www.ehu.eus/ehusfera/neurgai/
