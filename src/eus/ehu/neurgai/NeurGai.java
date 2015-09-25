@@ -366,8 +366,9 @@ public class NeurGai extends ActionBarActivity {
 		double tarifa20DHS;
 			
 		//Comprueba si estamos en horario de verano (Daylight Savings Time)
-		if(new Time().isDst > 0){
-		
+		Time horaActual  = new Time();
+		horaActual.setToNow();
+		if(horaActual.isDst > 0){	
 			//Punta
 			if(hora>=13&&hora<23){
 				tarifa20DHS=getTarifaLibre(R.string.nombreT20DHSpunta, R.string.valor2_0DHSpunta);
@@ -406,8 +407,9 @@ public class NeurGai extends ActionBarActivity {
 		double tarifa20DHA;
 		
 		//Comprueba si estamos en horario de verano (Daylight Savings Time)
-		if(new Time().isDst > 0){
-			
+		Time horaActual  = new Time();
+		horaActual.setToNow();
+		if(horaActual.isDst > 0){	
 			//Punta
 			if(hora>=13&&hora<23){
 				tarifa20DHA=getTarifaLibre(R.string.nombreT20DHApunta, R.string.valor2_0DHApunta);
