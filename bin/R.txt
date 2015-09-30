@@ -579,6 +579,8 @@ int string cantidadEmisionPVPC 0x7f0a0039
 int string castellano 0x7f0a005d
 int string cerrarCalibrado 0x7f0a0018
 int string co2 0x7f0a003b
+int string conexionExitosa 0x7f0a0068
+int string configurandoRXBT 0x7f0a0066
 int string continuar 0x7f0a004f
 int string costes 0x7f0a0031
 int string creditos 0x7f0a0013
@@ -586,6 +588,7 @@ int string dispositivosBT 0x7f0a0064
 int string emisionesLibre 0x7f0a0037
 int string emisionesPVPC 0x7f0a0036
 int string error 0x7f0a0032
+int string errorConexionBT 0x7f0a0065
 int string euskaraz 0x7f0a0010
 int string grabandoDatosMedida 0x7f0a001a
 int string grabarDatos 0x7f0a0053
@@ -621,6 +624,7 @@ int string pulsar 0x7f0a0025
 int string punta 0x7f0a002c
 int string pvpc 0x7f0a0026
 int string realizandoMedidasSinCalibrar 0x7f0a001f
+int string resetearDispositivo 0x7f0a0067
 int string s1 0x7f0a0057
 int string s10 0x7f0a0058
 int string s30 0x7f0a0059

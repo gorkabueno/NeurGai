@@ -1954,6 +1954,8 @@ containing a value of this type.
         public static final int castellano=0x7f0a005d;
         public static final int cerrarCalibrado=0x7f0a0018;
         public static final int co2=0x7f0a003b;
+        public static final int conexionExitosa=0x7f0a0068;
+        public static final int configurandoRXBT=0x7f0a0066;
         public static final int continuar=0x7f0a004f;
         public static final int costes=0x7f0a0031;
         public static final int creditos=0x7f0a0013;
@@ -1961,6 +1963,7 @@ containing a value of this type.
         public static final int emisionesLibre=0x7f0a0037;
         public static final int emisionesPVPC=0x7f0a0036;
         public static final int error=0x7f0a0032;
+        public static final int errorConexionBT=0x7f0a0065;
         public static final int euskaraz=0x7f0a0010;
         public static final int grabandoDatosMedida=0x7f0a001a;
         public static final int grabarDatos=0x7f0a0053;
@@ -1996,6 +1999,7 @@ containing a value of this type.
         public static final int punta=0x7f0a002c;
         public static final int pvpc=0x7f0a0026;
         public static final int realizandoMedidasSinCalibrar=0x7f0a001f;
+        public static final int resetearDispositivo=0x7f0a0067;
         public static final int s1=0x7f0a0057;
         public static final int s10=0x7f0a0058;
         public static final int s30=0x7f0a0059;

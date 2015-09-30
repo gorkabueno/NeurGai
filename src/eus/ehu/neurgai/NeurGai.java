@@ -23,8 +23,13 @@ import java.util.UUID;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-import org.apache.commons.math3.transform.TransformType;
 import org.jtransforms.fft.DoubleFFT_1D;
+
+import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -67,13 +72,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasTarifas;
 public class NeurGai extends ActionBarActivity {
@@ -731,6 +729,7 @@ public class NeurGai extends ActionBarActivity {
 	private int requestCode = 0000;
 	private String potenciaBluetooth;
 	private ConnectThread mConnectThread;
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		BluetoothDevice device ;
 		if ( requestCode == this.requestCode ){
@@ -742,7 +741,6 @@ public class NeurGai extends ActionBarActivity {
 	     }
 	}
 
-	
 	// Handler que recogerá los valores enviados por hilo de conexión.
 	private final Handler handlerBT = new Handler() {
 		
@@ -752,7 +750,6 @@ public class NeurGai extends ActionBarActivity {
 			StringBuilder potencia=new StringBuilder();
 			char[] charArray=mensaje.obj.toString().toCharArray();
 			int j=0;
-			Log.i("BT", mensaje.obj.toString());
 			
 			
 			if(charArray.length>0){
@@ -776,7 +773,7 @@ public class NeurGai extends ActionBarActivity {
 						}
 					}
 				}else{
-					Toast.makeText(getBaseContext(), "Configurando la recepción de medidas...", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getBaseContext(), getString(R.string.configurandoRXBT), Toast.LENGTH_SHORT).show();
 				}
 			}
 			
@@ -794,10 +791,11 @@ public class NeurGai extends ActionBarActivity {
 	};
 
 	private class ConnectThread extends Thread {
-		private final BluetoothSocket mSocket;
+		private BluetoothSocket mSocket;
 		private final UUID direccionSerieDefecto =UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 		private ConnectedThread mConnectedThred;
-	    public ConnectThread(BluetoothDevice device) {
+	    
+		public ConnectThread(BluetoothDevice device) {
 	        
 	    	BluetoothSocket tmp = null;
 	        // Get a BluetoothSocket to connect with the given BluetoothDevice
@@ -817,15 +815,15 @@ public class NeurGai extends ActionBarActivity {
 	        	
 	        	//Se conecta el dispositivo a través del socket.
 	            mSocket.connect();
-	            
 	            Message msg=new Message();
-    			msg.obj= "Conexion éxitosa";
+    			msg.obj= getString(R.string.conexionExitosa);
     			handlerToast.sendMessage(msg);
 	            
 	        } catch (IOException connectException) {
 	        	Log.i("Problemas en la conexión a través del socket.", connectException.getMessage());
-	        	 Message msg=new Message();
-	    			msg.obj= "Error de conexión. Intentalo otra vez";
+	        	 
+	        	Message msg=new Message();
+	    			msg.obj=getString(R.string.errorConexionBT);
 	    			handlerToast.sendMessage(msg);
 	        	try {
 	                mSocket.close();
@@ -845,19 +843,21 @@ public class NeurGai extends ActionBarActivity {
     	//Cerrar socket.
     	public void cancel() {
     		try {
-    			if(mConnectedThred!=null){
-    				mConnectedThred.cancel();
-    			}
     			mSocket.close();
-    		}catch (IOException e) { }
+    			mSocket=null;
+    		}catch (IOException e) { 
+    			Log.i("Error desconexion", e.getLocalizedMessage());
+    		}
     	}
 	}
+	
 	
 	private class ConnectedThread extends Thread {
 	    
 		private final BluetoothSocket mSocket;			//El socket abierto por el hilo padre.
         private final InputStream mInputStream;			//Stream de recepción de datos que estará asociado al socket.
-        	
+        private boolean llaveBT=true;
+        
         public ConnectedThread(BluetoothSocket socket) {
             mSocket = socket;
             InputStream tmpIn = null;
@@ -869,21 +869,21 @@ public class NeurGai extends ActionBarActivity {
                 Log.i("Socket temporal no se ha podido crear: ", e.getMessage());
                
                 Message msg=new Message();
-    			msg.obj= "Error de conexión. Intentalo otra vez";
+    			msg.obj= getString(R.string.errorConexionBT);
     			handlerToast.sendMessage(msg);
             }
             
             mInputStream = tmpIn;
             
             Message msg=new Message();
-			msg.obj= "Iniciada la recepción de datos. Resetea dispositivo.";
+			msg.obj= getString(R.string.resetearDispositivo);
 			handlerToast.sendMessage(msg);
         }
 		 
 	    public void run() {
             Log.i("Inicio datos.","Iniciada la recepción de datos");
             //Permance a la escucha de datos.
-            while (true) {
+            while (llaveBT) {
             	read();
             }
         }
@@ -914,8 +914,12 @@ public class NeurGai extends ActionBarActivity {
 		 
 	    //Se cierra la conexión del socket.
 	    public void cancel() {
+	    	llaveBT=false;
 	        try {
-	            mSocket.close();
+	        	mInputStream.close();
+	        	mSocket.close();
+	        	
+	            
 	        } catch (IOException e) { }
 	    }
 	}

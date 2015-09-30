@@ -99,4 +99,8 @@
     <string name="buscarBT">Buscar dispositivos</string>
     <string name="buscandoBT">Buscando</string>
     <string name="dispositivosBT">Dispositivos Bluetooth</string>
+    <string name="errorConexionBT">Error de conexión. Intentalo otra vez</string>
+    <string name="configurandoRXBT">Configurando la recepción de medidas&#8230;</string>
+    <string name="resetearDispositivo">Iniciada la recepción de datos. Resetea dispositivo.</string>
+    <string name="conexionExitosa">Conexion éxitosa.</string>
 </resources>
