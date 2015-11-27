@@ -71,4 +71,11 @@
     <string name="sonda">Zunda</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="textoIdioma">Euskaraz aukeratuta</string>
+    <string name="buscarBT">Gailuak bilatu</string>
+    <string name="buscandoBT">Bilatzen</string>
+    <string name="dispositivosBT">Bluetooth gailuak</string>
+    <string name="errorConexionBT">Konexio errorea. Saiatu berriro</string>
+    <string name="configurandoRXBT">Neurketak hartzearen konfigurazioa&#8230;</string>
+    <string name="resetearDispositivo">Datuen hartzea hasi da. Erreseteatu gailua.</string>
+    <string name="conexionExitosa">Konexioa ondo egin da.</string>    
 </resources>
