@@ -29,6 +29,7 @@
                 <menu>
             		<item android:id="@+id/sonda" android:icon="@drawable/ic_sondanegro" android:title="@string/sonda" app:showAsAction="always" />
             		<item android:id="@+id/bluetooth" android:icon="@drawable/ic_bluetoothnegro" android:title="@string/bluetooth" app:showAsAction="always" />
+            		<item android:id="@+id/wifi" android:icon="@drawable/ic_wifinegro" android:title="@string/wifi" app:showAsAction="always" />
         		</menu>
     		</item>
     		 <item android:id="@+id/cambiarIdioma" android:icon="@drawable/ic_idioma" app:showAsAction="always|withText" android:title="@string/cambiarIdioma">

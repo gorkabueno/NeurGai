@@ -20,6 +20,8 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.media.audiofx.AutomaticGainControl;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,12 +64,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -75,26 +85,40 @@ import java.util.UUID;
 
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasTarifas;
+import eus.ehu.neurgai.R.string;
 
 public class NeurGai extends ActionBarActivity {
 
     private Menu menu;
+    
+    private WifiManager wifiManager;
+    private Socket echoSocketWifi = null;
+	private PrintWriter outWifi = null;;
+    private BufferedReader inWifi = null;
+    private String wifiClientName = "null";
+    private boolean wifiAccessPointAbierto = false;
+    private boolean wifiSocketAbierto = false;
 
-    private boolean medidaSonda = true;    // si false la medida es a través de bluetooth + KL05Z
+    private boolean medidaSonda = true;    // si false la medida es a través de bluetooth/wifi + KL25Z
+    private boolean medidaWifi = false;	   // si false y medidaSonda true entonces se utiliza bluetooth, si true, wifi
     private short periodicidadMedidaEnSegundos = 1;
     private boolean empezar = true;
     private boolean midiendo = false;
     private boolean anotar = false;
     private boolean grabarDatos = false;
     private boolean visible = true;
+    
+    private int potenciaCorregida = 0;
 
     private boolean botonPulsado = false;
     private boolean tonoLanzado = false;
     private boolean pantallaInicializada = false;
+    private boolean medidaWifiRealizada = false;
 
     private Object llaveBotonPulsado = new Object();
     private Object llaveTonoLanzado = new Object();
     private Object llavePantallaInicializada = new Object();
+    private Object llaveMedidaWifiRealizada = new Object();
 
     private int bufferSize = 0;
     private AudioRecord recorder = null;
@@ -930,7 +954,7 @@ public class NeurGai extends ActionBarActivity {
         public void run() {
             if (!grabarDatos && midiendo) {                            // mientras graba datos de última medida no realiza más medidas
 
-                int potenciaCorregida;
+                //int potenciaCorregida = 0;
 
                 if (medidaSonda) {
                     //recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);		// vacía el buffer de grabación del micro
@@ -944,11 +968,93 @@ public class NeurGai extends ActionBarActivity {
 
                     potenciaCorregida = (int) (potencia / datosCalibrado.coeficienteAjuste / 10 + 0.5) * 10;
                 } else {
-                    potenciaCorregida = (int) Float.parseFloat((!(potenciaBluetooth == null || (potenciaBluetooth.equals("")))) ? potenciaBluetooth : "0.0"); // coger la última medida del bluetooth (en W)
-                    if (potenciaCorregida < 0)
-                        potenciaCorregida = 0;
+                	if (!medidaWifi) {  // recepción del dato a través de Bluetooth
+                		potenciaCorregida = (int) Float.parseFloat((!(potenciaBluetooth == null || (potenciaBluetooth.equals("")))) ? potenciaBluetooth : "0.0"); // coger la última medida del bluetooth (en W)
+                    if (potenciaCorregida < 0) potenciaCorregida = 0;
+                	} else {  // recepción del dato a través de Wifi
+                		// lanza la recepción del dato en otro hilo diferente al principal
+                		
+                		new Thread() {
+                            public void run() {
+                            	try {
+                                    // lanza la toma periódica de una medida
+                                    outWifi.println("Pot?");
+                                    Log.i("neurGAI", "esperando dato...");
+                                    //el dato a recibir tiene el siguiente formato (KL25z): sprintf(buffer, "#%i&%f*\n", num_medida, potencia_230V);
+                                    String recibido = inWifi.readLine();
+                                    Log.i("neurGAI", "recibido: " + recibido);
+                                    StringBuilder tiempo = new StringBuilder();
+                                    StringBuilder potencia = new StringBuilder();
+                                    int j = 0;
+                                    char[] charArray = recibido.toCharArray();
+                                    if (charArray.length > 0) {
+                                        if (charArray[0] == '#') {
+                                            if (charArray[j] == '#') {
+                                                j++;
+                                                while (charArray[j] != '&') {
+                                                    tiempo.append(charArray[j]);
+                                                    j++;
+                                                }
+                                            }
+                                            if (charArray[j] == '&') {
+                                                j++;
+                                                while (charArray[j] != '*') {
+                                                    potencia.append(charArray[j]);
+                                                    j++;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        potencia.append(0F);
+                                    }
+                                    String potenciaWifi = potencia.toString();
+                            		potenciaCorregida = (int) Float.parseFloat((!(potenciaWifi == null || (potenciaWifi.equals("")))) ? potenciaWifi : "0.0"); // coger la última medida del bluetooth (en W)
+                                    if (potenciaCorregida < 0) potenciaCorregida = 0;
+                                    
+                                    Log.i("wifiAP", "echo: " + recibido);
+                                } catch (UnknownHostException e) {
+                                    System.err.println("Don't know about host " + wifiClientName);
+                                    try {
+                                		outWifi.close();
+            							inWifi.close();
+            							echoSocketWifi.close();
+            							wifiSocketAbierto = false;
+            						} catch (IOException ee) {
+            							ee.printStackTrace();
+            						}
+                                    System.exit(1);
+                                } catch (IOException e) {
+                                    System.err.println("Couldn't get I/O for the connection to " + wifiClientName);
+                                    System.err.println(e);
+                                    try {
+                                		outWifi.close();
+            							inWifi.close();
+            							echoSocketWifi.close();
+            							wifiSocketAbierto = false;
+            						} catch (IOException ee) {
+            							ee.printStackTrace();
+            						}
+                                    System.exit(1);
+                                }
+                            	
+                            	medidaWifiRealizada = true;
+                                synchronized (llaveMedidaWifiRealizada) {
+                                    llaveMedidaWifiRealizada.notifyAll();
+                                }
+                            }
+                        }.start();
+                		
+                        synchronized (llaveMedidaWifiRealizada) {
+                            while (!medidaWifiRealizada) {
+                                try {
+                                    llaveMedidaWifiRealizada.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                        }
+                	}
                 }
-
+                
                 double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
 
                 if (empezar) {
@@ -1015,8 +1121,7 @@ public class NeurGai extends ActionBarActivity {
                             }
                         }
                     });
-                }
-                ;
+                };
 
                 synchronized (llavePantallaInicializada) {
                     while (!pantallaInicializada) {
@@ -1036,7 +1141,7 @@ public class NeurGai extends ActionBarActivity {
 
 
                 // acondiciona los ejes verticales, si necesario, para que las marcas verticales coincidan con las potencias normalizadas de las tarifas
-                String[] escalasPotencia = new String[]{"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20"};
+                String[] escalasPotencia = new String[]{"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20", "10,35", "11,50", "12,65", "13,80", "14,95", "16,10", "17,25", "18,40", "19,55", "20,70", "21,85", "23,00", "24,15"};
                 int numeroMarcasVerticales = (int) serieMedidas.getHighestValueY() / 1150 + 2;
                 String[] marcasVerticales = new String[numeroMarcasVerticales];
                 System.arraycopy(escalasPotencia, 0, marcasVerticales, 0, numeroMarcasVerticales);
@@ -1191,6 +1296,41 @@ public class NeurGai extends ActionBarActivity {
         if (mConnectThread != null) {
             mConnectThread.cancel();
         }
+        
+     // comprueba si realizando medidas con wifi, para cerrar WAP
+    	if (medidaWifi) {
+    		// cierra el socket
+    		try {
+        		outWifi.close();
+				inWifi.close();
+				echoSocketWifi.close();
+				wifiSocketAbierto = false;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    		// cierra el WAP
+    		new Thread() {
+                public void run() {
+                	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                	WifiConfiguration netConfig = null;
+                	try {
+                		Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+                		method.setAccessible(true);
+                        if ((Boolean) method.invoke(wifiManager)) {
+                        	wifiManager.setWifiEnabled(false);
+                        	method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                        	method.invoke(wifiManager, netConfig, false);
+                        	wifiAccessPointAbierto = false;
+                        	medidaWifi = false;
+                        } else {
+                        	// AP ya estaba deshabilitado
+                        	wifiAccessPointAbierto = false;
+                        	medidaWifi = false;
+                        }
+                	} catch (Throwable ignored) {}
+                }
+            }.start();
+    	}
 
         super.onDestroy();
     }
@@ -2192,16 +2332,274 @@ public class NeurGai extends ActionBarActivity {
 
             }
             case R.id.sonda:
+            	// comprueba si realizando medidas con wifi, para cerrar WAP
+            	if (medidaWifi) {
+            		// cierra el socket
+            		try {
+                		outWifi.close();
+						inWifi.close();
+						echoSocketWifi.close();
+						wifiSocketAbierto = false;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+            		// cierra el WAP
+            		new Thread() {
+                        public void run() {
+                        	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        	WifiConfiguration netConfig = null;
+                        	try {
+                        		Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+                        		method.setAccessible(true);
+                                if ((Boolean) method.invoke(wifiManager)) {
+                                	wifiManager.setWifiEnabled(false);
+                                	method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                                	method.invoke(wifiManager, netConfig, false);
+                                	wifiAccessPointAbierto = false;
+                                	medidaWifi = false;
+                                } else {
+                                	// AP ya estaba deshabilitado
+                                	wifiAccessPointAbierto = false;
+                                	medidaWifi = false;
+                                }
+                        	} catch (Throwable ignored) {}
+                        }
+                    }.start();
+            	}
                 medidaSonda = true;
                 menu.findItem(R.id.sonda_bluetooth).setIcon(R.drawable.ic_sondanegro);
                 return true;
 
             case R.id.bluetooth:
+            	// comprueba si realizando medidas con wifi, para cerrar WAP
+            	if (medidaWifi) {
+            		// cierra el socket
+            		try {
+                		outWifi.close();
+						inWifi.close();
+						echoSocketWifi.close();
+						wifiSocketAbierto = false;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+            		// cierra el WAP
+            		new Thread() {
+                        public void run() {
+                        	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        	WifiConfiguration netConfig = null;
+                        	try {
+                        		Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+                        		method.setAccessible(true);
+                                if ((Boolean) method.invoke(wifiManager)) {
+                                	wifiManager.setWifiEnabled(false);
+                                	method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                                	method.invoke(wifiManager, netConfig, false);
+                                	wifiAccessPointAbierto = false;
+                                	medidaWifi = false;
+                                } else {
+                                	// AP ya estaba deshabilitado
+                                	wifiAccessPointAbierto = false;
+                                	medidaWifi = false;
+                                }
+                        	} catch (Throwable ignored) {}
+                        }
+                    }.start();
+            	}
                 medidaSonda = false;
+                medidaWifi = false;
                 menu.findItem(R.id.sonda_bluetooth).setIcon(R.drawable.ic_bluetoothnegro);
                 Intent intent = new Intent(getApplicationContext(), BluetoothDialog.class);
                 startActivityForResult(intent, requestCode);
+                return true;
+                
+            case R.id.wifi:
+                medidaSonda = false;
+                medidaWifi = true;
+                menu.findItem(R.id.sonda_bluetooth).setIcon(R.drawable.ic_wifinegro);
+                
+                new Thread() {
+                    public void run() {
+                    	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                    	wifiClientName = "null";
+                        
+                        // crea Wifi Access Point
+                    	runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                            	Toast.makeText(NeurGai.this, R.string.abriendoWAP, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    	
+                        if (wifiManager.isWifiEnabled()) {
+                            wifiManager.setWifiEnabled(false);
+                        }
+                        Method[] wmMethods = wifiManager.getClass().getDeclaredMethods();
+                        boolean methodFound = false;
+                        for (Method method: wmMethods) {
+                            if (method.getName().equals("setWifiApEnabled")) {
+                                methodFound = true;
+                                WifiConfiguration netConfig = new WifiConfiguration();
+                                netConfig.SSID = "NeurGai";
+                                netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                                netConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                                netConfig.preSharedKey = "neurGai2016";
+                                try {
+                                    boolean apstatus = (Boolean) method.invoke(wifiManager, netConfig, true);
+                                    for (Method isWifiApEnabledmethod: wmMethods) {
+                                        if (isWifiApEnabledmethod.getName().equals("isWifiApEnabled")) {
+                                            while (!(Boolean) isWifiApEnabledmethod.invoke(wifiManager)) {};
+                                            for (Method method1: wmMethods) {
+                                                if (method1.getName().equals("getWifiApState")) {
+                                                    int apstate;
+                                                    apstate = (Integer) method1.invoke(wifiManager);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (apstatus) {
+                                        Log.d("neurGAI", "Access Point created");
+                                        wifiAccessPointAbierto = true;
+                                    } else {
+                                        Log.d("neurGAI", "Access Point creation failed");
+                                    }
 
+                                } catch (IllegalArgumentException e) {
+                                    e.printStackTrace();
+                                } catch (IllegalAccessException e) {
+                                    e.printStackTrace();
+                                } catch (InvocationTargetException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        if (!methodFound) {
+                            Log.d("neurGAI", "cannot configure an access point");
+                        }
+                        
+                     // Rastrea las redes para establecer conexión con el KL25z
+                        byte[] remoteHostIp;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                            	Toast.makeText(NeurGai.this, R.string.buscandoKL25z, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    	try {
+                    		for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                        		NetworkInterface intf = en.nextElement();
+                        		// Iterate over all IP addresses in each network interface.
+                        		for (Enumeration<InetAddress> enumIPAddr = intf.getInetAddresses(); enumIPAddr.hasMoreElements();) {
+                        			InetAddress iNetAddress = enumIPAddr.nextElement();
+                        			// Loop back address (127.0.0.1) doesn't count as an in-use IP address.
+                        			if (!iNetAddress.isLoopbackAddress()) {
+                        				try {
+                        					remoteHostIp =  iNetAddress.getAddress();
+                        					String sLocalIP = iNetAddress.getHostAddress();
+                            				String sInterfaceName = intf.getName();
+                        					Log.i("neurGAI", sInterfaceName + "--" + sLocalIP + "/" + intf.toString() + 
+                            						Boolean.toString(intf.isLoopback()) + " " +
+                            						Boolean.toString(intf.isPointToPoint()) + " " +
+                            						Boolean.toString(intf.isUp()) + " " +
+                            						Boolean.toString(intf.isVirtual()) + " " +
+                            						Boolean.toString(intf.supportsMulticast()));
+                            				if (((remoteHostIp[0] < 0) && (remoteHostIp[0] + 256) < 192) || ((remoteHostIp[0] >= 0) && (remoteHostIp[0] < 192))) continue;		// no es el interfaz de red privada clase C, a por el siguiente interfaz
+                        					byte remoteLast = remoteHostIp[3];
+                        	            	int timeout = 100;
+                        	            	for (int i = 1; i < 255; i++ ){
+                        	            		if ( (byte) i == remoteLast) continue;		// es el interfaz, a por el siguiente byte
+                        	            		remoteHostIp[3] = (byte) i;
+                        	            		Log.i("neurGAI", Byte.toString(remoteHostIp[0])
+                        	            				+ ":" + Byte.toString(remoteHostIp[1])
+                        	            				+ ":" + Byte.toString(remoteHostIp[2])
+                        	            				+ ":" + Byte.toString((remoteHostIp[3])));
+                        	            		if (InetAddress.getByAddress(remoteHostIp).isReachable(timeout)) {
+                        	            			wifiClientName = InetAddress.getByAddress(remoteHostIp).getHostAddress();
+                        	            			Log.i("neurGAI", "Encontrado!: " + wifiClientName);
+                        	            			runOnUiThread(new Runnable() {
+                        	                            @Override
+                        	                            public void run() {
+                        	                            	Toast.makeText(NeurGai.this, R.string.kL25zEncontrado, Toast.LENGTH_LONG).show();
+                        	                            }
+                        	                        });
+                        	            			break;
+                        	            		}
+                        	            	}
+                        				} catch (UnknownHostException e) {
+                        					e.printStackTrace();
+                        				} catch (IOException e) {
+                        					e.printStackTrace();
+                        				}
+                        			}
+                        		}
+                        	}
+                    	} catch (Exception e) {}
+                    	
+                    	// comprueba que ha establecido comunicación; si no, mensaje y salida
+                    	if (wifiClientName.equals("null")) {
+                    		runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                	Toast.makeText(NeurGai.this, R.string.kL25zNoEncontrado, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    		
+                    		// cierra el WAP
+                    		new Thread() {
+                                public void run() {
+                                	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                                	WifiConfiguration netConfig = null;
+                                	try {
+                                		Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+                                		method.setAccessible(true);
+                                        if ((Boolean) method.invoke(wifiManager)) {
+                                        	wifiManager.setWifiEnabled(false);
+                                        	method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                                        	method.invoke(wifiManager, netConfig, false);
+                                        	wifiAccessPointAbierto = false;
+                                        	medidaWifi = false;
+                                        } else {
+                                        	// AP ya estaba deshabilitado
+                                        	wifiAccessPointAbierto = false;
+                                        	medidaWifi = false;
+                                        }
+                                	} catch (Throwable ignored) {}
+                                }
+                            }.start();
+                    		
+                    		return;
+                    	}
+                    	
+                    	// inicia la comunicación neurGAI-KL25z 
+                    	try {
+                    			echoSocketWifi = new Socket(wifiClientName, 7);
+                    			outWifi = new PrintWriter(echoSocketWifi.getOutputStream(), true);
+                                inWifi = new BufferedReader(new InputStreamReader(echoSocketWifi.getInputStream()));
+                                wifiSocketAbierto = true;
+                            } catch (UnknownHostException e) {
+                                System.err.println("Don't know about host " + wifiClientName);
+                                try {
+                            		outWifi.close();
+        							inWifi.close();
+        							echoSocketWifi.close();
+        						} catch (IOException ee) {
+        							ee.printStackTrace();
+        						}
+                                System.exit(1);
+                                
+                            } catch (IOException e) {
+                                System.err.println("Couldn't get I/O for the connection to " + wifiClientName);
+                                System.err.println(e);
+                                try {
+                            		outWifi.close();
+        							inWifi.close();
+        							echoSocketWifi.close();
+        						} catch (IOException ee) {
+        							ee.printStackTrace();
+        						}
+                                System.exit(1);
+                            }
+                    }
+                }.start();
                 return true;
 
             case R.id.s1:

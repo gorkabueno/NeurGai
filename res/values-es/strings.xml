@@ -70,8 +70,12 @@
     <string name="castellano">Castellano</string>
     <string name="sonda">Sonda</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="wifi">WIFI</string>
     <string name="textoIdioma">Idioma Castellano</string>
     <string name="buscarBT">Buscar dispositivos</string>
     <string name="buscandoBT">Buscando</string>
     <string name="dispositivosBT">Dispositivos Bluetooth</string>
+    <string name="buscandoKL25z">Buscando KL25z...</string>
+    <string name="kL25zEncontrado">¡KL25z encontrado!</string>
+    <string name="kL25zNoEncontrado">KL25z no encontrado</string>
 </resources>

@@ -70,6 +70,7 @@
     <string name="castellano">Castellano</string>
     <string name="sonda">Zunda</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="wifi">WIFI</string>
     <string name="textoIdioma">Euskaraz aukeratuta</string>
     <string name="buscarBT">Gailuak bilatu</string>
     <string name="buscandoBT">Bilatzen</string>
@@ -77,5 +78,8 @@
     <string name="errorConexionBT">Konexio errorea. Saiatu berriro</string>
     <string name="configurandoRXBT">Neurketak hartzearen konfigurazioa&#8230;</string>
     <string name="resetearDispositivo">Datuen hartzea hasi da. Erreseteatu gailua.</string>
-    <string name="conexionExitosa">Konexioa ondo egin da.</string>    
+    <string name="conexionExitosa">Konexioa ondo egin da.</string>
+    <string name="buscandoKL25z">KL25z bilatzen...</string>
+    <string name="kL25zEncontrado">KL25z aurkituta!</string>
+    <string name="kL25zNoEncontrado">KL25z ezin aurkitu</string>
 </resources>
