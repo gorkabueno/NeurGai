@@ -82,4 +82,9 @@
     <string name="buscandoKL25z">KL25z bilatzen...</string>
     <string name="kL25zEncontrado">KL25z aurkituta!</string>
     <string name="kL25zNoEncontrado">KL25z ezin aurkitu</string>
+    <string name="calibracionMic">MIC sarreraren kalibrazioa</string>
+    <string name="preguntaCalibracion">MIC sarrera kalibrazu nahi duzu ala WIFI/BLUETOOTH-en bidez neurtuko duzu?</string>
+    <string name="calibrarMic">Kalibratu MIC</string>
+    <string name="soloWifiBt">WIFI/BLUETOOTH</string>
+    <string name="recuerdaSeleccionar">Gogoratu WIFI/BLUETOOTH aukeratzea</string>
 </resources>

@@ -25,6 +25,56 @@
         android:text=""
         android:textSize="30sp"
         android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/textoTensionEficaz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/textoCorrienteEficaz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/textoPotenciaAparente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/textoPotenciaReactiva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/textoCosPHI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text=""
+        android:textSize="30sp"
+        android:visibility="gone" />
 
     <TableRow
         android:id="@+id/tableRow1"

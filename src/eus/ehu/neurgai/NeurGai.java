@@ -85,7 +85,6 @@ import java.util.UUID;
 
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasCostes;
 import eus.ehu.neurgai.BaseDatosNeurGAI.ColumnasTarifas;
-import eus.ehu.neurgai.R.string;
 
 public class NeurGai extends ActionBarActivity {
 
@@ -99,8 +98,10 @@ public class NeurGai extends ActionBarActivity {
     private boolean wifiAccessPointAbierto = false;
     private boolean wifiSocketAbierto = false;
 
+    private boolean medidaSondaDeshabilitada = false;
     private boolean medidaSonda = true;    // si false la medida es a través de bluetooth/wifi + KL25Z
     private boolean medidaWifi = false;	   // si false y medidaSonda true entonces se utiliza bluetooth, si true, wifi
+    private boolean medidaIV = false;
     private short periodicidadMedidaEnSegundos = 1;
     private boolean empezar = true;
     private boolean midiendo = false;
@@ -749,6 +750,11 @@ public class NeurGai extends ActionBarActivity {
      *************************************/
     private int requestCode = 0000;
     private String potenciaBluetooth;
+    private String tensionEficazBluetooth;
+    private String corrienteEficazBluetooth;
+    private String potenciaAparenteBluetooth;
+    private String potenciaReactivaBluetooth;
+    private String cosPHIBluetooth;
     private ConnectThread mConnectThread;
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -768,13 +774,20 @@ public class NeurGai extends ActionBarActivity {
         public void handleMessage(Message mensaje) {
             StringBuilder tiempo = new StringBuilder();
             StringBuilder potencia = new StringBuilder();
+            StringBuilder tensionEficaz = new StringBuilder();
+        	StringBuilder corrienteEficaz = new StringBuilder();
+        	StringBuilder potenciaAparente = new StringBuilder();
+        	StringBuilder potenciaReactiva = new StringBuilder();
+        	StringBuilder cosPHI = new StringBuilder();
             char[] charArray = mensaje.obj.toString().toCharArray();
             int j = 0;
 
-
             if (charArray.length > 0) {
 
-                if (charArray[0] == '#') {
+                if (charArray[0] == '#') {		// se recibe "#%i€%f*\r\n"
+                	
+                	medidaIV = false;
+                	
                     if (charArray[j] == '#') {
                         j++;
                         while (charArray[j] != '€') {
@@ -792,15 +805,82 @@ public class NeurGai extends ActionBarActivity {
                             j++;
                         }
                     }
+                } else if (charArray[0] == '*') {	// // se recibe "*%f;%f;%f;%f;%f;%f#"
+                	
+                	medidaIV = true;
+
+                	//lee tiempo
+                	j++;
+                    while (charArray[j] != ';') {
+                    	tiempo.append(charArray[j]);
+                    	j++;
+                    }
+                    
+                    //lee tensión eficaz
+                    j++;
+                    while (charArray[j] != ';') {
+                    	tensionEficaz.append(charArray[j]);
+                    	j++;
+                    }
+                    
+                    //lee corriente eficaz
+                    j++;
+                    while (charArray[j] != ';') {
+                    	corrienteEficaz.append(charArray[j]);
+                    	j++;
+                    }
+                    
+                    //lee potencia aparente
+                    j++;
+                    while (charArray[j] != ';') {
+                    	potenciaAparente.append(charArray[j]);
+                    	j++;
+                    }
+                    
+                    //lee potencia activa
+                    j++;
+                    while (charArray[j] != ';') {
+                    	potencia.append(charArray[j]);
+                    	j++;
+                    }
+                    
+                    //lee potencia reactiva
+                    j++;
+                    while (charArray[j] != ';') {
+                    	potenciaReactiva.append(charArray[j]);
+                    	j++;
+                    }
+
+                    //lee cosPHI
+                    j++;
+                    while (charArray[j] != '#') {
+                    	cosPHI.append(charArray[j]);
+                    	j++;
+                    }
+
                 } else {
                     Toast.makeText(getBaseContext(), getString(R.string.configurandoRXBT), Toast.LENGTH_SHORT).show();
                 }
             } else {
+            	tiempo.append(0F);
                 potencia.append(0F);
+                tensionEficaz.append(0F);
+                corrienteEficaz.append(0F);
+                potenciaAparente.append(0F);
+                potenciaReactiva.append(0F);
+                cosPHI.append(0F);
             }
 
             potenciaBluetooth = potencia.toString();
             Log.i("Medidas", "Tiempo: " + tiempo + " Potencia: " + potencia);
+ 
+            if (medidaIV) {
+            	tensionEficazBluetooth = tensionEficaz.toString();
+            	corrienteEficazBluetooth = corrienteEficaz.toString();
+            	potenciaAparenteBluetooth = potenciaAparente.toString();
+            	potenciaReactivaBluetooth = potenciaReactiva.toString();
+            	cosPHIBluetooth = cosPHI.toString();
+            }
         }
     };
 
@@ -952,7 +1032,7 @@ public class NeurGai extends ActionBarActivity {
 
         @Override
         public void run() {
-            if (!grabarDatos && midiendo) {                            // mientras graba datos de última medida no realiza más medidas
+            if (!grabarDatos && midiendo && (!medidaSondaDeshabilitada)) {                            // mientras graba datos de última medida no realiza más medidas
 
                 //int potenciaCorregida = 0;
 
@@ -1056,7 +1136,7 @@ public class NeurGai extends ActionBarActivity {
                 }
                 
                 double tiempoActual = GregorianCalendar.getInstance().getTimeInMillis() / 1000;
-
+                
                 if (empezar) {
                     pantallaInicializada = false;
                     runOnUiThread(new Runnable() {
@@ -1092,24 +1172,34 @@ public class NeurGai extends ActionBarActivity {
                             findViewById(R.id.co2pvpc).setVisibility(View.VISIBLE);
 
 
-                            // crea el gráfico con los datos de las medidas
-                            graficoMedidas = (GraphView) findViewById(R.id.grafica);
-                            graficoMedidas.removeAllSeries();
-                            graficoMedidas.clearAnimation();
+                            if (!medidaIV) {
+                            	// crea el gráfico con los datos de las medidas
+                                graficoMedidas = (GraphView) findViewById(R.id.grafica);
+                                graficoMedidas.removeAllSeries();
+                                graficoMedidas.clearAnimation();
 
-                            serieMedidas.setColor(Color.BLACK);
-                            graficoMedidas.setTitleColor(Color.BLACK);
-                            graficoMedidas.setTitle(getString(R.string.medidasDePotencia));
+                                serieMedidas.setColor(Color.BLACK);
+                                graficoMedidas.setTitleColor(Color.BLACK);
+                                graficoMedidas.setTitle(getString(R.string.medidasDePotencia));
 
-                            graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
-                            graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
-                            graficoMedidas.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+                                graficoMedidas.getGridLabelRenderer().setGridColor(Color.BLACK);
+                                graficoMedidas.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+                                graficoMedidas.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
 
-                            serieMedidas.setDrawBackground(true);
-                            serieMedidas.setBackgroundColor(Color.BLUE);
-                            graficoMedidas.getViewport().setYAxisBoundsManual(true);
-                            graficoMedidas.addSeries(serieMedidas);                // data
-                            graficoMedidas.setVisibility(View.VISIBLE);        // hace visible el gráfico
+                                serieMedidas.setDrawBackground(true);
+                                serieMedidas.setBackgroundColor(Color.BLUE);
+                                graficoMedidas.getViewport().setYAxisBoundsManual(true);
+                                graficoMedidas.addSeries(serieMedidas);                // data
+                                graficoMedidas.setVisibility(View.VISIBLE);        // hace visible el gráfico
+                            } else {
+                            	// en vez del gráfico se muestran los datos de tensión y corriente eficaz, potencia aparente y reactiva, y cosPHI
+                            	findViewById(R.id.textoCorrienteEficaz).setVisibility(View.VISIBLE);
+                            	findViewById(R.id.textoTensionEficaz).setVisibility(View.VISIBLE);
+                            	findViewById(R.id.textoPotenciaAparente).setVisibility(View.VISIBLE);
+                            	findViewById(R.id.textoPotenciaReactiva).setVisibility(View.VISIBLE);
+                            	findViewById(R.id.textoCosPHI).setVisibility(View.VISIBLE);
+                            }
+                            
 
                             if (periodicidadMedidaEnSegundos == 1)
                                 menu.findItem(R.id.tiempo).setIcon(null).setTitle("2 seg");        // pone el icono si no está puesto
@@ -1139,16 +1229,17 @@ public class NeurGai extends ActionBarActivity {
                         Constants.NUMERO_MAXIMO_MEDIDAS_EN_GRAFICO
                 );
 
-
-                // acondiciona los ejes verticales, si necesario, para que las marcas verticales coincidan con las potencias normalizadas de las tarifas
-                String[] escalasPotencia = new String[]{"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20", "10,35", "11,50", "12,65", "13,80", "14,95", "16,10", "17,25", "18,40", "19,55", "20,70", "21,85", "23,00", "24,15"};
-                int numeroMarcasVerticales = (int) serieMedidas.getHighestValueY() / 1150 + 2;
-                String[] marcasVerticales = new String[numeroMarcasVerticales];
-                System.arraycopy(escalasPotencia, 0, marcasVerticales, 0, numeroMarcasVerticales);
-                graficoMedidas.getViewport().setMaxY(1150.0 * (numeroMarcasVerticales - 1));
-                StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graficoMedidas);
-                staticLabelsFormatter.setVerticalLabels(marcasVerticales);
-                graficoMedidas.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+                if (!medidaIV) {
+                	// acondiciona los ejes verticales, si necesario, para que las marcas verticales coincidan con las potencias normalizadas de las tarifas
+                    String[] escalasPotencia = new String[]{"0", "1,15", "2,30", "3,45", "4,60", "5,75", "6,90", "8,05", "9,20", "10,35", "11,50", "12,65", "13,80", "14,95", "16,10", "17,25", "18,40", "19,55", "20,70", "21,85", "23,00", "24,15"};
+                    int numeroMarcasVerticales = (int) serieMedidas.getHighestValueY() / 1150 + 2;
+                    String[] marcasVerticales = new String[numeroMarcasVerticales];
+                    System.arraycopy(escalasPotencia, 0, marcasVerticales, 0, numeroMarcasVerticales);
+                    graficoMedidas.getViewport().setMaxY(1150.0 * (numeroMarcasVerticales - 1));
+                    StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graficoMedidas);
+                    staticLabelsFormatter.setVerticalLabels(marcasVerticales);
+                    graficoMedidas.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+                }
 
                 //Consultar hora medida.
                 //Extraer el FEU correpondiente a esa hora.
@@ -1160,6 +1251,11 @@ public class NeurGai extends ActionBarActivity {
                 calcularPrecioMedida(potenciaCorregida, tiempoActual);
 
                 final int potenciaCorregidaAuxiliar = potenciaCorregida;
+                final String tensionEficazAuxiliar = tensionEficazBluetooth;
+                final String corrienteEficazAuxiliar = corrienteEficazBluetooth;
+                final String potenciaAparenteAuxiliar = potenciaAparenteBluetooth;
+                final String potenciaReactivaAuxiliar = potenciaReactivaBluetooth;
+                final String cosPHIAuxiliar = cosPHIBluetooth;
 
                 if (visible) {
                     // muestra en pantalla el dato
@@ -1169,7 +1265,20 @@ public class NeurGai extends ActionBarActivity {
                         public void run() {
                             final TextView textViewMedida = (TextView) findViewById(R.id.texto1);
                             textViewMedida.setText(Integer.toString(potenciaCorregidaAuxiliar) + " W");
-                            graficoMedidas.onDataChanged(true, false);
+                            if (!medidaIV) {
+                            	graficoMedidas.onDataChanged(true, false);
+                            } else {
+                            	final TextView textViewTensionEficaz = (TextView) findViewById(R.id.textoTensionEficaz);
+                                textViewTensionEficaz.setText(tensionEficazAuxiliar + " V ef");
+                                final TextView textViewCorrienteEficaz = (TextView) findViewById(R.id.textoCorrienteEficaz);
+                                textViewCorrienteEficaz.setText(corrienteEficazAuxiliar + " A ef");
+                                final TextView textViewPotenciaAparente = (TextView) findViewById(R.id.textoPotenciaAparente);
+                                textViewPotenciaAparente.setText(potenciaAparenteAuxiliar + " VA");
+                                final TextView textViewPotenciaReactiva = (TextView) findViewById(R.id.textoPotenciaReactiva);
+                                textViewPotenciaReactiva.setText(potenciaReactivaAuxiliar + " VA reac");
+                                final TextView textViewCosPHI = (TextView) findViewById(R.id.textoCosPHI);
+                                textViewCosPHI.setText(cosPHIAuxiliar);
+                            }
                         }
                     });
                 }
@@ -1357,714 +1466,815 @@ public class NeurGai extends ActionBarActivity {
         // trata de recuperar los datos de calibración, y si no existen comienza el proceso de calibrado
         // comprueba si existe el fichero de calibración
         if (false == new File(Constants.pathFicheroCalibracion + "/calibracion.bin").exists()) {
+        	
+        	//lanza una ventana para preguntar si se quiere calibrar la sonda conectada a MIC o se medirá mediante WIFI/BLUETOOTH
+        	// espera a que se pulse el botón para iniciar el calibrado
+            botonPulsado = false;
 
-            mProgress = (ProgressBar) findViewById(R.id.progressBar);
-
-            // el control de volumen es el de MEDIA
-            setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-            //no existe, así que iniciamos el calibrado
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mProgress.setVisibility(View.VISIBLE);    //hace visible la barra de progreso, solo utilizada aquí
-                    boton.setVisibility(View.VISIBLE);        //hace visible el botón
+                	AlertDialog.Builder builder = new AlertDialog.Builder(NeurGai.this);
+                    builder.setTitle(R.string.calibracionMic);
+                    builder.setMessage(R.string.preguntaCalibracion);
+                    builder.setPositiveButton(R.string.calibrarMic, new DialogInterface.OnClickListener() {
+                    	public void onClick(DialogInterface dialog, int id) {
+                    		medidaSondaDeshabilitada = false;
+                    		botonPulsado = true;
+                    		dialog.dismiss();
+                    		synchronized (llaveBotonPulsado) {
+                                llaveBotonPulsado.notifyAll();
+                            }
+                    	}
+                    });
+                    builder.setNegativeButton(R.string.soloWifiBt, new DialogInterface.OnClickListener() {
+                    	public void onClick(DialogInterface dialog, int id) {
+                    		medidaSondaDeshabilitada = true;
+                    		botonPulsado = true;
+                    		dialog.dismiss();
+                    		synchronized (llaveBotonPulsado) {
+                                llaveBotonPulsado.notifyAll();
+                            }
+                    	}
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             });
 
-            {
-                //definición de los arrays donde se guardarán temporalmente los valores de calibrado, antes de guardar en fichero
-                final double[] frecuenciaCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
-                final short[] amplitudesCalibradoAmplitudes = new short[Constants.numeroAmplitudes];
-                final double[] potenciaRMSCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
-                final double[] frecuenciaCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
-                final short[] amplitudesCalibradoFrecuencias = new short[Constants.numeroFrecuencias];
-                final double[] potenciaRMSCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
-
-                // configura el canal de grabación
-                bufferSize = AudioRecord.getMinBufferSize(
-                        Constants.RECORDER_SAMPLERATE,
-                        Constants.RECORDER_CHANNELS,
-                        Constants.RECORDER_AUDIO_ENCODING);
-
-                if (bufferSize < Constants.LONGITUD_TONO_GRABADO * 2)
-                    bufferSize = Constants.LONGITUD_TONO_GRABADO * 2;
-
-                recorder = new AudioRecord(
-                        AudioSource.MIC,
-                        Constants.RECORDER_SAMPLERATE,
-                        Constants.RECORDER_CHANNELS,
-                        Constants.RECORDER_AUDIO_ENCODING,
-                        bufferSize);
-                if (android.os.Build.VERSION.SDK_INT >= 16) {
-                    // se asegura de que no hay CAG-android en marcha
-                    cag = AutomaticGainControl.create(recorder.getAudioSessionId());
-                    if (AutomaticGainControl.isAvailable()) {
-                        if ((cag.hasControl()) && (cag.getEnabled())) cag.setEnabled(false);
-                    }
-                }
-
-                // configura el canal de salida de audio
-                bufferSizeAudio = AudioTrack.getMinBufferSize(
-                        Constants.RECORDER_SAMPLERATE,
-                        AudioFormat.CHANNEL_OUT_MONO,
-                        Constants.RECORDER_AUDIO_ENCODING);
-
-                audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                        Constants.RECORDER_SAMPLERATE,
-                        AudioFormat.CHANNEL_OUT_MONO,
-                        Constants.RECORDER_AUDIO_ENCODING,
-                        bufferSizeAudio,
-                        AudioTrack.MODE_STREAM);
-
-                mProgress.setProgress(0);
-                mProgress.setMax(Constants.numeroAmplitudes + Constants.numeroFrecuencias);
-
-                // espera a que se pulse el botón para iniciar el calibrado
-                botonPulsado = false;
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boton.setText(R.string.ajustarConectoryVolumen);
-                    }
-                });
-
-                synchronized (llaveBotonPulsado) {
-                    while (!botonPulsado) {
-                        try {
-                            llaveBotonPulsado.wait();
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
-
-                // muestra el mensaje de calibrado del CAG
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boton.setText(R.string.calibrandoCAG);
-                    }
-                });
-
-
-                //genera vector de amplitudes
-                final double amplitudInicial = 1000;
-                final double amplitudFinal = 30000;
-                short[] amplitudes = new short[Constants.numeroAmplitudes];
-
-                for (int n = 0; n < Constants.numeroAmplitudes; n++) {
-                    amplitudes[n] = (short) (amplitudInicial * Math.exp(n * Math.log(amplitudFinal / amplitudInicial) / (Constants.numeroAmplitudes - 1)));
-                }
-
-                // abre el canal de grabación
-                recorder.startRecording();
-                recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
-                recorder.stop();
-                recorder.startRecording();
-
-                //realiza el barrido de amplitudes
-                for (short i = 0; i < Constants.numeroAmplitudes; i++) {
-                    final double FRECUENCIA = 2000.0;
-                    final short A0 = amplitudes[i];
-
-                    mProgressStatus++;
-                    mProgress.setProgress(mProgressStatus);
-
-
-                    // vacía el buffer
-                    recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
-
-                    //manda el tono al canal de audio
-                    tonoLanzado = false;
-                    new Thread() {
-                        public void run() {
-                            setPriority(Thread.MAX_PRIORITY);
-
-                            //Genera las muestras de un pulso que escribimos en audioTrack.
-                            muestrasTonoGenerado = generadorCoseno(
-                                    (double) Constants.RECORDER_SAMPLERATE    //duración del tono
-                                    , FRECUENCIA                            //frecuencia del tono
-                                    , A0);                                    //amplitud del tono
-
-                            audioTrack.pause();
-                            audioTrack.flush(); // vacía el buffer de sonido si ha acabado la grabación
-                            audioTrack.play();
-                            audioTrack.write(muestrasTonoGenerado, 0, Constants.RECORDER_SAMPLERATE);
-
-                            tonoLanzado = true;
-                            synchronized (llaveTonoLanzado) {
-                                llaveTonoLanzado.notifyAll();
-                            }
-                        }
-                    }.start();
-
-                    synchronized (llaveTonoLanzado) {
-                        while (!tonoLanzado) {
-                            try {
-                                llaveTonoLanzado.wait();
-                            } catch (InterruptedException e) {
-                            }
-                        }
-                    }
-
-                    muestrasGrabadas = seleccionarMuestrasGrabacion(Constants.DATOS_INICIALES_NO_VALIDOS, Constants.DATOS_VALIDOS);
-
-                    //calcula la potencia de la muestra grabada
-                    double p = 0;
-                    for (short m : muestrasGrabadas) {
-                        p += m * m;
-                    }
-                    double potenciaRMSMuestraGrabada = Math.sqrt(p / muestrasGrabadas.length);
-
-                    //guarda los resultados del calibrado de amplitudes en los arrays
-                    frecuenciaCalibradoAmplitudes[i] = FRECUENCIA;
-                    amplitudesCalibradoAmplitudes[i] = A0;
-                    potenciaRMSCalibradoAmplitudes[i] = potenciaRMSMuestraGrabada;
-                }
-
-                audioTrack.pause();
-                audioTrack.flush();
-                recorder.stop();    // cierra la grabación
-                //recorder.release();
-
-                //muestra el gráfico con los datos de la medida del CAG
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        int anchuraLinea = 10;
-
-                        LineGraphSeries<DataPoint> serieCalibradoCAG = new LineGraphSeries<DataPoint>();
-                        serieCalibradoCAG.setColor(Color.BLACK);
-                        serieCalibradoCAG.setThickness(anchuraLinea);
-
-                        //GraphView graficoCAG = new GraphView(getBaseContext());
-                        GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
-
-                        graficoCAG.setTitleColor(Color.BLACK);
-                        graficoCAG.setTitle("x-log(AUDIO) vs y-log(MIC)");
-
-                        // carga los datos en la serie de puntos gráficos
-                        for (int i = 0; i < Constants.numeroAmplitudes; i++) {
-                            serieCalibradoCAG.appendData(
-                                    new DataPoint(Math.log10(amplitudesCalibradoAmplitudes[i]), Math.log10(potenciaRMSCalibradoAmplitudes[i])),
-                                    true,
-                                    (int) Constants.numeroAmplitudes
-                            );
-                        }
-
-                        graficoCAG.getGridLabelRenderer().setGridColor(Color.BLUE);
-                        graficoCAG.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
-                        graficoCAG.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
-
-                        graficoCAG.addSeries(serieCalibradoCAG);        // data
-
-                        //RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-                        //grafico.addView(graficoCAG);
-                        graficoCAG.setVisibility(View.VISIBLE);        //hace visible el gráfico
-                    }
-                });
-
-                // abre una ventana para introducir la amplitud de calibrado del filtro
-
-                while ((amplitudCalibradoFiltro < amplitudInicial) || (amplitudCalibradoFiltro > amplitudFinal)) {
+            synchronized (llaveBotonPulsado) {
+                while (!botonPulsado) {
                     try {
-                        botonPulsado = false;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                boton.setText(R.string.pulsaParaContinuar);
-                            }
-                        });
-                        synchronized (llaveBotonPulsado) {
-                            while (!botonPulsado) {
-                                try {
-                                    llaveBotonPulsado.wait();
-                                } catch (InterruptedException e) {
-                                }
-                            }
-                        }
-
-                        botonPulsado = false;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                preguntarAmplitudCalibrado();
-                            }
-                        });
-                        synchronized (llaveBotonPulsado) {
-                            while (!botonPulsado) {
-                                try {
-                                    llaveBotonPulsado.wait();
-                                } catch (InterruptedException e) {
-                                }
-                            }
-                        }
-                    } catch (NumberFormatException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showMessage(getString(R.string.error), getString(R.string.introducirAmplitudCorrectamente));
-                            }
-                        });
+                        llaveBotonPulsado.wait();
+                    } catch (InterruptedException e) {
                     }
                 }
-                ;
+            }
+            
+            if (!medidaSondaDeshabilitada) {
+            	
+            	//se desea hacer la medida con sonda en entrada MIC
+            	mProgress = (ProgressBar) findViewById(R.id.progressBar);
 
-                // calibra el filtro de entrada
-                botonPulsado = false;
+                // el control de volumen es el de MEDIA
+                setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+                //iniciamos el calibrado
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        boton.setText(R.string.calibrandoFiltro);
+                        mProgress.setVisibility(View.VISIBLE);    //hace visible la barra de progreso, solo utilizada aquí
+                        boton.setVisibility(View.VISIBLE);        //hace visible el botón
                     }
                 });
 
-                //genera vector de frecuencias
+                {
+                    //definición de los arrays donde se guardarán temporalmente los valores de calibrado, antes de guardar en fichero
+                    final double[] frecuenciaCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
+                    final short[] amplitudesCalibradoAmplitudes = new short[Constants.numeroAmplitudes];
+                    final double[] potenciaRMSCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
+                    final double[] frecuenciaCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
+                    final short[] amplitudesCalibradoFrecuencias = new short[Constants.numeroFrecuencias];
+                    final double[] potenciaRMSCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
 
-                final double frecuenciaInicial = 40;
-                final double frecuenciaFinal = 7000;
-                double[] frecuencias = new double[Constants.numeroFrecuencias];
-                for (int n = 0; n < Constants.numeroFrecuencias; n++) {
-                    frecuencias[n] = frecuenciaInicial * Math.exp(n * Math.log(frecuenciaFinal / frecuenciaInicial) / (Constants.numeroFrecuencias - 1));
-                }
+                    // configura el canal de grabación
+                    bufferSize = AudioRecord.getMinBufferSize(
+                            Constants.RECORDER_SAMPLERATE,
+                            Constants.RECORDER_CHANNELS,
+                            Constants.RECORDER_AUDIO_ENCODING);
 
-                //borra el gráfico del CAG
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
-                        graficoCAG.removeAllSeries();
-                        graficoCAG.clearAnimation();
-                        graficoCAG.setVisibility(View.GONE);        //hace invisible el gráfico
+                    if (bufferSize < Constants.LONGITUD_TONO_GRABADO * 2)
+                        bufferSize = Constants.LONGITUD_TONO_GRABADO * 2;
+
+                    recorder = new AudioRecord(
+                            AudioSource.MIC,
+                            Constants.RECORDER_SAMPLERATE,
+                            Constants.RECORDER_CHANNELS,
+                            Constants.RECORDER_AUDIO_ENCODING,
+                            bufferSize);
+                    if (android.os.Build.VERSION.SDK_INT >= 16) {
+                        // se asegura de que no hay CAG-android en marcha
+                        cag = AutomaticGainControl.create(recorder.getAudioSessionId());
+                        if (AutomaticGainControl.isAvailable()) {
+                            if ((cag.hasControl()) && (cag.getEnabled())) cag.setEnabled(false);
+                        }
                     }
-                });
 
-                recorder.startRecording();
-                recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
-                recorder.stop();
+                    // configura el canal de salida de audio
+                    bufferSizeAudio = AudioTrack.getMinBufferSize(
+                            Constants.RECORDER_SAMPLERATE,
+                            AudioFormat.CHANNEL_OUT_MONO,
+                            Constants.RECORDER_AUDIO_ENCODING);
 
-                //realiza el barrido de frecuencias
-                recorder.startRecording();        // abre el canal de grabación
-                for (short i = 0; i < Constants.numeroFrecuencias; i++) {
-                    final double FRECUENCIA = frecuencias[i];
-                    final short A0 = amplitudCalibradoFiltro;
+                    audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                            Constants.RECORDER_SAMPLERATE,
+                            AudioFormat.CHANNEL_OUT_MONO,
+                            Constants.RECORDER_AUDIO_ENCODING,
+                            bufferSizeAudio,
+                            AudioTrack.MODE_STREAM);
 
-                    mProgressStatus++;
-                    mProgress.setProgress(mProgressStatus);
+                    mProgress.setProgress(0);
+                    mProgress.setMax(Constants.numeroAmplitudes + Constants.numeroFrecuencias);
 
-                    // vacía el buffer
-                    recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
+                    // espera a que se pulse el botón para iniciar el calibrado
+                    botonPulsado = false;
 
-                    //manda el tono al canal de audio
-                    tonoLanzado = false;
-                    new Thread() {
+                    runOnUiThread(new Runnable() {
+                        @Override
                         public void run() {
-                            setPriority(Thread.MAX_PRIORITY);
-
-                            //Genera las muestras de un pulso que escribimos en audioTrack.
-                            muestrasTonoGenerado = generadorCoseno(
-                                    (double) Constants.RECORDER_SAMPLERATE    //duración del tono
-                                    , FRECUENCIA                            //frecuencia del tono
-                                    , A0);                                    //amplitud del tono
-
-                            audioTrack.pause();
-                            audioTrack.flush(); // vacía el buffer de sonido si ha acabado la grabación
-                            audioTrack.play();
-                            audioTrack.write(muestrasTonoGenerado, 0, Constants.RECORDER_SAMPLERATE);
-
-                            tonoLanzado = true;
-                            synchronized (llaveTonoLanzado) {
-                                llaveTonoLanzado.notifyAll();
-                            }
+                            boton.setText(R.string.ajustarConectoryVolumen);
                         }
-                    }.start();
+                    });
 
-                    synchronized (llaveTonoLanzado) {
-                        while (!tonoLanzado) {
+                    synchronized (llaveBotonPulsado) {
+                        while (!botonPulsado) {
                             try {
-                                llaveTonoLanzado.wait();
+                                llaveBotonPulsado.wait();
                             } catch (InterruptedException e) {
                             }
                         }
                     }
 
-                    muestrasGrabadas = seleccionarMuestrasGrabacion(
-                            Constants.DATOS_INICIALES_NO_VALIDOS, Constants.DATOS_VALIDOS);        // lee los datos del micrófono y los graba
+                    // muestra el mensaje de calibrado del CAG
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            boton.setText(R.string.calibrandoCAG);
+                        }
+                    });
 
-                    //calcula la potencia de la muestra grabada
-                    double p = 0;
-                    for (short m : muestrasGrabadas) {
-                        p += m * m;
+
+                    //genera vector de amplitudes
+                    final double amplitudInicial = 1000;
+                    final double amplitudFinal = 30000;
+                    short[] amplitudes = new short[Constants.numeroAmplitudes];
+
+                    for (int n = 0; n < Constants.numeroAmplitudes; n++) {
+                        amplitudes[n] = (short) (amplitudInicial * Math.exp(n * Math.log(amplitudFinal / amplitudInicial) / (Constants.numeroAmplitudes - 1)));
                     }
-                    double potenciaRMSMuestraGrabada = Math.sqrt(p / muestrasGrabadas.length);
 
-                    //guarda los resultados del calibrado de amplitudes en los arrays
-                    frecuenciaCalibradoFrecuencias[i] = FRECUENCIA;
-                    amplitudesCalibradoFrecuencias[i] = A0;
-                    potenciaRMSCalibradoFrecuencias[i] = potenciaRMSMuestraGrabada;
+                    // abre el canal de grabación
+                    recorder.startRecording();
+                    recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
+                    recorder.stop();
+                    recorder.startRecording();
+
+                    //realiza el barrido de amplitudes
+                    for (short i = 0; i < Constants.numeroAmplitudes; i++) {
+                        final double FRECUENCIA = 2000.0;
+                        final short A0 = amplitudes[i];
+
+                        mProgressStatus++;
+                        mProgress.setProgress(mProgressStatus);
+
+
+                        // vacía el buffer
+                        recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
+
+                        //manda el tono al canal de audio
+                        tonoLanzado = false;
+                        new Thread() {
+                            public void run() {
+                                setPriority(Thread.MAX_PRIORITY);
+
+                                //Genera las muestras de un pulso que escribimos en audioTrack.
+                                muestrasTonoGenerado = generadorCoseno(
+                                        (double) Constants.RECORDER_SAMPLERATE    //duración del tono
+                                        , FRECUENCIA                            //frecuencia del tono
+                                        , A0);                                    //amplitud del tono
+
+                                audioTrack.pause();
+                                audioTrack.flush(); // vacía el buffer de sonido si ha acabado la grabación
+                                audioTrack.play();
+                                audioTrack.write(muestrasTonoGenerado, 0, Constants.RECORDER_SAMPLERATE);
+
+                                tonoLanzado = true;
+                                synchronized (llaveTonoLanzado) {
+                                    llaveTonoLanzado.notifyAll();
+                                }
+                            }
+                        }.start();
+
+                        synchronized (llaveTonoLanzado) {
+                            while (!tonoLanzado) {
+                                try {
+                                    llaveTonoLanzado.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                        }
+
+                        muestrasGrabadas = seleccionarMuestrasGrabacion(Constants.DATOS_INICIALES_NO_VALIDOS, Constants.DATOS_VALIDOS);
+
+                        //calcula la potencia de la muestra grabada
+                        double p = 0;
+                        for (short m : muestrasGrabadas) {
+                            p += m * m;
+                        }
+                        double potenciaRMSMuestraGrabada = Math.sqrt(p / muestrasGrabadas.length);
+
+                        //guarda los resultados del calibrado de amplitudes en los arrays
+                        frecuenciaCalibradoAmplitudes[i] = FRECUENCIA;
+                        amplitudesCalibradoAmplitudes[i] = A0;
+                        potenciaRMSCalibradoAmplitudes[i] = potenciaRMSMuestraGrabada;
+                    }
+
+                    audioTrack.pause();
+                    audioTrack.flush();
+                    recorder.stop();    // cierra la grabación
+                    //recorder.release();
+
+                    //muestra el gráfico con los datos de la medida del CAG
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            int anchuraLinea = 10;
+
+                            LineGraphSeries<DataPoint> serieCalibradoCAG = new LineGraphSeries<DataPoint>();
+                            serieCalibradoCAG.setColor(Color.BLACK);
+                            serieCalibradoCAG.setThickness(anchuraLinea);
+
+                            //GraphView graficoCAG = new GraphView(getBaseContext());
+                            GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
+
+                            graficoCAG.setTitleColor(Color.BLACK);
+                            graficoCAG.setTitle("x-log(AUDIO) vs y-log(MIC)");
+
+                            // carga los datos en la serie de puntos gráficos
+                            for (int i = 0; i < Constants.numeroAmplitudes; i++) {
+                                serieCalibradoCAG.appendData(
+                                        new DataPoint(Math.log10(amplitudesCalibradoAmplitudes[i]), Math.log10(potenciaRMSCalibradoAmplitudes[i])),
+                                        true,
+                                        (int) Constants.numeroAmplitudes
+                                );
+                            }
+
+                            graficoCAG.getGridLabelRenderer().setGridColor(Color.BLUE);
+                            graficoCAG.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+                            graficoCAG.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+
+                            graficoCAG.addSeries(serieCalibradoCAG);        // data
+
+                            //RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
+                            //grafico.addView(graficoCAG);
+                            graficoCAG.setVisibility(View.VISIBLE);        //hace visible el gráfico
+                        }
+                    });
+
+                    // abre una ventana para introducir la amplitud de calibrado del filtro
+
+                    while ((amplitudCalibradoFiltro < amplitudInicial) || (amplitudCalibradoFiltro > amplitudFinal)) {
+                        try {
+                            botonPulsado = false;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boton.setText(R.string.pulsaParaContinuar);
+                                }
+                            });
+                            synchronized (llaveBotonPulsado) {
+                                while (!botonPulsado) {
+                                    try {
+                                        llaveBotonPulsado.wait();
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+                            }
+
+                            botonPulsado = false;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    preguntarAmplitudCalibrado();
+                                }
+                            });
+                            synchronized (llaveBotonPulsado) {
+                                while (!botonPulsado) {
+                                    try {
+                                        llaveBotonPulsado.wait();
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+                            }
+                        } catch (NumberFormatException e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showMessage(getString(R.string.error), getString(R.string.introducirAmplitudCorrectamente));
+                                }
+                            });
+                        }
+                    }
+                    ;
+
+                    // calibra el filtro de entrada
+                    botonPulsado = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            boton.setText(R.string.calibrandoFiltro);
+                        }
+                    });
+
+                    //genera vector de frecuencias
+
+                    final double frecuenciaInicial = 40;
+                    final double frecuenciaFinal = 7000;
+                    double[] frecuencias = new double[Constants.numeroFrecuencias];
+                    for (int n = 0; n < Constants.numeroFrecuencias; n++) {
+                        frecuencias[n] = frecuenciaInicial * Math.exp(n * Math.log(frecuenciaFinal / frecuenciaInicial) / (Constants.numeroFrecuencias - 1));
+                    }
+
+                    //borra el gráfico del CAG
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
+                            graficoCAG.removeAllSeries();
+                            graficoCAG.clearAnimation();
+                            graficoCAG.setVisibility(View.GONE);        //hace invisible el gráfico
+                        }
+                    });
+
+                    recorder.startRecording();
+                    recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
+                    recorder.stop();
+
+                    //realiza el barrido de frecuencias
+                    recorder.startRecording();        // abre el canal de grabación
+                    for (short i = 0; i < Constants.numeroFrecuencias; i++) {
+                        final double FRECUENCIA = frecuencias[i];
+                        final short A0 = amplitudCalibradoFiltro;
+
+                        mProgressStatus++;
+                        mProgress.setProgress(mProgressStatus);
+
+                        // vacía el buffer
+                        recorder.read(new short[bufferSize], 0, Constants.RECORDER_SAMPLERATE);
+
+                        //manda el tono al canal de audio
+                        tonoLanzado = false;
+                        new Thread() {
+                            public void run() {
+                                setPriority(Thread.MAX_PRIORITY);
+
+                                //Genera las muestras de un pulso que escribimos en audioTrack.
+                                muestrasTonoGenerado = generadorCoseno(
+                                        (double) Constants.RECORDER_SAMPLERATE    //duración del tono
+                                        , FRECUENCIA                            //frecuencia del tono
+                                        , A0);                                    //amplitud del tono
+
+                                audioTrack.pause();
+                                audioTrack.flush(); // vacía el buffer de sonido si ha acabado la grabación
+                                audioTrack.play();
+                                audioTrack.write(muestrasTonoGenerado, 0, Constants.RECORDER_SAMPLERATE);
+
+                                tonoLanzado = true;
+                                synchronized (llaveTonoLanzado) {
+                                    llaveTonoLanzado.notifyAll();
+                                }
+                            }
+                        }.start();
+
+                        synchronized (llaveTonoLanzado) {
+                            while (!tonoLanzado) {
+                                try {
+                                    llaveTonoLanzado.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                        }
+
+                        muestrasGrabadas = seleccionarMuestrasGrabacion(
+                                Constants.DATOS_INICIALES_NO_VALIDOS, Constants.DATOS_VALIDOS);        // lee los datos del micrófono y los graba
+
+                        //calcula la potencia de la muestra grabada
+                        double p = 0;
+                        for (short m : muestrasGrabadas) {
+                            p += m * m;
+                        }
+                        double potenciaRMSMuestraGrabada = Math.sqrt(p / muestrasGrabadas.length);
+
+                        //guarda los resultados del calibrado de amplitudes en los arrays
+                        frecuenciaCalibradoFrecuencias[i] = FRECUENCIA;
+                        amplitudesCalibradoFrecuencias[i] = A0;
+                        potenciaRMSCalibradoFrecuencias[i] = potenciaRMSMuestraGrabada;
+                    }
+
+                    // acabadas todas las frecuencias, se liberan el canal de audio y el canal de grabación
+                    recorder.stop();
+                    audioTrack.release();
+                    recorder.release();
+
+                    // muestra el gráfico con los datos de la medida del filtro
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // carga los datos en en la serie de puntos gráficos
+                            int anchuraLinea = 10;
+
+                            LineGraphSeries<DataPoint> serieCalibradoFiltro = new LineGraphSeries<DataPoint>();
+                            serieCalibradoFiltro.setColor(Color.BLACK);
+                            serieCalibradoFiltro.setThickness(anchuraLinea);
+
+                            //GraphView graficoFiltro = new GraphView(getBaseContext());
+                            GraphView graficoFiltro = (GraphView) findViewById(R.id.grafica);
+                            graficoFiltro.setTitleColor(Color.BLACK);
+                            graficoFiltro.setTitle("Audio-in vs Log(Hz)");
+
+                            // carga los datos en la serie de puntos gráficos
+                            for (int i = 0; i < Constants.numeroFrecuencias; i++) {
+                                serieCalibradoFiltro.appendData(
+                                        new DataPoint(Math.log10(frecuenciaCalibradoFrecuencias[i]), potenciaRMSCalibradoFrecuencias[i]),
+                                        true,
+                                        (int) Constants.numeroFrecuencias
+                                );
+                            }
+
+                            // define un escalado horizontal lineal
+
+                            NumberFormat nf = NumberFormat.getInstance();
+                            nf.setMinimumFractionDigits(0);
+                            nf.setMinimumIntegerDigits(1);
+                            graficoFiltro.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
+
+                            graficoFiltro.getGridLabelRenderer().setGridColor(Color.BLUE);
+                            graficoFiltro.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+                            graficoFiltro.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+
+                            graficoFiltro.addSeries(serieCalibradoFiltro);        // data
+
+                            //RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
+                            //grafico.addView(graficoFiltro);
+                            graficoFiltro.setVisibility(View.VISIBLE);        //hace visible el gráfico
+                        }
+                    });
+
+                    // graba los datos en los ficheros correspondientes
+                    File fCalBIN = new File(Constants.pathFicheroCalibracion + "/calibracion.csv");
+
+                    // definición de ficheros y path
+                    FileOutputStream osCalibCSV = null;
+                    FileOutputStream osCalibBIN = null;
+                    DataOutputStream dosBIN = null;
+
+                    // crea los ficheros y define los streams de salida
+                    try {
+                        osCalibCSV = new FileOutputStream(fCalBIN, false);        // borra el fichero si existe
+                        osCalibBIN = new FileOutputStream(Constants.pathFicheroCalibracion + "/calibracion.bin", false);
+
+                        String cabecera = getString(R.string.cabeceraFicheroCalibracion);
+                        osCalibCSV.write(cabecera.getBytes(Charset.forName("UTF-8")));
+                        dosBIN = new DataOutputStream(osCalibBIN);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // guarda los datos en los ficheros
+                    // primero guarda los datos del calibrado de CAG
+                    for (short i = 0; i < Constants.numeroAmplitudes; i++) {
+                        try {
+                            String stringData =
+                                    Integer.toString(amplitudesCalibradoAmplitudes[i])
+                                            .concat(",")
+                                            .concat(Double.toString(frecuenciaCalibradoAmplitudes[i]))
+                                            .concat(",")
+                                            .concat(Double.toString(potenciaRMSCalibradoAmplitudes[i]))
+                                            .concat("\n");
+                            osCalibCSV.write(stringData.getBytes(Charset.forName("UTF-8")));
+
+                            dosBIN.writeInt(amplitudesCalibradoAmplitudes[i]);
+                            dosBIN.writeDouble(frecuenciaCalibradoAmplitudes[i]);
+                            dosBIN.writeDouble(potenciaRMSCalibradoAmplitudes[i]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // después guarda los datos del calibrado de frecuencias
+                    for (short i = 0; i < Constants.numeroFrecuencias; i++) {
+                        try {
+                            String stringData =
+                                    Integer.toString(amplitudesCalibradoFrecuencias[i])
+                                            .concat(",")
+                                            .concat(Double.toString(frecuenciaCalibradoFrecuencias[i]))
+                                            .concat(",")
+                                            .concat(Double.toString(potenciaRMSCalibradoFrecuencias[i]))
+                                            .concat("\n");
+                            osCalibCSV.write(stringData.getBytes(Charset.forName("UTF-8")));
+
+                            dosBIN.writeInt(amplitudesCalibradoFrecuencias[i]);
+                            dosBIN.writeDouble(frecuenciaCalibradoFrecuencias[i]);
+                            dosBIN.writeDouble(potenciaRMSCalibradoFrecuencias[i]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // cierra los ficheros
+                    try {
+                        fCalBIN.setReadOnly();
+                        dosBIN.close();
+                        osCalibBIN.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    botonPulsado = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            boton.setText(R.string.cerrarCalibrado);
+                        }
+                    });
+                    synchronized (llaveBotonPulsado) {
+                        while (!botonPulsado) {
+                            try {
+                                llaveBotonPulsado.wait();
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    }
                 }
 
-                // acabadas todas las frecuencias, se liberan el canal de audio y el canal de grabación
-                recorder.stop();
-                audioTrack.release();
-                recorder.release();
-
-                // muestra el gráfico con los datos de la medida del filtro
+                // ha acabado el calibrado, borra barra de progreso y el gráfico del calibrado
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // carga los datos en en la serie de puntos gráficos
-                        int anchuraLinea = 10;
-
-                        LineGraphSeries<DataPoint> serieCalibradoFiltro = new LineGraphSeries<DataPoint>();
-                        serieCalibradoFiltro.setColor(Color.BLACK);
-                        serieCalibradoFiltro.setThickness(anchuraLinea);
-
-                        //GraphView graficoFiltro = new GraphView(getBaseContext());
+                        mProgress.setVisibility(View.GONE);                            //hace invisible la barra de progreso
                         GraphView graficoFiltro = (GraphView) findViewById(R.id.grafica);
-                        graficoFiltro.setTitleColor(Color.BLACK);
-                        graficoFiltro.setTitle("Audio-in vs Log(Hz)");
-
-                        // carga los datos en la serie de puntos gráficos
-                        for (int i = 0; i < Constants.numeroFrecuencias; i++) {
-                            serieCalibradoFiltro.appendData(
-                                    new DataPoint(Math.log10(frecuenciaCalibradoFrecuencias[i]), potenciaRMSCalibradoFrecuencias[i]),
-                                    true,
-                                    (int) Constants.numeroFrecuencias
-                            );
-                        }
-
-                        // define un escalado horizontal lineal
-
-                        NumberFormat nf = NumberFormat.getInstance();
-                        nf.setMinimumFractionDigits(0);
-                        nf.setMinimumIntegerDigits(1);
-                        graficoFiltro.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
-
-                        graficoFiltro.getGridLabelRenderer().setGridColor(Color.BLUE);
-                        graficoFiltro.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
-                        graficoFiltro.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
-
-                        graficoFiltro.addSeries(serieCalibradoFiltro);        // data
-
-                        //RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-                        //grafico.addView(graficoFiltro);
-                        graficoFiltro.setVisibility(View.VISIBLE);        //hace visible el gráfico
+                        graficoFiltro.removeAllSeries();
+                        graficoFiltro.clearAnimation();
+                        graficoFiltro.setVisibility(View.GONE);        //hace invisible el gráfico
                     }
                 });
-
-                // graba los datos en los ficheros correspondientes
-                File fCalBIN = new File(Constants.pathFicheroCalibracion + "/calibracion.csv");
+            	
+            } else {
+            	// graba un dato en el fichero de calibrado
 
                 // definición de ficheros y path
-                FileOutputStream osCalibCSV = null;
                 FileOutputStream osCalibBIN = null;
                 DataOutputStream dosBIN = null;
 
                 // crea los ficheros y define los streams de salida
                 try {
-                    osCalibCSV = new FileOutputStream(fCalBIN, false);        // borra el fichero si existe
                     osCalibBIN = new FileOutputStream(Constants.pathFicheroCalibracion + "/calibracion.bin", false);
-
-                    String cabecera = getString(R.string.cabeceraFicheroCalibracion);
-                    osCalibCSV.write(cabecera.getBytes(Charset.forName("UTF-8")));
                     dosBIN = new DataOutputStream(osCalibBIN);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                // guarda los datos en los ficheros
+                // guarda el dato
                 // primero guarda los datos del calibrado de CAG
-                for (short i = 0; i < Constants.numeroAmplitudes; i++) {
-                    try {
-                        String stringData =
-                                Integer.toString(amplitudesCalibradoAmplitudes[i])
-                                        .concat(",")
-                                        .concat(Double.toString(frecuenciaCalibradoAmplitudes[i]))
-                                        .concat(",")
-                                        .concat(Double.toString(potenciaRMSCalibradoAmplitudes[i]))
-                                        .concat("\n");
-                        osCalibCSV.write(stringData.getBytes(Charset.forName("UTF-8")));
-
-                        dosBIN.writeInt(amplitudesCalibradoAmplitudes[i]);
-                        dosBIN.writeDouble(frecuenciaCalibradoAmplitudes[i]);
-                        dosBIN.writeDouble(potenciaRMSCalibradoAmplitudes[i]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                // después guarda los datos del calibrado de frecuencias
-                for (short i = 0; i < Constants.numeroFrecuencias; i++) {
-                    try {
-                        String stringData =
-                                Integer.toString(amplitudesCalibradoFrecuencias[i])
-                                        .concat(",")
-                                        .concat(Double.toString(frecuenciaCalibradoFrecuencias[i]))
-                                        .concat(",")
-                                        .concat(Double.toString(potenciaRMSCalibradoFrecuencias[i]))
-                                        .concat("\n");
-                        osCalibCSV.write(stringData.getBytes(Charset.forName("UTF-8")));
-
-                        dosBIN.writeInt(amplitudesCalibradoFrecuencias[i]);
-                        dosBIN.writeDouble(frecuenciaCalibradoFrecuencias[i]);
-                        dosBIN.writeDouble(potenciaRMSCalibradoFrecuencias[i]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                // cierra los ficheros
                 try {
-                    fCalBIN.setReadOnly();
+                    dosBIN.writeInt(-1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // cierra el fichero
+                try {
                     dosBIN.close();
                     osCalibBIN.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                botonPulsado = false;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boton.setText(R.string.cerrarCalibrado);
-                    }
-                });
-                synchronized (llaveBotonPulsado) {
-                    while (!botonPulsado) {
-                        try {
-                            llaveBotonPulsado.wait();
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
             }
-
-            // ha acabado el calibrado, borra barra de progreso y el gráfico del calibrado
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgress.setVisibility(View.GONE);                            //hace invisible la barra de progreso
-                    GraphView graficoFiltro = (GraphView) findViewById(R.id.grafica);
-                    graficoFiltro.removeAllSeries();
-                    graficoFiltro.clearAnimation();
-                    graficoFiltro.setVisibility(View.GONE);        //hace invisible el gráfico
-                }
-            });
         }
 
-        // lee el fichero de calibración
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                boton.setVisibility(View.VISIBLE);        //hace visible el botón
-                boton.setText(R.string.leyendoCalibracion);
-            }
-        });
-
+        // lee el primer dato del fichero de calibración, para comprobar si es -1
         try {
             FileInputStream fis = new FileInputStream(Constants.pathFicheroCalibracion + "/calibracion.bin");
             DataInputStream dis = new DataInputStream(fis);
-
-            // primero estan guardados numeroAmplitudes para la calibración del CAG
-            // según la variación de la amplitud a frecuencia constante
-            for (int i = 0; i < Constants.numeroAmplitudes; i++) {
-                datosCalibrado.amplitudes[i] = dis.readInt();
-                dis.readDouble();    // se prescinde de la frecuencia, que es cte
-                datosCalibrado.RMSajusteCAG[i] = dis.readDouble();
-                datosCalibrado.ajusteCAG[i] = datosCalibrado.RMSajusteCAG[i] / datosCalibrado.amplitudes[i]; // calcula el vector para el ajuste de CAG
+            if (dis.readInt() == -1) {
+            	medidaSondaDeshabilitada = true;
             }
-
-            // y después están guardados numeroFrecuencias para la calibración
-            // según la frecuencia a amplitud constante
-
-            // calcula la función para interpolar el ajuste de CAG
-            UnivariateInterpolator interpolator = new LinearInterpolator();
-            UnivariateFunction funcionCAG = null;
-            funcionCAG = interpolator.interpolate(datosCalibrado.RMSajusteCAG, datosCalibrado.ajusteCAG);
-
-            for (int i = 0; i < Constants.numeroFrecuencias; i++) {
-                dis.readInt();        // se prescinde de la amplitud, que es cte
-                datosCalibrado.frecuencias[i] = dis.readDouble();
-                datosCalibrado.RMS[i] = dis.readDouble();
-
-                // corrige el efecto del CAG
-                if (datosCalibrado.RMS[i] <= datosCalibrado.RMSajusteCAG[0]) {
-                    datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * datosCalibrado.ajusteCAG[0];
-                } else {
-                    if (datosCalibrado.RMS[i] > datosCalibrado.RMSajusteCAG[Constants.numeroAmplitudes - 1])
-                        datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * datosCalibrado.ajusteCAG[Constants.numeroAmplitudes - 1];
-                    else
-                        datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * funcionCAG.value(datosCalibrado.RMS[i]);
-                }
-            }
-
-            // normaliza la calibración del filtro con respecto al valor de RMS a 50 Hz
-            double RMS_50Hz = datosCalibrado.RMS[4];
-            for (int i = 0; i < Constants.numeroFrecuencias; i++) {
-                datosCalibrado.RMS[i] = datosCalibrado.RMS[i] / RMS_50Hz;
-            }
-
             dis.close();
             fis.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // Interpola y corrige el filtro. Elimina bandas superiores e inferiores (<40Hz, >6400Hz)
-        UnivariateInterpolator interpolator = new LinearInterpolator();
-        UnivariateFunction function = null;
-        function = interpolator.interpolate(datosCalibrado.frecuencias, datosCalibrado.RMS);
-        //toma las componentes desde frecuenciaInterpInicial hasta frecuenciaInterpFinal
-        for (int frecuencia = Constants.frecuenciaInterpInicial; frecuencia <= Constants.frecuenciaInterpFinal; frecuencia++) {
-            int i = frecuencia - Constants.frecuenciaInterpInicial;
-            DEP_H[i] = Math.pow(function.value(frecuencia), 2.0);
-        }
-
-        // Configura el canal de grabación
-        bufferSize = AudioRecord.getMinBufferSize(
-                Constants.RECORDER_SAMPLERATE,
-                Constants.RECORDER_CHANNELS,
-                Constants.RECORDER_AUDIO_ENCODING);
-
-        // asegura que el buffer tiene una capacidad doble a la de la señal grabada
-        if (bufferSize < Constants.LONGITUD_TONO_GRABADO * 2)
-            bufferSize = Constants.LONGITUD_TONO_GRABADO * 2;
-
-        recorder = new AudioRecord(
-                AudioSource.MIC,
-                Constants.RECORDER_SAMPLERATE,
-                Constants.RECORDER_CHANNELS,
-                Constants.RECORDER_AUDIO_ENCODING,
-                bufferSize);
-
-        datosBuffer = new short[bufferSize];
-
-        // lee el coeficiente de calibración en el fichero, si existe
-        // si no, lee una medida y pregunta por la real para calcularlo
-        String nombreFicheroCoeficiente = Constants.pathFicheroCalibracion + "/coeficienteAjuste.csv";
-        File ficheroCoeficiente = new File(nombreFicheroCoeficiente);
-        if (ficheroCoeficiente.exists()) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(ficheroCoeficiente);
-                StringBuffer fileContent = new StringBuffer("");
-                byte[] buffer = new byte[1024];
-                int n;
-                while ((n = fis.read(buffer)) != -1) {
-                    fileContent.append(new String(buffer, 0, n));
+        
+        if (!medidaSondaDeshabilitada) {
+        	// lee el fichero de calibración completo
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    boton.setVisibility(View.VISIBLE);        //hace visible el botón
+                    boton.setText(R.string.leyendoCalibracion);
                 }
+            });
+
+            try {
+                FileInputStream fis = new FileInputStream(Constants.pathFicheroCalibracion + "/calibracion.bin");
+                DataInputStream dis = new DataInputStream(fis);
+
+                // primero estan guardados numeroAmplitudes para la calibración del CAG
+                // según la variación de la amplitud a frecuencia constante
+                for (int i = 0; i < Constants.numeroAmplitudes; i++) {
+                    datosCalibrado.amplitudes[i] = dis.readInt();
+                    dis.readDouble();    // se prescinde de la frecuencia, que es cte
+                    datosCalibrado.RMSajusteCAG[i] = dis.readDouble();
+                    datosCalibrado.ajusteCAG[i] = datosCalibrado.RMSajusteCAG[i] / datosCalibrado.amplitudes[i]; // calcula el vector para el ajuste de CAG
+                }
+
+                // y después están guardados numeroFrecuencias para la calibración
+                // según la frecuencia a amplitud constante
+
+                // calcula la función para interpolar el ajuste de CAG
+                UnivariateInterpolator interpolator = new LinearInterpolator();
+                UnivariateFunction funcionCAG = null;
+                funcionCAG = interpolator.interpolate(datosCalibrado.RMSajusteCAG, datosCalibrado.ajusteCAG);
+
+                for (int i = 0; i < Constants.numeroFrecuencias; i++) {
+                    dis.readInt();        // se prescinde de la amplitud, que es cte
+                    datosCalibrado.frecuencias[i] = dis.readDouble();
+                    datosCalibrado.RMS[i] = dis.readDouble();
+
+                    // corrige el efecto del CAG
+                    if (datosCalibrado.RMS[i] <= datosCalibrado.RMSajusteCAG[0]) {
+                        datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * datosCalibrado.ajusteCAG[0];
+                    } else {
+                        if (datosCalibrado.RMS[i] > datosCalibrado.RMSajusteCAG[Constants.numeroAmplitudes - 1])
+                            datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * datosCalibrado.ajusteCAG[Constants.numeroAmplitudes - 1];
+                        else
+                            datosCalibrado.RMS[i] = datosCalibrado.RMS[i] * funcionCAG.value(datosCalibrado.RMS[i]);
+                    }
+                }
+
+                // normaliza la calibración del filtro con respecto al valor de RMS a 50 Hz
+                double RMS_50Hz = datosCalibrado.RMS[4];
+                for (int i = 0; i < Constants.numeroFrecuencias; i++) {
+                    datosCalibrado.RMS[i] = datosCalibrado.RMS[i] / RMS_50Hz;
+                }
+
+                dis.close();
                 fis.close();
-                datosCalibrado.coeficienteAjuste = (double) Double.valueOf(fileContent.toString());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
 
-            // muestras resultados de la medida sin ajustar el coeficiente,
-            // y cuando se pulse el botón se introducirá el dato
+            // Interpola y corrige el filtro. Elimina bandas superiores e inferiores (<40Hz, >6400Hz)
+            UnivariateInterpolator interpolator = new LinearInterpolator();
+            UnivariateFunction function = null;
+            function = interpolator.interpolate(datosCalibrado.frecuencias, datosCalibrado.RMS);
+            //toma las componentes desde frecuenciaInterpInicial hasta frecuenciaInterpFinal
+            for (int frecuencia = Constants.frecuenciaInterpInicial; frecuencia <= Constants.frecuenciaInterpFinal; frecuencia++) {
+                int i = frecuencia - Constants.frecuenciaInterpInicial;
+                DEP_H[i] = Math.pow(function.value(frecuencia), 2.0);
+            }
 
-            final TextView textViewMedida = (TextView) findViewById(R.id.texto1);
+            // Configura el canal de grabación
+            bufferSize = AudioRecord.getMinBufferSize(
+                    Constants.RECORDER_SAMPLERATE,
+                    Constants.RECORDER_CHANNELS,
+                    Constants.RECORDER_AUDIO_ENCODING);
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //boton.setVisibility(View.VISIBLE); 					//hace visible el botón
-                    textViewMedida.setVisibility(View.VISIBLE);        //hace visible una ventana de texto, para mostrar el dato
+            // asegura que el buffer tiene una capacidad doble a la de la señal grabada
+            if (bufferSize < Constants.LONGITUD_TONO_GRABADO * 2)
+                bufferSize = Constants.LONGITUD_TONO_GRABADO * 2;
+
+            recorder = new AudioRecord(
+                    AudioSource.MIC,
+                    Constants.RECORDER_SAMPLERATE,
+                    Constants.RECORDER_CHANNELS,
+                    Constants.RECORDER_AUDIO_ENCODING,
+                    bufferSize);
+
+            datosBuffer = new short[bufferSize];
+
+            // lee el coeficiente de calibración en el fichero, si existe
+            // si no, lee una medida y pregunta por la real para calcularlo
+            String nombreFicheroCoeficiente = Constants.pathFicheroCalibracion + "/coeficienteAjuste.csv";
+            File ficheroCoeficiente = new File(nombreFicheroCoeficiente);
+            if (ficheroCoeficiente.exists()) {
+                FileInputStream fis;
+                try {
+                    fis = new FileInputStream(ficheroCoeficiente);
+                    StringBuffer fileContent = new StringBuffer("");
+                    byte[] buffer = new byte[1024];
+                    int n;
+                    while ((n = fis.read(buffer)) != -1) {
+                        fileContent.append(new String(buffer, 0, n));
+                    }
+                    fis.close();
+                    datosCalibrado.coeficienteAjuste = (double) Double.valueOf(fileContent.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+            } else {
 
-            botonPulsado = false;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    boton.setText(R.string.realizandoMedidasSinCalibrar);
-                }
-            });
+                // muestras resultados de la medida sin ajustar el coeficiente,
+                // y cuando se pulse el botón se introducirá el dato
 
-            double potencia_X = 0;
-            recorder.startRecording();
-            while (!botonPulsado) {
-                // lee y calcula el dato
-                potencia_X =
-                        calcularPotenciaX(
-                                calcularDEP_X(
-                                        calcularDEP_Y(
-                                                compensarCAG(
-                                                        guardarMuestras()))));
+                final TextView textViewMedida = (TextView) findViewById(R.id.texto1);
 
-                // muestra en pantalla el dato
-                final double potencia = potencia_X;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        textViewMedida.setText(Double.toString(potencia) + " / " + Double.toString(medidaRMS));
+                        //boton.setVisibility(View.VISIBLE); 					//hace visible el botón
+                        textViewMedida.setVisibility(View.VISIBLE);        //hace visible una ventana de texto, para mostrar el dato
                     }
                 });
-            }
-            recorder.stop();
 
-            // pregunta al usuario el valor correcto del consumo, medido con otro medidor, en watios
-            try {
                 botonPulsado = false;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        preguntarMedidaReferencia();
+                        boton.setText(R.string.realizandoMedidasSinCalibrar);
                     }
                 });
-                synchronized (llaveBotonPulsado) {
-                    while (!botonPulsado) {
-                        try {
-                            llaveBotonPulsado.wait();
-                        } catch (InterruptedException e) {
+
+                double potencia_X = 0;
+                recorder.startRecording();
+                while (!botonPulsado) {
+                    // lee y calcula el dato
+                    potencia_X =
+                            calcularPotenciaX(
+                                    calcularDEP_X(
+                                            calcularDEP_Y(
+                                                    compensarCAG(
+                                                            guardarMuestras()))));
+
+                    // muestra en pantalla el dato
+                    final double potencia = potencia_X;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textViewMedida.setText(Double.toString(potencia) + " / " + Double.toString(medidaRMS));
+                        }
+                    });
+                }
+                recorder.stop();
+
+                // pregunta al usuario el valor correcto del consumo, medido con otro medidor, en watios
+                try {
+                    botonPulsado = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            preguntarMedidaReferencia();
+                        }
+                    });
+                    synchronized (llaveBotonPulsado) {
+                        while (!botonPulsado) {
+                            try {
+                                llaveBotonPulsado.wait();
+                            } catch (InterruptedException e) {
+                            }
                         }
                     }
+                } catch (NumberFormatException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showMessage(getString(R.string.error), getString(R.string.introducirMedidaCorrectamente));
+                        }
+                    });
                 }
-            } catch (NumberFormatException e) {
+
+                // deshabilita botón y ventana de texto
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showMessage(getString(R.string.error), getString(R.string.introducirMedidaCorrectamente));
+                        boton.setVisibility(View.GONE);
+                        textViewMedida.setVisibility(View.GONE);
                     }
                 });
+
+                // calcula el coeficiente de ajuste
+                datosCalibrado.coeficienteAjuste = potencia_X / medidaReferencia;
+
+                // graba el coeficiente de ajuste en el fichero
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(ficheroCoeficiente, false);
+                    fileOutputStream.write(Double.toString(datosCalibrado.coeficienteAjuste).getBytes(Charset.forName(Constants.formatoFichero)));
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
-            // deshabilita botón y ventana de texto
+            //quita el botón y hace visible una ventana de texto, para mostrar el dato
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     boton.setVisibility(View.GONE);
-                    textViewMedida.setVisibility(View.GONE);
                 }
             });
-
-            // calcula el coeficiente de ajuste
-            datosCalibrado.coeficienteAjuste = potencia_X / medidaReferencia;
-
-            // graba el coeficiente de ajuste en el fichero
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(ficheroCoeficiente, false);
-                fileOutputStream.write(Double.toString(datosCalibrado.coeficienteAjuste).getBytes(Charset.forName(Constants.formatoFichero)));
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } else {
+        	runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                	Toast.makeText(NeurGai.this, R.string.recuerdaSeleccionar, Toast.LENGTH_LONG).show();
+                }
+            });
         }
-
-        //quita el botón y hace visible una ventana de texto, para mostrar el dato
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                boton.setVisibility(View.GONE);
-            }
-        });
-
+        
         empezar = true;
         midiendo = false;
-        recorder.startRecording();
+        if (!medidaSondaDeshabilitada) recorder.startRecording();
         // lanza la toma periódica de medidas
         Looper.prepare();
         handler.postDelayed(realizarUnaMedida, 0);
@@ -2677,7 +2887,16 @@ public class NeurGai extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        findViewById(R.id.grafica).setVisibility(View.GONE);        // hace invisible el gráfico y datos
+                        if (!medidaIV) {
+                        	findViewById(R.id.grafica).setVisibility(View.GONE);        // hace invisible el gráfico y datos
+                        } else {
+                        	findViewById(R.id.textoCorrienteEficaz).setVisibility(View.GONE);
+                        	findViewById(R.id.textoTensionEficaz).setVisibility(View.GONE);
+                        	findViewById(R.id.textoPotenciaAparente).setVisibility(View.GONE);
+                        	findViewById(R.id.textoPotenciaReactiva).setVisibility(View.GONE);
+                        	findViewById(R.id.textoCosPHI).setVisibility(View.GONE);
+                        }
+                    	
                         findViewById(R.id.texto1).setVisibility(View.GONE);
                         findViewById(R.id.textVCeldaEmpty).setVisibility(View.GONE);
                         findViewById(R.id.TextVLibre).setVisibility(View.GONE);
