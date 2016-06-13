@@ -1032,11 +1032,11 @@ public class NeurGai extends ActionBarActivity {
 
         @Override
         public void run() {
-            if (!grabarDatos && midiendo && (!medidaSondaDeshabilitada)) {                            // mientras graba datos de última medida no realiza más medidas
+            if (!grabarDatos && midiendo) {                            // mientras graba datos de última medida no realiza más medidas
 
                 //int potenciaCorregida = 0;
 
-                if (medidaSonda) {
+                if (medidaSonda && (!medidaSondaDeshabilitada)) {
                     //recorder.read(new short[bufferSize], 0, Constants.LONGITUD_TONO_GRABADO);		// vacía el buffer de grabación del micro
                     double[] muestras = guardarMuestras();                            // lee las muestras del canal de grabación
                     for (int i = 0; i < Constants.LONGITUD_TONO_GRABADO; i++)        // prescinde de los términos nulos antes de guardarlos
