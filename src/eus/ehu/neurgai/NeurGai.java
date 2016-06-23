@@ -53,6 +53,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 import java.io.BufferedReader;
@@ -1533,6 +1535,7 @@ public class NeurGai extends ActionBarActivity {
                     final double[] frecuenciaCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
                     final short[] amplitudesCalibradoAmplitudes = new short[Constants.numeroAmplitudes];
                     final double[] potenciaRMSCalibradoAmplitudes = new double[Constants.numeroAmplitudes];
+                    final double[] potenciaRMSCalibradoAmplitudesAjustada = new double[Constants.numeroAmplitudes];
                     final double[] frecuenciaCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
                     final short[] amplitudesCalibradoFrecuencias = new short[Constants.numeroFrecuencias];
                     final double[] potenciaRMSCalibradoFrecuencias = new double[Constants.numeroFrecuencias];
@@ -1682,8 +1685,21 @@ public class NeurGai extends ActionBarActivity {
                     audioTrack.pause();
                     audioTrack.flush();
                     recorder.stop();    // cierra la grabación
-                    //recorder.release();
 
+                    // genera el vector de potencias ajustadas mediante polinomio de segundo grado
+                    final WeightedObservedPoints puntos = new WeightedObservedPoints();
+                    for (short i = 0; i < Constants.numeroAmplitudes; i++) {
+                    	puntos.add(1.0, Math.log10(amplitudesCalibradoAmplitudes[i]), Math.log10(potenciaRMSCalibradoAmplitudes[i]));
+                    }
+                    final PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
+                    final double[] coeficientes = fitter.fit(puntos.toList());
+                    for (short i = 0; i < Constants.numeroAmplitudes; i++) {
+                    	potenciaRMSCalibradoAmplitudesAjustada[i] = Math.pow(10,
+                    			coeficientes[0] +
+                    			coeficientes[1] * Math.log10(amplitudesCalibradoAmplitudes[i]) +
+                    			coeficientes[2] * Math.pow(Math.log10(amplitudesCalibradoAmplitudes[i]), 2));
+                    }
+                    
                     //muestra el gráfico con los datos de la medida del CAG
                     runOnUiThread(new Runnable() {
                         @Override
@@ -1695,7 +1711,6 @@ public class NeurGai extends ActionBarActivity {
                             serieCalibradoCAG.setColor(Color.BLACK);
                             serieCalibradoCAG.setThickness(anchuraLinea);
 
-                            //GraphView graficoCAG = new GraphView(getBaseContext());
                             GraphView graficoCAG = (GraphView) findViewById(R.id.grafica);
 
                             graficoCAG.setTitleColor(Color.BLACK);
@@ -1715,10 +1730,24 @@ public class NeurGai extends ActionBarActivity {
                             graficoCAG.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
 
                             graficoCAG.addSeries(serieCalibradoCAG);        // data
+                            
+                            //lo mismo para los datos ajustados
+                            LineGraphSeries<DataPoint> serieCalibradoCAGAjustado = new LineGraphSeries<DataPoint>();
+                            serieCalibradoCAGAjustado.setColor(Color.BLUE);
+                            serieCalibradoCAGAjustado.setThickness(anchuraLinea);
 
-                            //RelativeLayout grafico = (RelativeLayout) findViewById(R.id.grafica);
-                            //grafico.addView(graficoCAG);
-                            graficoCAG.setVisibility(View.VISIBLE);        //hace visible el gráfico
+                            // carga los datos en la serie de puntos gráficos
+                            for (int i = 0; i < Constants.numeroAmplitudes; i++) {
+                                serieCalibradoCAGAjustado.appendData(
+                                        new DataPoint(Math.log10(amplitudesCalibradoAmplitudes[i]), Math.log10(potenciaRMSCalibradoAmplitudesAjustada[i])),
+                                        true,
+                                        (int) Constants.numeroAmplitudes
+                                );
+                            }
+
+                            graficoCAG.addSeries(serieCalibradoCAGAjustado);        // data
+
+                            graficoCAG.setVisibility(View.VISIBLE);        // hace visible el gráfico
                         }
                     });
 
@@ -1940,13 +1969,13 @@ public class NeurGai extends ActionBarActivity {
                                             .concat(",")
                                             .concat(Double.toString(frecuenciaCalibradoAmplitudes[i]))
                                             .concat(",")
-                                            .concat(Double.toString(potenciaRMSCalibradoAmplitudes[i]))
+                                            .concat(Double.toString(potenciaRMSCalibradoAmplitudesAjustada[i]))
                                             .concat("\n");
                             osCalibCSV.write(stringData.getBytes(Charset.forName("UTF-8")));
 
                             dosBIN.writeInt(amplitudesCalibradoAmplitudes[i]);
                             dosBIN.writeDouble(frecuenciaCalibradoAmplitudes[i]);
-                            dosBIN.writeDouble(potenciaRMSCalibradoAmplitudes[i]);
+                            dosBIN.writeDouble(potenciaRMSCalibradoAmplitudesAjustada[i]);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
