@@ -33,11 +33,10 @@ public class ParsearTarifas {
 		//algoritmoActualizacionURLPVPC();
 		Calendar calendar=Calendar.getInstance();
 		calendar.setTime(new Date());
-		String fechaSistema=new SimpleDateFormat("yyyyMMdd").format(calendar.getTime());
-		fecha=fechaSistema;
-		String direccion= "http://www.esios.ree.es/Solicitar?fileName=pvpcdesglosehorario_"+
-								fechaSistema+
-									"&fileType=xml&idioma=es";
+		String fechaSistema = new SimpleDateFormat("yy-MM-dd").format(calendar.getTime());
+		fecha = fechaSistema;
+		// https://api.esios.ree.es/archives/80/download?date=23-06-2016
+		String direccion = "https://api.esios.ree.es/archives/80/download?date=" + fechaSistema;
 		
 		domPVPC=descargarDOM(direccion);
 		domEstandar=null;

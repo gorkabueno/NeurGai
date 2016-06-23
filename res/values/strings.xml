@@ -58,9 +58,9 @@
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
     <string name="co2">CO2 (g)</string>
-    <string name="valor2.0Apunta">0.134926</string>
-    <string name="valor2.0DHApunta">0.155469</string>
-    <string name="valor2.0DHAvalle">0.078958</string>
+    <string name="valor2.0Apunta">0.124825</string>
+    <string name="valor2.0DHApunta">0.149351</string>
+    <string name="valor2.0DHAvalle">0.079659</string>
     <string name="valor2.0DHSpunta">0.155545</string>
     <string name="valor2.0DHSllano">0.089017</string>
     <string name="valor2.0DHSsvalle">0.067736</string>
