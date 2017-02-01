@@ -24,6 +24,7 @@
     <item android:id="@+id/ajustes" android:icon="@drawable/ic_ajustes" android:title="@string/nulo" app:showAsAction="always|withText">
         <menu>
             <item android:id="@+id/grabarDatos" android:icon="@drawable/ic_grabardatosnegro" android:title="@string/grabarDatos" app:showAsAction="always"></item>
+            <item android:id="@+id/ajustarTension" android:icon="@drawable/ic_anotacion" android:title="@string/anotarTension" app:showAsAction="always"></item>
             <item android:id="@+id/tarifas" android:icon="@drawable/ic_tarifasnegro" android:title="@string/tarifas" />
             <item android:id="@+id/sonda_bluetooth" android:icon="@drawable/ic_sondanegro" app:showAsAction="always|withText" android:title="@string/sondaBluetooth">
                 <menu>

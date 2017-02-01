@@ -48,6 +48,7 @@
     <string name="supervalle">SuperValle</string>
     <string name="llano">Llano</string>
     <string name="tituloAnotar">Comenta la medida</string>
+    <string name="tituloTension">Nivel de tensión</string>
     <string name="costes">costes</string>
     <string name="error">Error</string>
     <string name="muestras">muestras</string>
@@ -82,6 +83,7 @@
     <string name="parar">Parar</string>
     <string name="grabaryreiniciar">Grabar y reiniciar</string>
     <string name="anotar">Anotar</string>
+    <string name="anotarTension">Anotar tension</string>
     <string name="grabarDatos">Grabar datos</string>
     <string name="tarifas">Tarifas y emisiones</string>
     <string name="sondaBluetooth">Sonda/Bluetooth</string>

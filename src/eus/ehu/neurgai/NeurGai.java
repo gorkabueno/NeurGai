@@ -112,6 +112,7 @@ public class NeurGai extends ActionBarActivity {
     private boolean visible = true;
     
     private int potenciaCorregida = 0;
+    private double tension = 230;
 
     private boolean botonPulsado = false;
     private boolean tonoLanzado = false;
@@ -1223,6 +1224,9 @@ public class NeurGai extends ActionBarActivity {
                         }
                     }
                 }
+                
+                // se corrige la potencia a la tensión que corresponda, ya que la sonda amperimétrica conectada a la entrada MIC y a los medidores KL25z proporcionan potencia suponiendo 230 V
+                potenciaCorregida = (int) (potenciaCorregida / 230.0 * tension);
 
                 // se añade la medida a la serie
                 serieMedidas.appendData(
@@ -2984,6 +2988,33 @@ public class NeurGai extends ActionBarActivity {
                 });
 
                 alerta.show();
+                handler.postDelayed(realizarUnaMedida, 0);
+                return true;
+                
+            case R.id.ajustarTension:
+
+                handler.removeCallbacks(realizarUnaMedida);                    // elimina la última llamada a realizar nueva medida
+                //Lanza diálogo para cambiar el nivel de tensión
+
+                AlertDialog.Builder alertaTension = new AlertDialog.Builder(this);
+                alertaTension.setTitle(getString(R.string.tituloTension));
+                final EditText inputTension = new EditText(this);
+                alertaTension.setView(inputTension);
+
+                alertaTension.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Editable value = inputTension.getText();
+                        tension = Double.parseDouble(value.toString());
+                    }
+                });
+
+                alertaTension.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        return;
+                    }
+                });
+
+                alertaTension.show();
                 handler.postDelayed(realizarUnaMedida, 0);
                 return true;
 
