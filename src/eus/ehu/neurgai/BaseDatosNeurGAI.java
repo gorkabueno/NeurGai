@@ -83,7 +83,7 @@ public class BaseDatosNeurGAI extends SQLiteOpenHelper {
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESLibre,
 	    ColumnasCostes.COLUMN_NAME_EMISIONES_TOTALESPVPC,
     };
-    //Estructura table de costetes.
+    //Estructura table de costes.
 	public static abstract class ColumnasCostes implements BaseColumns{
 		
 		public static final String TABLE_NAME = "costes";

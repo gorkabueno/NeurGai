@@ -40,7 +40,8 @@
     <string name="libre">Libre</string>
     <string name="notas">notas</string>
     <string name="t20dha">2.0DHA</string>
-    <string name="t20a">2.0A (c€)</string>
+    <string name="t20a">2.0A (c€/kWh)</string>
+    <string name="t20aMenu">2.0A (€/kWh)</string>
     <string name="t20dhs">2.0DHS</string>
     <string name="punta">Punta</string>
     <string name="valle">Valle</string>
@@ -58,9 +59,9 @@
     <string name="cantidadEmisionPVPC">0.36</string>
     <string name="cantidadEmisionLibre">0</string>
     <string name="co2">CO2 (g)</string>
-    <string name="valor2.0Apunta">0.124825</string>
-    <string name="valor2.0DHApunta">0.149351</string>
-    <string name="valor2.0DHAvalle">0.079659</string>
+    <string name="valor2.0Apunta">0.136625</string>
+    <string name="valor2.0DHApunta">0.158862</string>
+    <string name="valor2.0DHAvalle">0.084641</string>
     <string name="valor2.0DHSpunta">0.155545</string>
     <string name="valor2.0DHSllano">0.089017</string>
     <string name="valor2.0DHSsvalle">0.067736</string>

@@ -94,7 +94,7 @@ public class NeurGai extends ActionBarActivity {
     
     private WifiManager wifiManager;
     private Socket echoSocketWifi = null;
-	private PrintWriter outWifi = null;;
+	private PrintWriter outWifi = null;
     private BufferedReader inWifi = null;
     private String wifiClientName = "null";
     private boolean wifiAccessPointAbierto = false;

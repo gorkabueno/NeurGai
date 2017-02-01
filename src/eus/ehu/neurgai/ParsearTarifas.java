@@ -96,19 +96,19 @@ public class ParsearTarifas {
 	}
 	public List<Tarifa> getTarifa20A_PVPC() {
 		if(domPVPC!=null){
-			tarifa20APVPC=asignarTarifaPVPC(6);
+			tarifa20APVPC=asignarTarifaPVPC(9);
 		}
 		return tarifa20APVPC;
 	}
 	public List<Tarifa> getTarifa20DHS_PVPC() {
 		if(domPVPC!=null){
-			tarifa20DHSPVPC=asignarTarifaPVPC(8);
+			tarifa20DHSPVPC=asignarTarifaPVPC(11);
 		}
 		return tarifa20DHSPVPC;
 	}
 	public List<Tarifa> getTarifa20DHA_PVPC() {
 		if(domPVPC!=null){
-			tarifa20DHAPVPC=asignarTarifaPVPC(7);
+			tarifa20DHAPVPC=asignarTarifaPVPC(10);
 		}
 		return tarifa20DHAPVPC;
 	}

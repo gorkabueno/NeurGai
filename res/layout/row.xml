@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/t20a" />
+            android:text="@string/t20aMenu" />
 
         <EditText
             android:id="@+id/editText1"
